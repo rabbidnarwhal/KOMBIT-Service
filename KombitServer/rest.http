@@ -1,0 +1,34 @@
+GET http://localhost:49205/api/users
+###
+GET http://localhost:49205/api/holding
+###
+GET http://localhost:49205/api/company
+###
+GET http://localhost:49205/api/product/1
+###
+
+POST http://localhost:49205/api/users/login
+Content-Type: application/json
+
+{
+  Username: "",
+  Password: ""
+}
+###
+
+POST http://localhost:49205/api/users/register
+Content-Type: application/json
+
+{
+  Username: "reg",
+  Password: "reg",
+  IdNumber: "0001",
+  IdType: 1,
+  Name: "reg",
+  Email: "reg@reg.com",
+  Address: "reg",
+  Occupation: "reg",
+  Handphone: "reg",
+  JobTitle: "reg",
+  CompanyId: 1,
+}

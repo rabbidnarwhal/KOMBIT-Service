@@ -8,16 +8,16 @@ namespace KombitServer.Models
   {
     public int Id { get; set; }
     public int ProductId { get; set; }
-    public sbyte? IsLike { get; set; }
+    public Boolean? IsLike { get; set; }
     public int? LikedBy { get; set; }
     public DateTime? LikedDate { get; set; }
-    public sbyte? IsComment { get; set; }
+    public Boolean? IsComment { get; set; }
     public int? CommentBy { get; set; }
     public DateTime? CommentDate { get; set; }
-    public sbyte? IsChat { get; set; }
+    public Boolean? IsChat { get; set; }
     public int? ChatBy { get; set; }
     public DateTime? ChatDate { get; set; }
-    public sbyte? IsViewed { get; set; }
+    public Boolean? IsViewed { get; set; }
     public int? ViewedBy { get; set; }
     public DateTime? ViewedDate { get; set; }
 

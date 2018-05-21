@@ -11,7 +11,7 @@ namespace KombitServer.Models
     public string FotoName { get; set; }
     public string FotoPath { get; set; }
 
-    [ForeignKey ("ProductId")]
-    public Product Product { get; set; }
+    // [ForeignKey ("ProductId")]
+    // public Product Product { get; set; }
   }
 }

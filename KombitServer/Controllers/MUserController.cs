@@ -17,7 +17,7 @@ namespace KombitServer.Controllers
     {
       _context = context;
     }
-    // GET api/user
+    //GET api / user
     [HttpGet]
     public IEnumerable<MUser> Get ()
     {
@@ -25,7 +25,6 @@ namespace KombitServer.Controllers
       return user;
     }
 
-    // GET api/user/5
     [HttpGet ("{id}")]
     public IActionResult Get (int? id)
     {
@@ -41,49 +40,71 @@ namespace KombitServer.Controllers
       return Ok (user);
     }
 
-    // POST api/user
-    [HttpPost]
-    public IActionResult Post ([FromBody] MUser user)
-    {
-      _context.MUser.Add (user);
-      _context.SaveChanges ();
-      return Ok ();
-    }
-
     // PUT api/user/5
-    [HttpPut ("{id}")]
-    [ValidateAntiForgeryToken]
-    public IActionResult Put (int? id, [Bind ("Id, Address, JobTitle")] MUser user)
+    // [HttpPut ("{id}")]
+    // [ValidateAntiForgeryToken]
+    // public IActionResult Put (int? id, [Bind ("Id, Address, JobTitle")] MUser user)
+    // {
+    //   if (id == null)
+    //   {
+    //     return BadRequest ();
+    //   }
+    //   else if (id != user.Id)
+    //   {
+    //     return NotFound ();
+    //   }
+    //   _context.MUser.Update (user);
+    //   _context.SaveChanges ();
+    //   return Ok ();
+    // }
+
+    // // DELETE api/user/5
+    // [HttpDelete ("{id}")]
+    // public IActionResult Delete (int? id)
+    // {
+    //   if (id == null)
+    //   {
+    //     return BadRequest ();
+    //   }
+    //   var user = _context.MUser.FirstOrDefault (x => x.Id == id);
+    //   if (user == null)
+    //   {
+    //     return NotFound ();
+    //   }
+    //   _context.MUser.Remove (user);
+    //   _context.SaveChanges ();
+    //   return Ok ();
+    // }
+
+    [HttpPost ("register")]
+    public IActionResult Register ([FromBody] RegisterRequest registerRequest)
     {
-      if (id == null)
+      if (!ModelState.IsValid) { return BadRequest (ModelState); }
+      var user = _context.MUser.FirstOrDefault (x => x.Username == registerRequest.Username);
+      if (user != null)
       {
-        return BadRequest ();
+        return BadRequest ("Username already used");
       }
-      else if (id != user.Id)
-      {
-        return NotFound ();
-      }
-      _context.MUser.Update (user);
-      _context.SaveChanges ();
+      var newUser = MUser.RegisterMapping (registerRequest);
+      _context.MUser.Add (newUser);
+      _context.Commit ();
       return Ok ();
     }
 
-    // DELETE api/user/5
-    [HttpDelete ("{id}")]
-    public IActionResult Delete (int? id)
+    [HttpPost ("login")]
+    public IActionResult Login ([FromBody] LoginRequest loginRequest)
     {
-      if (id == null)
-      {
-        return BadRequest ();
-      }
-      var user = _context.MUser.FirstOrDefault (x => x.Id == id);
+      if (!ModelState.IsValid) { return BadRequest (ModelState); }
+      var user = _context.MUser
+        .Include (c => c.Company)
+        .Include (t => t.Type)
+        .FirstOrDefault (x => x.Username == loginRequest.Username && x.Password == loginRequest.Password);
       if (user == null)
       {
         return NotFound ();
       }
-      _context.MUser.Remove (user);
-      _context.SaveChanges ();
-      return Ok ();
+      return Ok (LoginResponse.FromData (user));
     }
   }
+
 }
