@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using KombitServer.Models;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -25,6 +27,14 @@ namespace KombitServer
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices (IServiceCollection services)
     {
+      string path = Path.Combine (Directory.GetCurrentDirectory (), "www");
+      if (!Directory.Exists (path))
+      {
+        Directory.CreateDirectory (path);
+      }
+      services.AddSingleton<IFileProvider> (
+        new PhysicalFileProvider (path)
+      );
       services.AddMvc ();
       services.AddDbContext<KombitDBContext> (options =>
         options.UseMySql (Configuration.GetConnectionString ("KombitDatabase")));
@@ -38,6 +48,7 @@ namespace KombitServer
         app.UseDeveloperExceptionPage ();
       }
 
+      app.UseStaticFiles ();
       app.UseMvc ();
     }
   }
