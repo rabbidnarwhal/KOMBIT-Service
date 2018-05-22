@@ -10,7 +10,6 @@ namespace KombitServer.Models
   public class RegisterRequest : IValidatableObject
   {
     public string Username { get; set; }
-
     public string Password { get; set; }
     public string IdNumber { get; set; }
     public int IdType { get; set; }

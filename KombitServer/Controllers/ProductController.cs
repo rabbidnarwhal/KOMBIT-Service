@@ -44,12 +44,28 @@ namespace KombitServer.Controllers
         .Include (x => x.User)
         .Include (x => x.FotoUpload)
         .Include (x => x.Interaction)
+        .Include (x => x.Category)
         .FirstOrDefault (x => x.Id == id);
       if (product == null)
       {
         return NotFound ();
       }
       return Ok (ProductDetailResponse.FromData (product));
+    }
+
+    [HttpPost]
+    public IActionResult NewProduct ([FromBody] ProductRequest productRequest)
+    {
+      if (!ModelState.IsValid) { return BadRequest (ModelState); }
+      var newProduct = Product.ProductMapping (productRequest);
+      _context.Product.Add (newProduct);
+      _context.Commit ();
+
+      var product = _context.Product.FirstOrDefaultAsync (x => x.ProductName == productRequest.ProductName && x.Description == productRequest.Description && x.UserId == productRequest.UserId);
+      var newFoto = FotoUpload.FotoUploadMapping (productRequest, product.Id);
+      _context.FotoUpload.Add (newFoto);
+      _context.Commit ();
+      return Ok ();
     }
 
   }

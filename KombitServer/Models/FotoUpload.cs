@@ -11,7 +11,14 @@ namespace KombitServer.Models
     public string FotoName { get; set; }
     public string FotoPath { get; set; }
 
-    // [ForeignKey ("ProductId")]
-    // public Product Product { get; set; }
+    public static FotoUpload FotoUploadMapping (ProductRequest productRequest, int id)
+    {
+      return new FotoUpload
+      {
+        ProductId = id,
+          FotoName = productRequest.FotoName,
+          FotoPath = productRequest.FotoPath,
+      };
+    }
   }
 }
