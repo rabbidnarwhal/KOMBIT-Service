@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using FluentValidation;
 
 namespace KombitServer.Models
 {
@@ -10,6 +12,7 @@ namespace KombitServer.Models
     public int Id { get; set; }
     public int CompanyId { get; set; }
     public int HoldingId { get; set; }
+    public int CategoryId { get; set; }
     public string ProductName { get; set; }
     public string Description { get; set; }
     public Boolean IsIncludePrice { get; set; }
@@ -33,7 +36,67 @@ namespace KombitServer.Models
     [ForeignKey ("ProductId")]
     public ICollection<Interaction> Interaction { get; set; }
 
+    [ForeignKey ("CategoryId")]
+    public ICollection<MCategory> Category { get; set; }
+
+    public static Product ProductMapping (ProductRequest productRequest)
+    {
+      return new Product
+      {
+        HoldingId = productRequest.HoldingId,
+          CategoryId = productRequest.CategoryId,
+          CompanyId = productRequest.CompanyId,
+          Credentials = productRequest.Credentials,
+          ProductName = productRequest.ProductName,
+          Description = productRequest.Description,
+          IsIncludePrice = productRequest.IsIncludePrice,
+          Price = productRequest.Price,
+          VideoPath = productRequest.VideoPath,
+          UserId = productRequest.UserId
+      };
+    }
+
   }
+
+  public partial class ProductRequest : IValidatableObject
+  {
+    public int CompanyId { get; set; }
+    public int HoldingId { get; set; }
+    public int CategoryId { get; set; }
+    public string ProductName { get; set; }
+    public string Description { get; set; }
+    public Boolean IsIncludePrice { get; set; }
+    public double? Price { get; set; }
+    public string Credentials { get; set; }
+    public string VideoPath { get; set; }
+    public string FotoName { get; set; }
+    public string FotoPath { get; set; }
+    public int UserId { get; set; }
+
+    public IEnumerable<ValidationResult> Validate (System.ComponentModel.DataAnnotations.ValidationContext validationContext)
+    {
+      var validator = new ProductValidator ();
+      var result = validator.Validate (this);
+      return result.Errors.Select (error => new ValidationResult (error.ErrorMessage, new [] { "errorMessage" }));
+    }
+  }
+
+  public class ProductValidator : AbstractValidator<ProductRequest>
+  {
+    public ProductValidator ()
+    {
+      RuleFor (x => x.CategoryId).NotEmpty ();
+      RuleFor (x => x.CompanyId).NotEmpty ();
+      RuleFor (x => x.Description).NotEmpty ();
+      RuleFor (x => x.FotoName).NotEmpty ();
+      RuleFor (x => x.FotoPath).NotEmpty ();
+      RuleFor (x => x.HoldingId).NotEmpty ();
+      RuleFor (x => x.IsIncludePrice).NotEmpty ();
+      RuleFor (x => x.ProductName).NotEmpty ();
+      RuleFor (x => x.UserId).NotEmpty ();
+    }
+  }
+
   public class ProductResponse
   {
     public int Id { get; set; }
@@ -42,10 +105,10 @@ namespace KombitServer.Models
     public string ProductName { get; set; }
     public string CategoryName { get; set; }
     public string PicturePath { get; set; }
-    public int Like { get; set; }
-    public int Comment { get; set; }
-    public int View { get; set; }
-    public int Chat { get; set; }
+    public int TotalLike { get; set; }
+    public int TotalComment { get; set; }
+    public int TotalView { get; set; }
+    public int TotalChat { get; set; }
 
     public static ProductResponse FromData (Product entity)
     {
@@ -61,10 +124,10 @@ namespace KombitServer.Models
           ProductName = entity.ProductName,
           CategoryName = null,
           PicturePath = entity.FotoUpload[0].FotoPath,
-          Like = entity.Interaction.Count (x => x.IsLike == true),
-          Chat = entity.Interaction.Count (x => x.IsChat == true),
-          Comment = entity.Interaction.Count (x => x.IsComment == true),
-          View = entity.Interaction.Count (x => x.IsViewed == true),
+          TotalLike = entity.Interaction.Count (x => x.IsLike == true),
+          TotalChat = entity.Interaction.Count (x => x.IsChat == true),
+          TotalComment = entity.Interaction.Count (x => x.IsComment == true),
+          TotalView = entity.Interaction.Count (x => x.IsViewed == true),
       };
     }
 

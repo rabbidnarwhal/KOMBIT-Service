@@ -283,6 +283,10 @@ namespace KombitServer.Models
           .HasColumnName ("holding_id")
           .HasColumnType ("int(11)");
 
+        entity.Property (e => e.CategoryId)
+          .HasColumnName ("category_id")
+          .HasColumnType ("int(11)");
+
         entity.Property (e => e.IsIncludePrice)
           .HasColumnName ("is_include_price")
           .HasColumnType ("tinyint(1)");
