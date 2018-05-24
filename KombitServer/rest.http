@@ -1,18 +1,20 @@
-GET http://localhost:49205/api/users
+GET http://localhost:49205/api/users/
 ###
-GET http://localhost:49205/api/holding
+GET http://localhost:49205/api/holding/1
 ###
 GET http://localhost:49205/api/company
 ###
-GET http://localhost:49205/api/product/1
+GET http://localhost:49205/api/category/1
+###
+GET http://localhost:49205/api/product/7
 ###
 
 POST http://localhost:49205/api/users/login
 Content-Type: application/json
 
 {
-  Username: "",
-  Password: ""
+  Username: "test",
+  Password: "test"
 }
 ###
 

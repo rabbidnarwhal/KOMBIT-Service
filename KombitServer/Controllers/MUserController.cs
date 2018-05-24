@@ -21,7 +21,11 @@ namespace KombitServer.Controllers
     [HttpGet]
     public IEnumerable<MUser> Get ()
     {
-      var user = _context.MUser.Include (c => c.Company).Include (t => t.Type).ToList ();
+      var user = _context.MUser
+        .Include (x => x.Company)
+        .Include (x => x.Type)
+        .Include (x => x.Company.Holding)
+        .ToList ();
       return user;
     }
 
@@ -32,10 +36,14 @@ namespace KombitServer.Controllers
       {
         return BadRequest ();
       }
-      var user = _context.MUser.Include (c => c.Company).Include (t => t.Type).FirstOrDefault (x => x.Id == id);
+      var user = _context.MUser
+        .Include (x => x.Company)
+        .Include (x => x.Type)
+        .Include (x => x.Company.Holding)
+        .FirstOrDefault (x => x.Id == id);
       if (user == null)
       {
-        return NotFound ();
+        return NotFound (new Exception ("User not found"));
       }
       return Ok (user);
     }
@@ -45,15 +53,16 @@ namespace KombitServer.Controllers
     {
       if (id == null || idCard == null || idCard == "")
       {
-        return BadRequest ();
+        return BadRequest (new Exception ("Invalid token"));
       }
       var user = _context.MUser
-        .Include (c => c.Company)
-        .Include (t => t.Type)
+        .Include (x => x.Company)
+        .Include (x => x.Type)
+        .Include (x => x.Company.Holding)
         .FirstOrDefault (x => x.IdNumber == idCard && x.Id == id);
       if (user == null)
       {
-        return NotFound ();
+        return Unauthorized ();
       }
       return Ok (LoginResponse.FromData (user));
     }
@@ -65,7 +74,7 @@ namespace KombitServer.Controllers
       var user = _context.MUser.FirstOrDefault (x => x.Username == registerRequest.Username);
       if (user != null)
       {
-        return BadRequest ("Username already used");
+        return BadRequest (new Exception ("Username already used"));
       }
       var newUser = MUser.RegisterMapping (registerRequest);
       _context.MUser.Add (newUser);
@@ -78,12 +87,13 @@ namespace KombitServer.Controllers
     {
       if (!ModelState.IsValid) { return BadRequest (ModelState); }
       var user = _context.MUser
-        .Include (c => c.Company)
-        .Include (t => t.Type)
+        .Include (x => x.Company)
+        .Include (x => x.Type)
+        .Include (x => x.Company.Holding)
         .FirstOrDefault (x => x.Username == loginRequest.Username && x.Password == loginRequest.Password);
       if (user == null)
       {
-        return NotFound ();
+        return NotFound (new Exception ("Username or password is missmatch"));
       }
       return Ok (LoginResponse.FromData (user));
     }

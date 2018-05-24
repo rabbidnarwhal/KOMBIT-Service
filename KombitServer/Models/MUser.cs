@@ -31,20 +31,20 @@ namespace KombitServer.Models
 
     public static MUser RegisterMapping (RegisterRequest registerRequest)
     {
-      return new MUser
-      {
-        Username = registerRequest.Username,
-          Password = registerRequest.Password,
-          IdNumber = registerRequest.IdNumber,
-          IdType = registerRequest.IdType,
-          Name = registerRequest.Name,
-          Email = registerRequest.Email,
-          Address = registerRequest.Address,
-          Occupation = registerRequest.Occupation,
-          Handphone = registerRequest.Handphone,
-          JobTitle = registerRequest.JobTitle,
-          CompanyId = registerRequest.CompanyId,
-      };
+
+      var user = new MUser ();
+      user.Username = registerRequest.Username;
+      user.Password = registerRequest.Password;
+      user.IdNumber = registerRequest.IdNumber;
+      user.IdType = registerRequest.IdType;
+      user.Name = registerRequest.Name;
+      user.Email = registerRequest.Email;
+      user.Address = registerRequest.Address;
+      user.Occupation = registerRequest.Occupation;
+      user.Handphone = registerRequest.Handphone;
+      user.JobTitle = registerRequest.JobTitle;
+      user.CompanyId = registerRequest.CompanyId;
+      return user;
     }
   }
 

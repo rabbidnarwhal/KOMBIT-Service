@@ -21,14 +21,17 @@ namespace KombitServer.Controllers
       _env = env;
     }
 
-    [HttpPost ("foto")]
-    public IActionResult UploadFoto2 ()
+    [HttpPost ("{type}")]
+    [RequestSizeLimit (268435456)]
+    public IActionResult UploadFile (string type)
     {
       try
       {
+        if (!type.Equals ("foto") && !type.Equals ("video"))
+          return BadRequest (new Exception ("Invalid Request " + type));
         var file = Request.Form.Files[0];
-        string path = Path.Combine ("foto", "uploads");
-        string physicalPath = Path.Combine ("www", "foto", "uploads");
+        string path = Path.Combine ("uploads", type);
+        string physicalPath = Path.Combine ("wwwroot", "uploads", type);
         if (!Directory.Exists (physicalPath))
           Directory.CreateDirectory (physicalPath);
         if (file.Length > 0)
@@ -50,12 +53,10 @@ namespace KombitServer.Controllers
           if (request.Host.Port.HasValue)
             uriBuilder.Port = request.Host.Port.Value;
           var urlPath = uriBuilder.ToString ();
-          return Ok (new { path = urlPath });
+          return Ok (new { name = fileName, path = urlPath });
         }
         else
-        {
-          return BadRequest ();
-        }
+          return BadRequest (new Exception ("Invalid File"));
       }
       catch (System.Exception ex)
       {

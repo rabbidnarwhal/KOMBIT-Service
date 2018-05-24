@@ -67,20 +67,19 @@ namespace KombitServer.Models
       {
         return null;
       }
-      return new RegisterResponse
-      {
-        Id = entity.Id,
-          Username = entity.Username,
-          IdNumber = entity.IdNumber,
-          IdType = entity.Type.DescType,
-          Name = entity.Name,
-          Email = entity.Email,
-          Address = entity.Address,
-          Occupation = entity.Occupation,
-          Handphone = entity.Handphone,
-          JobTitle = entity.JobTitle,
-          CompanyName = entity.Company.CompanyName
-      };
+      var response = new RegisterResponse ();
+      response.Id = entity.Id;
+      response.Username = entity.Username;
+      response.IdNumber = entity.IdNumber;
+      response.IdType = entity.Type.DescType;
+      response.Name = entity.Name;
+      response.Email = entity.Email;
+      response.Address = entity.Address;
+      response.Occupation = entity.Occupation;
+      response.Handphone = entity.Handphone;
+      response.JobTitle = entity.JobTitle;
+      response.CompanyName = entity.Company.CompanyName;
+      return response;
     }
   }
 

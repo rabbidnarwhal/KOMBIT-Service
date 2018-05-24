@@ -13,12 +13,11 @@ namespace KombitServer.Models
 
     public static FotoUpload FotoUploadMapping (ProductRequest productRequest, int id)
     {
-      return new FotoUpload
-      {
-        ProductId = id,
-          FotoName = productRequest.FotoName,
-          FotoPath = productRequest.FotoPath,
-      };
+      var fotoUpload = new FotoUpload ();
+      fotoUpload.ProductId = id;
+      fotoUpload.FotoName = productRequest.FotoName;
+      fotoUpload.FotoPath = productRequest.FotoPath;
+      return fotoUpload;
     }
   }
 }

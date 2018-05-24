@@ -43,6 +43,9 @@ namespace KombitServer.Models
     public string Handphone { get; set; }
     public string JobTitle { get; set; }
     public string CompanyName { get; set; }
+    public int CompanyId { get; set; }
+    public int HoldingId { get; set; }
+    public string HoldingName { get; set; }
 
     public static LoginResponse FromData (MUser entity)
     {
@@ -50,20 +53,22 @@ namespace KombitServer.Models
       {
         return null;
       }
-      return new LoginResponse
-      {
-        Id = entity.Id,
-          Username = entity.Username,
-          IdNumber = entity.IdNumber,
-          IdType = entity.Type.DescType,
-          Name = entity.Name,
-          Email = entity.Email,
-          Address = entity.Address,
-          Occupation = entity.Occupation,
-          Handphone = entity.Handphone,
-          JobTitle = entity.JobTitle,
-          CompanyName = entity.Company.CompanyName
-      };
+      var response = new LoginResponse ();
+      response.Id = entity.Id;
+      response.Username = entity.Username;
+      response.IdNumber = entity.IdNumber;
+      response.IdType = entity.Type.DescType;
+      response.Name = entity.Name;
+      response.Email = entity.Email;
+      response.Address = entity.Address;
+      response.Occupation = entity.Occupation;
+      response.Handphone = entity.Handphone;
+      response.JobTitle = entity.JobTitle;
+      response.CompanyName = entity.Company.CompanyName;
+      response.CompanyId = entity.Company.Id;
+      response.HoldingName = entity.Company.Holding.HoldingName;
+      response.HoldingId = entity.Company.Holding.Id;
+      return response;
     }
   }
 

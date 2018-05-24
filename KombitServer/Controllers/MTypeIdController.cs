@@ -30,12 +30,12 @@ namespace KombitServer.Controllers
     {
       if (id == null)
       {
-        return BadRequest ();
+        return BadRequest (new Exception ("Invalid Identity Type"));
       }
       var idType = _context.MTypeId.FirstOrDefault (x => x.Id == id);
       if (idType == null)
       {
-        return NotFound ();
+        return NotFound (new Exception ("Identity Type not found"));
       }
       return Ok (idType);
     }

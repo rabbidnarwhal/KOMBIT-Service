@@ -31,29 +31,28 @@ namespace KombitServer.Models
     public MCompany Company { get; set; }
 
     [ForeignKey ("ProductId")]
-    public List<FotoUpload> FotoUpload { get; set; }
+    public ICollection<FotoUpload> FotoUpload { get; set; }
 
     [ForeignKey ("ProductId")]
     public ICollection<Interaction> Interaction { get; set; }
 
     [ForeignKey ("CategoryId")]
-    public ICollection<MCategory> Category { get; set; }
+    public MCategory Category { get; set; }
 
     public static Product ProductMapping (ProductRequest productRequest)
     {
-      return new Product
-      {
-        HoldingId = productRequest.HoldingId,
-          CategoryId = productRequest.CategoryId,
-          CompanyId = productRequest.CompanyId,
-          Credentials = productRequest.Credentials,
-          ProductName = productRequest.ProductName,
-          Description = productRequest.Description,
-          IsIncludePrice = productRequest.IsIncludePrice,
-          Price = productRequest.Price,
-          VideoPath = productRequest.VideoPath,
-          UserId = productRequest.UserId
-      };
+      var product = new Product ();
+      product.HoldingId = productRequest.HoldingId;
+      product.CategoryId = productRequest.CategoryId;
+      product.CompanyId = productRequest.CompanyId;
+      product.Credentials = productRequest.Credentials;
+      product.ProductName = productRequest.ProductName;
+      product.Description = productRequest.Description;
+      product.IsIncludePrice = productRequest.IsIncludePrice;
+      product.Price = productRequest.Price;
+      product.VideoPath = productRequest.VideoPath;
+      product.UserId = productRequest.UserId;
+      return product;
     }
 
   }
@@ -104,7 +103,7 @@ namespace KombitServer.Models
     public string HoldingName { get; set; }
     public string ProductName { get; set; }
     public string CategoryName { get; set; }
-    public string PicturePath { get; set; }
+    public string FotoPath { get; set; }
     public int TotalLike { get; set; }
     public int TotalComment { get; set; }
     public int TotalView { get; set; }
@@ -116,22 +115,25 @@ namespace KombitServer.Models
       {
         return null;
       }
-      return new ProductResponse
-      {
-        Id = entity.Id,
-          CompanyName = entity.Company.CompanyName,
-          HoldingName = entity.Holding.HoldingName,
-          ProductName = entity.ProductName,
-          CategoryName = null,
-          PicturePath = entity.FotoUpload[0].FotoPath,
-          TotalLike = entity.Interaction.Count (x => x.IsLike == true),
-          TotalChat = entity.Interaction.Count (x => x.IsChat == true),
-          TotalComment = entity.Interaction.Count (x => x.IsComment == true),
-          TotalView = entity.Interaction.Count (x => x.IsViewed == true),
-      };
+      var response = new ProductResponse ();
+      response.Id = entity.Id;
+      response.CompanyName = entity.Company.CompanyName;
+      response.HoldingName = entity.Holding.HoldingName;
+      response.ProductName = entity.ProductName;
+      response.CategoryName = entity.Category.Category;
+      response.TotalLike = entity.Interaction.Count (x => x.IsLike == true);
+      response.TotalChat = entity.Interaction.Count (x => x.IsChat == true);
+      response.TotalComment = entity.Interaction.Count (x => x.IsComment == true);
+      response.TotalView = entity.Interaction.Count (x => x.IsViewed == true);
+
+      if (entity.FotoUpload.LastOrDefault () == null)
+        response.FotoPath = null;
+      else
+        response.FotoPath = entity.FotoUpload.LastOrDefault ().FotoPath;
+      return response;
     }
 
-    public static IEnumerable<ProductResponse> FromArray (Product[] entity)
+    public static IEnumerable<ProductResponse> FromArray (List<Product> entity)
     {
       if (entity == null)
       {
@@ -157,8 +159,12 @@ namespace KombitServer.Models
     public double? Price { get; set; }
     public string Credentials { get; set; }
     public string VideoPath { get; set; }
-    public string PicturePath { get; set; }
-    public string PictureName { get; set; }
+    public string FotoPath { get; set; }
+    public Boolean? isLike { get; set; }
+    public int TotalLike { get; set; }
+    public int TotalComment { get; set; }
+    public int TotalView { get; set; }
+    public int TotalChat { get; set; }
 
     public static ProductDetailResponse FromData (Product entity)
     {
@@ -166,21 +172,33 @@ namespace KombitServer.Models
       {
         return null;
       }
-      return new ProductDetailResponse
-      {
-        Id = entity.Id,
-          CompanyName = entity.Company.CompanyName,
-          HoldingName = entity.Holding.HoldingName,
-          ProductName = entity.ProductName,
-          CategoryName = null,
-          Description = entity.Description,
-          IsIncludePrice = entity.IsIncludePrice,
-          Price = entity.Price,
-          Credentials = entity.Credentials,
-          VideoPath = entity.VideoPath,
-          PictureName = entity.FotoUpload[0].FotoName,
-          PicturePath = entity.FotoUpload[0].FotoPath
-      };
+      var response = new ProductDetailResponse ();
+      response.Id = entity.Id;
+      response.CompanyName = entity.Company.CompanyName;
+      response.HoldingName = entity.Holding.HoldingName;
+      response.ProductName = entity.ProductName;
+      response.CategoryName = entity.Category.Category;
+      response.Description = entity.Description;
+      response.IsIncludePrice = entity.IsIncludePrice;
+      response.Price = entity.Price;
+      response.Credentials = entity.Credentials;
+      response.VideoPath = entity.VideoPath;
+      response.TotalLike = entity.Interaction.Count (x => x.IsLike == true);
+      response.TotalChat = entity.Interaction.Count (x => x.IsChat == true);
+      response.TotalComment = entity.Interaction.Count (x => x.IsComment == true);
+      response.TotalView = entity.Interaction.Count (x => x.IsViewed == true);
+
+      if (entity.FotoUpload.LastOrDefault () == null)
+        response.FotoPath = null;
+      else
+        response.FotoPath = entity.FotoUpload.LastOrDefault ().FotoPath;
+
+      if (entity.Interaction.FirstOrDefault (x => x.LikedBy == entity.UserId) == null)
+        response.isLike = false;
+      else
+        response.isLike = entity.Interaction.FirstOrDefault (x => x.LikedBy == entity.UserId).IsLike;
+
+      return response;
     }
   }
 

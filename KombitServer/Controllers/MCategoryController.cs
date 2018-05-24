@@ -30,12 +30,12 @@ namespace KombitServer.Controllers
     {
       if (id == null)
       {
-        return BadRequest ();
+        return BadRequest (new Exception ("Invalid Solution"));
       }
       var category = _context.MCategory.FirstOrDefault (x => x.Id == id);
       if (category == null)
       {
-        return NotFound ();
+        return NotFound (new Exception ("Solution not found"));
       }
       return Ok (category);
     }

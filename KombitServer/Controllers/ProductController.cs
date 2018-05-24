@@ -19,7 +19,7 @@ namespace KombitServer.Controllers
     }
 
     [HttpGet]
-    public IEnumerable<ProductResponse> Get ()
+    public IEnumerable<ProductResponse> GetAll ()
     {
       var product = _context.Product
         .Include (x => x.Holding)
@@ -27,16 +27,36 @@ namespace KombitServer.Controllers
         .Include (x => x.User)
         .Include (x => x.FotoUpload)
         .Include (x => x.Interaction)
-        .ToArray ();
+        .Include (x => x.Category)
+        .ToList ();
+      return ProductResponse.FromArray (product);
+    }
+
+    [HttpGet ("user/{id}")]
+    public IEnumerable<ProductResponse> GetAllByUser (int? id)
+    {
+      if (id == null)
+      {
+        return GetAll ();
+      }
+      var product = _context.Product
+        .Include (x => x.Holding)
+        .Include (x => x.Company)
+        .Include (x => x.User)
+        .Include (x => x.FotoUpload)
+        .Include (x => x.Interaction)
+        .Include (x => x.Category)
+        .Where (x => x.UserId == id)
+        .ToList ();
       return ProductResponse.FromArray (product);
     }
 
     [HttpGet ("{id}")]
-    public IActionResult Get (int? id)
+    public IActionResult GetDetail (int? id)
     {
       if (id == null)
       {
-        return BadRequest ();
+        return BadRequest (new Exception ("Invalid Product"));
       }
       var product = _context.Product
         .Include (x => x.Holding)
@@ -48,7 +68,7 @@ namespace KombitServer.Controllers
         .FirstOrDefault (x => x.Id == id);
       if (product == null)
       {
-        return NotFound ();
+        return NotFound (new Exception ("Produt not found"));
       }
       return Ok (ProductDetailResponse.FromData (product));
     }
@@ -61,11 +81,13 @@ namespace KombitServer.Controllers
       _context.Product.Add (newProduct);
       _context.Commit ();
 
-      var product = _context.Product.FirstOrDefaultAsync (x => x.ProductName == productRequest.ProductName && x.Description == productRequest.Description && x.UserId == productRequest.UserId);
-      var newFoto = FotoUpload.FotoUploadMapping (productRequest, product.Id);
+      if (productRequest.FotoName == null && productRequest.FotoPath == null) return Ok (new { msg = "Product without foto saved" });
+
+      var productId = _context.Product.LastOrDefault (x => x.ProductName == productRequest.ProductName && x.CategoryId == productRequest.CategoryId && x.UserId == productRequest.UserId).Id;
+      var newFoto = FotoUpload.FotoUploadMapping (productRequest, productId);
       _context.FotoUpload.Add (newFoto);
       _context.Commit ();
-      return Ok ();
+      return Ok (new { msg = "Product saved" });
     }
 
   }

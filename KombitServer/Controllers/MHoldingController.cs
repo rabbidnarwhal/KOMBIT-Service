@@ -30,12 +30,12 @@ namespace KombitServer.Controllers
     {
       if (id == null)
       {
-        return BadRequest ();
+        return BadRequest (new Exception ("Invalid Holding"));
       }
       var holding = _context.MHolding.FirstOrDefault (x => x.Id == id);
       if (holding == null)
       {
-        return NotFound ();
+        return NotFound (new Exception ("Holding not found"));
       }
       return Ok (holding);
     }

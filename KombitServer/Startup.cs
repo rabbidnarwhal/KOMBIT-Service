@@ -27,7 +27,7 @@ namespace KombitServer
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices (IServiceCollection services)
     {
-      string path = Path.Combine (Directory.GetCurrentDirectory (), "www");
+      string path = Path.Combine (Directory.GetCurrentDirectory (), "wwwroot");
       if (!Directory.Exists (path))
       {
         Directory.CreateDirectory (path);

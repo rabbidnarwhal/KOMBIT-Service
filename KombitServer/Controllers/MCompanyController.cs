@@ -30,12 +30,12 @@ namespace KombitServer.Controllers
     {
       if (id == null)
       {
-        return BadRequest ();
+        return BadRequest (new Exception ("Invalid Company"));
       }
       var company = _context.MCompany.Include (x => x.Holding).FirstOrDefault (x => x.Id == id);
       if (company == null)
       {
-        return NotFound ();
+        return NotFound (new Exception ("Company not found"));
       }
       return Ok (company);
     }
