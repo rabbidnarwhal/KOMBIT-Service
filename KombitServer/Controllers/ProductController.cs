@@ -64,14 +64,16 @@ namespace KombitServer.Controllers
         .Include (x => x.Company)
         .Include (x => x.User)
         .Include (x => x.FotoUpload)
-        .Include (x => x.Interaction)
         .Include (x => x.Category)
+        .Include (x => x.Interaction)
         .FirstOrDefault (x => x.Id == id);
+      var comment = _context.Interaction.Where (x => x.ProductId == id).Include (x => x.CommentUser).ToList ();
       if (product == null)
       {
-        return NotFound (new Exception ("Produt not found"));
+        return NotFound (new Exception ("Product not found"));
       }
-      return Ok (ProductDetailResponse.FromData (product));
+      return Ok (ProductDetailResponse.FromData (product, comment));
+      // return Ok (product);
     }
 
     [HttpPost]

@@ -31,7 +31,6 @@ namespace KombitServer.Models
 
     public static MUser RegisterMapping (RegisterRequest registerRequest)
     {
-
       var user = new MUser ();
       user.Username = registerRequest.Username;
       user.Password = registerRequest.Password;

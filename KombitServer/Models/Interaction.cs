@@ -23,5 +23,8 @@ namespace KombitServer.Models
 
     [ForeignKey ("ProductId")]
     public Product Product { get; set; }
+
+    [ForeignKey ("CommentBy")]
+    public MUser CommentUser { get; set; }
   }
 }

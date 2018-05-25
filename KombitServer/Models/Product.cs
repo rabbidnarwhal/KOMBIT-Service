@@ -171,45 +171,122 @@ namespace KombitServer.Models
     public string Credentials { get; set; }
     public string VideoPath { get; set; }
     public string FotoPath { get; set; }
-    public Boolean? IsLike { get; set; }
-    public int TotalLike { get; set; }
-    public int TotalComment { get; set; }
-    public int TotalView { get; set; }
-    public int TotalChat { get; set; }
-
-    public static ProductDetailResponse FromData (Product entity)
+    public ProductContact Contact { get; set; }
+    public ProductInteraction Interaction { get; set; }
+    public static ProductDetailResponse FromData (Product entity, ICollection<Interaction> interaction)
     {
       if (entity == null)
       {
         return null;
       }
-      var response = new ProductDetailResponse ();
-      response.Id = entity.Id;
-      response.CompanyName = entity.Company.CompanyName;
-      response.HoldingName = entity.Holding.HoldingName;
-      response.ProductName = entity.ProductName;
-      response.CategoryName = entity.Category.Category;
-      response.Description = entity.Description;
-      response.IsIncludePrice = entity.IsIncludePrice;
-      response.Price = entity.Price;
-      response.Credentials = entity.Credentials;
-      response.VideoPath = entity.VideoPath;
-      response.TotalLike = entity.Interaction.Count (x => x.IsLike == true);
-      response.TotalChat = entity.Interaction.Count (x => x.IsChat == true);
-      response.TotalComment = entity.Interaction.Count (x => x.IsComment == true);
-      response.TotalView = entity.Interaction.Count (x => x.IsViewed == true);
+      var response = new ProductDetailResponse ()
+      {
+        Id = entity.Id,
+        CompanyName = entity.Company.CompanyName,
+        HoldingName = entity.Holding.HoldingName,
+        ProductName = entity.ProductName,
+        CategoryName = entity.Category.Category,
+        Description = entity.Description,
+        IsIncludePrice = entity.IsIncludePrice,
+        Price = entity.Price,
+        Credentials = entity.Credentials,
+        VideoPath = entity.VideoPath,
+        FotoPath = null,
+        Contact = ProductContact.FromData (entity.User),
+        Interaction = ProductInteraction.FromData (interaction, entity.UserId),
+      };
 
-      if (entity.FotoUpload.LastOrDefault () == null)
-        response.FotoPath = null;
-      else
+      if (entity.FotoUpload.LastOrDefault () != null)
         response.FotoPath = entity.FotoUpload.LastOrDefault ().FotoPath;
 
-      if (entity.Interaction.FirstOrDefault (x => x.LikedBy == entity.UserId) == null)
-        response.IsLike = false;
-      else
-        response.IsLike = entity.Interaction.FirstOrDefault (x => x.LikedBy == entity.UserId).IsLike;
-
       return response;
+    }
+  }
+
+  public class ProductContact
+  {
+    public string Name { get; set; }
+    public string Email { get; set; }
+    public string JobTitle { get; set; }
+    public string Occupation { get; set; }
+    public string Handphone { get; set; }
+    public string Address { get; set; }
+    public string Foto { get; set; }
+
+    public static ProductContact FromData (MUser user)
+    {
+      var productContact = new ProductContact ()
+      {
+        Name = user.Name,
+        Email = user.Email,
+        JobTitle = user.JobTitle,
+        Occupation = user.Occupation,
+        Handphone = user.Handphone,
+        Address = user.Address,
+        Foto = "",
+      };
+      return productContact;
+    }
+
+  }
+
+  public class ProductInteraction
+  {
+    public Boolean? IsLike { get; set; }
+    public int TotalLike { get; set; }
+    public int TotalComment { get; set; }
+    public int TotalView { get; set; }
+    public int TotalChat { get; set; }
+    public ICollection<ProductComment> Comment { get; set; }
+    public static ProductInteraction FromData (ICollection<Interaction> interaction, int? userId)
+    {
+      var productInteraction = new ProductInteraction ()
+      {
+        TotalLike = interaction.Count (x => x.IsLike == true),
+        TotalChat = interaction.Count (x => x.IsChat == true),
+        TotalComment = interaction.Count (x => x.IsComment == true),
+        TotalView = interaction.Count (x => x.IsViewed == true),
+        IsLike = false,
+        Comment = ProductComment.FromData (interaction.Where (x => x.IsComment == true).ToList ()),
+      };
+      if (interaction.FirstOrDefault (x => x.LikedBy == userId) != null)
+        productInteraction.IsLike = interaction.FirstOrDefault (x => x.LikedBy == userId).IsLike;
+
+      return productInteraction;
+    }
+  }
+
+  public class ProductComment
+  {
+    public Boolean? IsComment { get; set; }
+    public string CommentBy { get; set; }
+    public string Content { get; set; }
+    public DateTime? CommentDate { get; set; }
+
+    public static ICollection<ProductComment> FromData (ICollection<Interaction> interaction)
+    {
+      List<ProductComment> productComment = new List<ProductComment> ();
+      if (interaction == null)
+        return null;
+
+      foreach (var item in interaction)
+      {
+        if (item.IsComment != null)
+        {
+
+          var comment = new ProductComment ()
+          {
+          IsComment = item.IsComment,
+          CommentBy = item.CommentUser.Name,
+          CommentDate = item.CommentDate,
+          Content = "",
+          };
+
+          productComment.Add (comment);
+        }
+      }
+
+      return productComment;
     }
   }
 
