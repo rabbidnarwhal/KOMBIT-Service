@@ -108,8 +108,11 @@ namespace KombitServer.Models
     public int TotalComment { get; set; }
     public int TotalView { get; set; }
     public int TotalChat { get; set; }
+    public Boolean? IsLike { get; set; }
+    public Boolean IsIncludePrice { get; set; }
+    public Double? Price { get; set; }
 
-    public static ProductResponse FromData (Product entity)
+    public static ProductResponse FromData (Product entity, int? id)
     {
       if (entity == null)
       {
@@ -121,6 +124,8 @@ namespace KombitServer.Models
       response.HoldingName = entity.Holding.HoldingName;
       response.ProductName = entity.ProductName;
       response.CategoryName = entity.Category.Category;
+      response.IsIncludePrice = entity.IsIncludePrice;
+      response.Price = entity.Price;
       response.TotalLike = entity.Interaction.Count (x => x.IsLike == true);
       response.TotalChat = entity.Interaction.Count (x => x.IsChat == true);
       response.TotalComment = entity.Interaction.Count (x => x.IsComment == true);
@@ -130,10 +135,16 @@ namespace KombitServer.Models
         response.FotoPath = null;
       else
         response.FotoPath = entity.FotoUpload.LastOrDefault ().FotoPath;
+
+      if (entity.Interaction.FirstOrDefault (x => x.LikedBy == id) == null)
+        response.IsLike = false;
+      else
+        response.IsLike = entity.Interaction.FirstOrDefault (x => x.LikedBy == id).IsLike;
+
       return response;
     }
 
-    public static IEnumerable<ProductResponse> FromArray (List<Product> entity)
+    public static IEnumerable<ProductResponse> FromArray (List<Product> entity, int? id)
     {
       if (entity == null)
       {
@@ -142,7 +153,7 @@ namespace KombitServer.Models
       List<ProductResponse> products = new List<ProductResponse> ();
       foreach (var item in entity)
       {
-        products.Add (ProductResponse.FromData (item));
+        products.Add (ProductResponse.FromData (item, id));
       }
       return products;
     }
@@ -160,7 +171,7 @@ namespace KombitServer.Models
     public string Credentials { get; set; }
     public string VideoPath { get; set; }
     public string FotoPath { get; set; }
-    public Boolean? isLike { get; set; }
+    public Boolean? IsLike { get; set; }
     public int TotalLike { get; set; }
     public int TotalComment { get; set; }
     public int TotalView { get; set; }
@@ -194,9 +205,9 @@ namespace KombitServer.Models
         response.FotoPath = entity.FotoUpload.LastOrDefault ().FotoPath;
 
       if (entity.Interaction.FirstOrDefault (x => x.LikedBy == entity.UserId) == null)
-        response.isLike = false;
+        response.IsLike = false;
       else
-        response.isLike = entity.Interaction.FirstOrDefault (x => x.LikedBy == entity.UserId).IsLike;
+        response.IsLike = entity.Interaction.FirstOrDefault (x => x.LikedBy == entity.UserId).IsLike;
 
       return response;
     }
