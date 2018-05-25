@@ -19,7 +19,8 @@ namespace KombitServer.Controllers
     }
 
     [HttpGet]
-    public IEnumerable<ProductResponse> GetAll ()
+    [HttpGet ("interaction/user/{id}")]
+    public IEnumerable<ProductResponse> GetAll (int? id)
     {
       var product = _context.Product
         .Include (x => x.Holding)
@@ -29,7 +30,7 @@ namespace KombitServer.Controllers
         .Include (x => x.Interaction)
         .Include (x => x.Category)
         .ToList ();
-      return ProductResponse.FromArray (product);
+      return ProductResponse.FromArray (product, id);
     }
 
     [HttpGet ("user/{id}")]
@@ -37,7 +38,7 @@ namespace KombitServer.Controllers
     {
       if (id == null)
       {
-        return GetAll ();
+        return GetAll (id);
       }
       var product = _context.Product
         .Include (x => x.Holding)
@@ -48,7 +49,7 @@ namespace KombitServer.Controllers
         .Include (x => x.Category)
         .Where (x => x.UserId == id)
         .ToList ();
-      return ProductResponse.FromArray (product);
+      return ProductResponse.FromArray (product, id);
     }
 
     [HttpGet ("{id}")]

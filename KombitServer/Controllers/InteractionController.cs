@@ -18,7 +18,7 @@ namespace KombitServer.Controllers
       _context = context;
     }
 
-    [HttpPost ("view/product")]
+    [HttpPost ("view")]
     public IActionResult Viewed ([FromBody] Interaction interaction)
     {
       if (interaction.IsViewed == null || interaction.ViewedBy == null || interaction.ProductId == 0)
@@ -32,7 +32,7 @@ namespace KombitServer.Controllers
       return Ok ();
     }
 
-    [HttpPost ("like/product")]
+    [HttpPost ("like")]
     public IActionResult Liked ([FromBody] Interaction interaction)
     {
       if (interaction.IsLike == null || interaction.LikedBy == null || interaction.ProductId == 0)
@@ -54,7 +54,7 @@ namespace KombitServer.Controllers
       return Ok ();
     }
 
-    [HttpPost ("comment/product")]
+    [HttpPost ("comment")]
     public IActionResult Commented ([FromBody] Interaction interaction)
     {
       if (interaction.IsComment == null || interaction.CommentBy == null || interaction.ProductId == 0)
@@ -68,7 +68,7 @@ namespace KombitServer.Controllers
       return Ok ();
     }
 
-    [HttpPost ("chat/product")]
+    [HttpPost ("chat")]
     public IActionResult Chatted ([FromBody] Interaction interaction)
     {
       if (interaction.IsChat == null || interaction.ChatBy == null || interaction.ProductId == 0)
