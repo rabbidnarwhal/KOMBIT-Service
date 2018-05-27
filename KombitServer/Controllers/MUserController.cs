@@ -45,7 +45,7 @@ namespace KombitServer.Controllers
       {
         return NotFound (new Exception ("User not found"));
       }
-      return Ok (user);
+      return Ok (MUserResponse.FromData (user));
     }
 
     [HttpGet ("{id}/{idCard}")]
