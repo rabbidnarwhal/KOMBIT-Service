@@ -35,17 +35,17 @@ namespace KombitServer.Models
     public int Id { get; set; }
     public string Username { get; set; }
     public string IdNumber { get; set; }
-    public string IdType { get; set; }
+    // public string IdType { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
-    public string Address { get; set; }
-    public string Occupation { get; set; }
-    public string Handphone { get; set; }
-    public string JobTitle { get; set; }
-    public string CompanyName { get; set; }
+    // public string Address { get; set; }
+    // public string Occupation { get; set; }
+    // public string Handphone { get; set; }
+    // public string JobTitle { get; set; }
+    // public string CompanyName { get; set; }
     public int CompanyId { get; set; }
     public int HoldingId { get; set; }
-    public string HoldingName { get; set; }
+    // public string HoldingName { get; set; }
 
     public static LoginResponse FromData (MUser entity)
     {
@@ -57,16 +57,16 @@ namespace KombitServer.Models
       response.Id = entity.Id;
       response.Username = entity.Username;
       response.IdNumber = entity.IdNumber;
-      response.IdType = entity.Type.DescType;
+      // response.IdType = entity.Type.DescType;
       response.Name = entity.Name;
       response.Email = entity.Email;
-      response.Address = entity.Address;
-      response.Occupation = entity.Occupation;
-      response.Handphone = entity.Handphone;
-      response.JobTitle = entity.JobTitle;
-      response.CompanyName = entity.Company.CompanyName;
+      // response.Address = entity.Address;
+      // response.Occupation = entity.Occupation;
+      // response.Handphone = entity.Handphone;
+      // response.JobTitle = entity.JobTitle;
+      // response.CompanyName = entity.Company.CompanyName;
       response.CompanyId = entity.Company.Id;
-      response.HoldingName = entity.Company.Holding.HoldingName;
+      // response.HoldingName = entity.Company.Holding.HoldingName;
       response.HoldingId = entity.Company.Holding.Id;
       return response;
     }
