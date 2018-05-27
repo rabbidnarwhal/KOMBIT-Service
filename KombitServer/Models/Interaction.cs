@@ -12,6 +12,7 @@ namespace KombitServer.Models
     public int? LikedBy { get; set; }
     public DateTime? LikedDate { get; set; }
     public Boolean? IsComment { get; set; }
+    public string Comment { get; set; }
     public int? CommentBy { get; set; }
     public DateTime? CommentDate { get; set; }
     public Boolean? IsChat { get; set; }

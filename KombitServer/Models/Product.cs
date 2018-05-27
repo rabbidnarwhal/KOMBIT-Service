@@ -279,7 +279,7 @@ namespace KombitServer.Models
           IsComment = item.IsComment,
           CommentBy = item.CommentUser.Name,
           CommentDate = item.CommentDate,
-          Content = "",
+          Content = item.Comment,
           };
 
           productComment.Add (comment);

@@ -61,6 +61,10 @@ namespace KombitServer.Models
           .HasColumnName ("chat_date")
           .HasColumnType ("datetime");
 
+        entity.Property (e => e.Comment)
+          .HasColumnName ("comment")
+          .HasMaxLength (255);
+
         entity.Property (e => e.CommentBy)
           .HasColumnName ("comment_by")
           .HasColumnType ("int(11)");
