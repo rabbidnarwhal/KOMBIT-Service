@@ -41,17 +41,19 @@ namespace KombitServer.Models
 
     public static Product ProductMapping (ProductRequest productRequest)
     {
-      var product = new Product ();
-      product.HoldingId = productRequest.HoldingId;
-      product.CategoryId = productRequest.CategoryId;
-      product.CompanyId = productRequest.CompanyId;
-      product.Credentials = productRequest.Credentials;
-      product.ProductName = productRequest.ProductName;
-      product.Description = productRequest.Description;
-      product.IsIncludePrice = productRequest.IsIncludePrice;
-      product.Price = productRequest.Price;
-      product.VideoPath = productRequest.VideoPath;
-      product.UserId = productRequest.UserId;
+      var product = new Product ()
+      {
+        HoldingId = productRequest.HoldingId,
+        CategoryId = productRequest.CategoryId,
+        CompanyId = productRequest.CompanyId,
+        Credentials = productRequest.Credentials,
+        ProductName = productRequest.ProductName,
+        Description = productRequest.Description,
+        IsIncludePrice = productRequest.IsIncludePrice,
+        Price = productRequest.Price,
+        VideoPath = productRequest.VideoPath,
+        UserId = productRequest.UserId
+      };
       return product;
     }
 
@@ -86,11 +88,11 @@ namespace KombitServer.Models
     {
       RuleFor (x => x.CategoryId).NotEmpty ();
       RuleFor (x => x.CompanyId).NotEmpty ();
-      RuleFor (x => x.Description).NotEmpty ();
+      RuleFor (x => x.Description).NotEmpty ().Length (0, 255).WithMessage ("'Description' cannot be more than 250 characters.");
+      RuleFor (x => x.Credentials).Length (0, 255).WithMessage ("Success story cannot be more than 250 characters.");
       RuleFor (x => x.FotoName).NotEmpty ();
       RuleFor (x => x.FotoPath).NotEmpty ();
       RuleFor (x => x.HoldingId).NotEmpty ();
-      RuleFor (x => x.IsIncludePrice).NotEmpty ();
       RuleFor (x => x.ProductName).NotEmpty ();
       RuleFor (x => x.UserId).NotEmpty ();
     }

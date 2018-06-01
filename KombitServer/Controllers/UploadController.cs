@@ -23,7 +23,7 @@ namespace KombitServer.Controllers
 
     [HttpPost ("{type}")]
     [RequestSizeLimit (268435456)]
-    public IActionResult UploadFile (string type)
+    public async Task<IActionResult> UploadFile (string type)
     {
       try
       {
@@ -37,11 +37,12 @@ namespace KombitServer.Controllers
         if (file.Length > 0)
         {
           Int32 unixTimestamp = (Int32) (DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
-          string fileName = string.Concat (unixTimestamp.ToString (), "_", ContentDispositionHeaderValue.Parse (file.ContentDisposition).FileName.Trim ('"'));
+          // string fileName = string.Concat (unixTimestamp.ToString (), "_", ContentDispositionHeaderValue.Parse (file.ContentDisposition).FileName.Trim ('"'));
+          string fileName = type.Equals ("foto") ? Guid.NewGuid ().ToString ("N") + ".jpg" : Guid.NewGuid ().ToString ("N") + ".mp4";
           string fullPath = Path.Combine (physicalPath, fileName);
           using (var stream = new FileStream (fullPath, FileMode.Create))
           {
-            file.CopyTo (stream);
+            await file.CopyToAsync (stream);
           }
           var request = HttpContext.Request;
           var uriBuilder = new UriBuilder

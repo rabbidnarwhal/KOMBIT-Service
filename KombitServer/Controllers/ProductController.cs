@@ -20,6 +20,7 @@ namespace KombitServer.Controllers
 
     [HttpGet]
     [HttpGet ("interaction/user/{id}")]
+    [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
     public IEnumerable<ProductResponse> GetAll (int? id)
     {
       var product = _context.Product
@@ -34,6 +35,7 @@ namespace KombitServer.Controllers
     }
 
     [HttpGet ("user/{id}")]
+    [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
     public IEnumerable<ProductResponse> GetAllByUser (int? id)
     {
       if (id == null)
@@ -53,6 +55,7 @@ namespace KombitServer.Controllers
     }
 
     [HttpGet ("{id}")]
+    [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult GetDetail (int? id)
     {
       if (id == null)
@@ -73,7 +76,6 @@ namespace KombitServer.Controllers
         return NotFound (new Exception ("Product not found"));
       }
       return Ok (ProductDetailResponse.FromData (product, comment));
-      // return Ok (product);
     }
 
     [HttpPost]
@@ -84,13 +86,28 @@ namespace KombitServer.Controllers
       _context.Product.Add (newProduct);
       _context.Commit ();
 
-      if (productRequest.FotoName == null && productRequest.FotoPath == null) return Ok (new { msg = "Product without foto saved" });
+      if (productRequest.FotoName == null && productRequest.FotoPath == null) return Ok (new { msg = "Published" });
 
       var productId = _context.Product.LastOrDefault (x => x.ProductName == productRequest.ProductName && x.CategoryId == productRequest.CategoryId && x.UserId == productRequest.UserId).Id;
       var newFoto = FotoUpload.FotoUploadMapping (productRequest, productId);
       _context.FotoUpload.Add (newFoto);
       _context.Commit ();
-      return Ok (new { msg = "Product saved" });
+      return Ok (new { msg = "Published" });
+    }
+
+    [HttpDelete ("{id}")]
+    public async Task<IActionResult> DeleteProduct (int? id)
+    {
+      if (id == null)
+        return BadRequest ();
+      var product = await _context.Product.FirstOrDefaultAsync (x => x.Id == id);
+      var foto = await _context.FotoUpload.FirstOrDefaultAsync (x => x.ProductId == id);
+      var interaction = _context.Interaction.Where (x => x.ProductId == id);
+      _context.Remove (foto);
+      _context.Remove (product);
+      _context.Remove (interaction);
+      await _context.SaveChangesAsync ();
+      return Ok ();
     }
 
   }

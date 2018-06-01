@@ -6,7 +6,7 @@ GET http://localhost:49205/api/company
 ###
 GET http://localhost:49205/api/category/1
 ###
-GET http://localhost:49205/api/product/7
+GET http://localhost:49205/api/product/11
 ###
 
 POST http://localhost:49205/api/users/login
@@ -34,3 +34,29 @@ Content-Type: application/json
   JobTitle: "reg",
   CompanyId: 1,
 }
+
+###
+POST http://localhost:49205/api/product
+Content-Type: application/json
+Cache-Control: no-cache
+
+{
+  VideoPath: "reg.reg/reg.ix",
+  FotoPath: "reg/reg.ix",
+  FotoName: "reg.ix", 
+  Credentials: "what is reg",
+  Price: 1000,
+  IsIncludePrice: true,
+  Description: "reg is reg",
+  ProductName: "reg1",
+  CategoryId: 1,
+  HoldingId: 1,
+  CompanyId: 1,
+  UserId: 1,
+}
+
+###
+GET http://kombit.org/api/product/interaction/user/1
+Cache-Control: no-cache
+###
+GET http://kombit.org/api/product/user/2
