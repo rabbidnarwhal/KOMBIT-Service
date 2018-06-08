@@ -40,6 +40,21 @@ namespace KombitServer.Controllers
       return Ok (holding);
     }
 
+    [HttpGet ("{id}/company")]
+    public async Task<IActionResult> GetCompany (int? id)
+    {
+      if (id == null)
+      {
+        return BadRequest (new Exception ("Invalid Holding"));
+      }
+      var company = await _context.MCompany.Where (x => x.HoldingId == id).ToListAsync ();
+      if (company == null)
+      {
+        return NotFound (new Exception ("Holding not found"));
+      }
+      return Ok (company);
+    }
+
   }
 
 }
