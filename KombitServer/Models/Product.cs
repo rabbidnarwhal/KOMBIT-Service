@@ -102,6 +102,7 @@ namespace KombitServer.Models
   {
     public int Id { get; set; }
     public string CompanyName { get; set; }
+    public int HoldingId { get; set; }
     public string HoldingName { get; set; }
     public string ProductName { get; set; }
     public string CategoryName { get; set; }
@@ -124,6 +125,7 @@ namespace KombitServer.Models
       response.Id = entity.Id;
       response.CompanyName = entity.Company.CompanyName;
       response.HoldingName = entity.Holding.HoldingName;
+      response.HoldingId = entity.Holding.Id;
       response.ProductName = entity.ProductName;
       response.CategoryName = entity.Category.Category;
       response.IsIncludePrice = entity.IsIncludePrice;
