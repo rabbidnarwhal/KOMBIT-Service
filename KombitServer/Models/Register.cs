@@ -16,6 +16,7 @@ namespace KombitServer.Models
     public string Name { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
+    public string AddressKoordinat { get; set; }
     public string Occupation { get; set; }
     public string Handphone { get; set; }
     public string JobTitle { get; set; }
@@ -40,9 +41,7 @@ namespace KombitServer.Models
       RuleFor (x => x.Name).NotEmpty ();
       RuleFor (x => x.Email).NotEmpty ();
       RuleFor (x => x.Address).NotEmpty ();
-      RuleFor (x => x.Occupation).NotEmpty ();
       RuleFor (x => x.Handphone).NotEmpty ();
-      RuleFor (x => x.JobTitle).NotEmpty ();
       RuleFor (x => x.CompanyId).NotEmpty ();
     }
   }
@@ -56,6 +55,7 @@ namespace KombitServer.Models
     public string Name { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
+    public string AddressKoordinat { get; set; }
     public string Occupation { get; set; }
     public string Handphone { get; set; }
     public string JobTitle { get; set; }
@@ -67,18 +67,21 @@ namespace KombitServer.Models
       {
         return null;
       }
-      var response = new RegisterResponse ();
-      response.Id = entity.Id;
-      response.Username = entity.Username;
-      response.IdNumber = entity.IdNumber;
-      response.IdType = entity.Type.DescType;
-      response.Name = entity.Name;
-      response.Email = entity.Email;
-      response.Address = entity.Address;
-      response.Occupation = entity.Occupation;
-      response.Handphone = entity.Handphone;
-      response.JobTitle = entity.JobTitle;
-      response.CompanyName = entity.Company.CompanyName;
+      var response = new RegisterResponse ()
+      {
+        Id = entity.Id,
+        Username = entity.Username,
+        IdNumber = entity.IdNumber,
+        IdType = entity.Type.DescType,
+        Name = entity.Name,
+        Email = entity.Email,
+        Address = entity.Address,
+        AddressKoordinat = entity.AddressKoordinat,
+        Occupation = entity.Occupation,
+        Handphone = entity.Handphone,
+        JobTitle = entity.JobTitle,
+        CompanyName = entity.Company.CompanyName
+      };
       return response;
     }
   }

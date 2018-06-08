@@ -18,6 +18,7 @@ namespace KombitServer.Models
     public string Name { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
+    public string AddressKoordinat { get; set; }
     public string Occupation { get; set; }
     public string Handphone { get; set; }
     public string JobTitle { get; set; }
@@ -31,18 +32,21 @@ namespace KombitServer.Models
 
     public static MUser RegisterMapping (RegisterRequest registerRequest)
     {
-      var user = new MUser ();
-      user.Username = registerRequest.Username;
-      user.Password = registerRequest.Password;
-      user.IdNumber = registerRequest.IdNumber;
-      user.IdType = registerRequest.IdType;
-      user.Name = registerRequest.Name;
-      user.Email = registerRequest.Email;
-      user.Address = registerRequest.Address;
-      user.Occupation = registerRequest.Occupation;
-      user.Handphone = registerRequest.Handphone;
-      user.JobTitle = registerRequest.JobTitle;
-      user.CompanyId = registerRequest.CompanyId;
+      var user = new MUser ()
+      {
+        Username = registerRequest.Username,
+        Password = registerRequest.Password,
+        IdNumber = registerRequest.IdNumber,
+        IdType = registerRequest.IdType,
+        Name = registerRequest.Name,
+        Email = registerRequest.Email,
+        Address = registerRequest.Address,
+        AddressKoordinat = registerRequest.AddressKoordinat,
+        Occupation = registerRequest.Occupation,
+        Handphone = registerRequest.Handphone,
+        JobTitle = registerRequest.JobTitle,
+        CompanyId = registerRequest.CompanyId,
+      };
       return user;
     }
   }
@@ -56,6 +60,7 @@ namespace KombitServer.Models
     public string Name { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
+    public string AddressKoordinat { get; set; }
     public string Occupation { get; set; }
     public string Handphone { get; set; }
     public string JobTitle { get; set; }
@@ -82,6 +87,7 @@ namespace KombitServer.Models
         Name = entity.Name,
         Email = entity.Email,
         Address = entity.Address,
+        AddressKoordinat = entity.AddressKoordinat,
         Occupation = entity.Occupation,
         Handphone = entity.Handphone,
         JobTitle = entity.JobTitle,

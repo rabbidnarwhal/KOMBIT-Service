@@ -213,6 +213,10 @@ namespace KombitServer.Models
           .HasColumnName ("address")
           .HasMaxLength (255);
 
+        entity.Property (e => e.AddressKoordinat)
+          .HasColumnName ("address_koordinat")
+          .HasMaxLength (255);
+
         entity.Property (e => e.CompanyId)
           .HasColumnName ("company_id")
           .HasColumnType ("int(11)");
@@ -237,7 +241,6 @@ namespace KombitServer.Models
           .HasColumnType ("int(11)");
 
         entity.Property (e => e.JobTitle)
-          .IsRequired ()
           .HasColumnName ("job_title")
           .HasMaxLength (100);
 
@@ -247,7 +250,6 @@ namespace KombitServer.Models
           .HasMaxLength (100);
 
         entity.Property (e => e.Occupation)
-          .IsRequired ()
           .HasColumnName ("occupation")
           .HasMaxLength (100);
 
