@@ -18,8 +18,10 @@ namespace KombitServer.Controllers
       _context = context;
     }
 
+    // GET All
     [HttpGet]
-    [HttpGet ("interaction/user/{id}")]
+    // Get All with like by user
+    [HttpGet ("like/user/{id}")]
     [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
     public IEnumerable<ProductResponse> GetAll (int? id)
     {
@@ -34,6 +36,7 @@ namespace KombitServer.Controllers
       return ProductResponse.FromArray (product, id);
     }
 
+    // Get All by user
     [HttpGet ("user/{id}")]
     [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
     public IEnumerable<ProductResponse> GetAllByUser (int? id)
@@ -56,12 +59,8 @@ namespace KombitServer.Controllers
 
     [HttpGet ("{id}")]
     [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult GetDetail (int? id)
+    public IActionResult GetDetail (int id)
     {
-      if (id == null)
-      {
-        return BadRequest (new Exception ("Invalid Product"));
-      }
       var product = _context.Product
         .Include (x => x.Holding)
         .Include (x => x.Company)
@@ -78,21 +77,78 @@ namespace KombitServer.Controllers
       return Ok (ProductDetailResponse.FromData (product, comment));
     }
 
+    [HttpGet ("{id}/edit")]
+    [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult GetProductEdit (int id)
+    {
+      var product = _context.Product
+        .Include (x => x.Holding)
+        .Include (x => x.Company)
+        .Include (x => x.User)
+        .Include (x => x.FotoUpload)
+        .Include (x => x.Category)
+        .Include (x => x.Interaction)
+        .FirstOrDefault (x => x.Id == id);
+      if (product == null)
+      {
+        return NotFound (new Exception ("Product not found"));
+      }
+      return Ok (ProductRequest.RequestMapping (product));
+    }
+
     [HttpPost]
     public IActionResult NewProduct ([FromBody] ProductRequest productRequest)
     {
+
       if (!ModelState.IsValid) { return BadRequest (ModelState); }
-      var newProduct = Product.ProductMapping (productRequest);
+      var newProduct = Product.NewProductMapping (productRequest);
       _context.Product.Add (newProduct);
       _context.Commit ();
 
-      if (productRequest.FotoName == null && productRequest.FotoPath == null) return Ok (new { msg = "Published" });
-
+      if (productRequest.Foto.Count () < 1) return Ok (new { msg = "Post Published" });
       var productId = _context.Product.LastOrDefault (x => x.ProductName == productRequest.ProductName && x.CategoryId == productRequest.CategoryId && x.UserId == productRequest.UserId).Id;
-      var newFoto = FotoUpload.FotoUploadMapping (productRequest, productId);
-      _context.FotoUpload.Add (newFoto);
+      foreach (var foto in productRequest.Foto)
+      {
+        var newFoto = FotoUpload.NewFotoUploadMapping (foto, productId);
+        _context.FotoUpload.Add (newFoto);
+        _context.Commit ();
+      }
+      return Ok (new { msg = "Post Published" });
+    }
+
+    [HttpPost ("{id}")]
+    public IActionResult UpdateProduct ([FromBody] ProductRequest productRequest, int id)
+    {
+      if (!ModelState.IsValid) { return BadRequest (ModelState); }
+      var updatedProduct = _context.Product.FirstOrDefault (x => x.Id == id);
+      updatedProduct = Product.UpdateProductMapping (updatedProduct, productRequest);
+      _context.Product.Update (updatedProduct);
       _context.Commit ();
-      return Ok (new { msg = "Published" });
+
+      if (productRequest.Foto.Count () < 1) return Ok (new { msg = "Post Published" });
+      foreach (var foto in productRequest.Foto)
+      {
+        if (foto.Id == 0)
+        {
+          var newFoto = FotoUpload.NewFotoUploadMapping (foto, id);
+          _context.FotoUpload.Add (newFoto);
+        }
+        else
+        {
+          var updateFoto = _context.FotoUpload.FirstOrDefault (x => x.Id == foto.Id);
+          if (foto.FotoPath == null)
+          {
+            _context.FotoUpload.Remove (updateFoto);
+          }
+          else
+          {
+            updateFoto = FotoUpload.UpdateFotoUploadMapping (foto, updateFoto);
+            _context.FotoUpload.Update (updateFoto);
+          }
+        }
+        _context.Commit ();
+      }
+      return Ok (new { msg = "Post Edited" });
     }
 
     [HttpDelete ("{id}")]
