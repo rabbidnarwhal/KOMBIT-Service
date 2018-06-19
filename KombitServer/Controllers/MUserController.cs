@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using KombitServer.Models;
@@ -17,7 +18,7 @@ namespace KombitServer.Controllers
     {
       _context = context;
     }
-    //GET api / user
+    //GET All user
     [HttpGet]
     public IEnumerable<MUser> Get ()
     {
@@ -28,14 +29,10 @@ namespace KombitServer.Controllers
         .ToList ();
       return user;
     }
-
+    //GET User by id
     [HttpGet ("{id}")]
-    public IActionResult Get (int? id)
+    public IActionResult Get (int id)
     {
-      if (id == null)
-      {
-        return BadRequest ();
-      }
       var user = _context.MUser
         .Include (x => x.Company)
         .Include (x => x.Type)
@@ -48,10 +45,11 @@ namespace KombitServer.Controllers
       return Ok (MUserResponse.FromData (user));
     }
 
+    //GET User by matching id & idCard
     [HttpGet ("{id}/{idCard}")]
-    public IActionResult reAuth (int? id, string idCard)
+    public IActionResult reAuth (int id, string idCard)
     {
-      if (id == null || idCard == null || idCard == "")
+      if (idCard == null || idCard == "")
       {
         return BadRequest (new Exception ("Invalid token"));
       }
@@ -67,6 +65,7 @@ namespace KombitServer.Controllers
       return Ok (LoginResponse.FromData (user));
     }
 
+    //POST register user
     [HttpPost ("register")]
     public IActionResult Register ([FromBody] RegisterRequest registerRequest)
     {
@@ -76,12 +75,13 @@ namespace KombitServer.Controllers
       {
         return BadRequest (new Exception ("Username already used"));
       }
-      var newUser = MUser.RegisterMapping (registerRequest);
+      var newUser = RegisterRequest.RegisterMapping (registerRequest);
       _context.MUser.Add (newUser);
       _context.Commit ();
       return Ok ();
     }
 
+    //Post login user
     [HttpPost ("login")]
     public IActionResult Login ([FromBody] LoginRequest loginRequest)
     {
@@ -97,6 +97,22 @@ namespace KombitServer.Controllers
       }
       return Ok (LoginResponse.FromData (user));
     }
+
+    [HttpPost ("{id}")]
+    public IActionResult UpdateUser ([FromBody] MUser user, int id)
+    {
+      var updatedUser = _context.MUser
+        .FirstOrDefault (x => x.Id == id);
+      if (updatedUser == null)
+      {
+        return NotFound (new Exception ("User not found"));
+      }
+      updatedUser = MUser.UserMapping (updatedUser, user);
+      _context.Update (updatedUser);
+      _context.Commit ();
+      return Ok ();
+    }
+
   }
 
 }
