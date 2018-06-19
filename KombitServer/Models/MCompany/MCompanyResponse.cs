@@ -4,19 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KombitServer.Models
 {
-  public partial class MCompany
-  {
-    public int Id { get; set; }
-    public int HoldingId { get; set; }
-    public string CompanyName { get; set; }
-    public string Address { get; set; }
-    public string AddressKoordinat { get; set; }
-    public string FixedCall { get; set; }
-
-    [ForeignKey ("HoldingId")]
-    public MHolding Holding { get; set; }
-  }
-
   public class CompanyResponse
   {
     public int Id { get; set; }
@@ -25,6 +12,7 @@ namespace KombitServer.Models
     public string Address { get; set; }
     public string AddressKoordinat { get; set; }
     public string FixedCall { get; set; }
+    public string Image { get; set; }
 
     public static CompanyResponse FromData (MCompany entity)
     {
@@ -39,6 +27,7 @@ namespace KombitServer.Models
           HoldingName = entity.Holding.HoldingName,
           Address = entity.Address,
           AddressKoordinat = entity.AddressKoordinat,
+          Image = entity.Image,
           FixedCall = entity.FixedCall
       };
     }

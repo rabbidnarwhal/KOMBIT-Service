@@ -14,6 +14,7 @@ namespace KombitServer.Models
     public virtual DbSet<MTypeId> MTypeId { get; set; }
     public virtual DbSet<MUser> MUser { get; set; }
     public virtual DbSet<Product> Product { get; set; }
+    public virtual DbSet<SysParam> SysParam { get; set; }
 
     public KombitDBContext (DbContextOptions<KombitDBContext> options) : base (options) { }
     public virtual void Commit ()
@@ -155,6 +156,10 @@ namespace KombitServer.Models
         entity.Property (e => e.HoldingId)
           .HasColumnName ("holding_id")
           .HasColumnType ("int(11)");
+
+        entity.Property (e => e.Image)
+          .HasColumnName ("image")
+          .HasMaxLength (255);
       });
 
       modelBuilder.Entity<MHolding> (entity =>
@@ -258,6 +263,10 @@ namespace KombitServer.Models
           .HasColumnName ("password")
           .HasMaxLength (255);
 
+        entity.Property (e => e.Image)
+          .HasColumnName ("image")
+          .HasMaxLength (255);
+
         entity.Property (e => e.Username)
           .IsRequired ()
           .HasColumnName ("username")
@@ -270,6 +279,10 @@ namespace KombitServer.Models
 
         entity.Property (e => e.Id)
           .HasColumnName ("id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.CategoryId)
+          .HasColumnName ("category_id")
           .HasColumnType ("int(11)");
 
         entity.Property (e => e.CompanyId)
@@ -289,10 +302,6 @@ namespace KombitServer.Models
           .HasColumnName ("holding_id")
           .HasColumnType ("int(11)");
 
-        entity.Property (e => e.CategoryId)
-          .HasColumnName ("category_id")
-          .HasColumnType ("int(11)");
-
         entity.Property (e => e.IsIncludePrice)
           .HasColumnName ("is_include_price")
           .HasColumnType ("tinyint(1)");
@@ -310,6 +319,30 @@ namespace KombitServer.Models
 
         entity.Property (e => e.VideoPath)
           .HasColumnName ("video_path")
+          .HasMaxLength (255);
+      });
+
+      modelBuilder.Entity<SysParam> (entity =>
+      {
+        entity.ToTable ("sys_param");
+
+        entity.Property (e => e.Id)
+          .HasColumnName ("id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.Description)
+          .IsRequired ()
+          .HasColumnName ("description")
+          .HasMaxLength (255);
+
+        entity.Property (e => e.ParamCode)
+          .IsRequired ()
+          .HasColumnName ("param_code")
+          .HasMaxLength (100);
+
+        entity.Property (e => e.ParamValue)
+          .IsRequired ()
+          .HasColumnName ("param_value")
           .HasMaxLength (255);
       });
     }
