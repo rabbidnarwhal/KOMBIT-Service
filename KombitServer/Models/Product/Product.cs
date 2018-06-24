@@ -16,6 +16,7 @@ namespace KombitServer.Models
     public string ProductName { get; set; }
     public string Description { get; set; }
     public Boolean IsIncludePrice { get; set; }
+    public string Currency { get; set; }
     public double? Price { get; set; }
     public string Credentials { get; set; }
     public string VideoPath { get; set; }
@@ -50,6 +51,7 @@ namespace KombitServer.Models
         ProductName = productRequest.ProductName,
         Description = productRequest.Description,
         IsIncludePrice = productRequest.IsIncludePrice,
+        Currency = productRequest.Currency,
         Price = productRequest.Price,
         VideoPath = productRequest.VideoPath,
         UserId = productRequest.UserId
@@ -65,6 +67,7 @@ namespace KombitServer.Models
       product.ProductName = productRequest.ProductName;
       product.Description = productRequest.Description;
       product.IsIncludePrice = productRequest.IsIncludePrice;
+      product.Currency = productRequest.Currency;
       product.Price = productRequest.Price;
       product.VideoPath = productRequest.VideoPath;
       product.UserId = productRequest.UserId;

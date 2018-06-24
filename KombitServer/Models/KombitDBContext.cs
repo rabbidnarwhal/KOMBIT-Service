@@ -306,6 +306,10 @@ namespace KombitServer.Models
           .HasColumnName ("is_include_price")
           .HasColumnType ("tinyint(1)");
 
+        entity.Property (e => e.Currency)
+          .HasColumnName ("currency")
+          .HasMaxLength (3);
+
         entity.Property (e => e.Price).HasColumnName ("price");
 
         entity.Property (e => e.ProductName)

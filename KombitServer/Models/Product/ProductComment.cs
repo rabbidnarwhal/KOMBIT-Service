@@ -37,7 +37,7 @@ namespace KombitServer.Models
         }
       }
 
-      return productComment;
+      return productComment.OrderBy (x => x.CommentDate).ToList ();
     }
   }
 

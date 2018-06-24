@@ -23,6 +23,7 @@ namespace KombitServer.Models
     public int UserId { get; set; }
     public Boolean? IsLike { get; set; }
     public Boolean IsIncludePrice { get; set; }
+    public string Currency { get; set; }
     public Double? Price { get; set; }
 
     public static ProductResponse FromData (Product entity, int? id)
@@ -39,6 +40,7 @@ namespace KombitServer.Models
       response.ProductName = entity.ProductName;
       response.CategoryName = entity.Category.Category;
       response.IsIncludePrice = entity.IsIncludePrice;
+      response.Currency = entity.Currency;
       response.Price = entity.Price;
       response.TotalLike = entity.Interaction.Count (x => x.IsLike == true);
       response.TotalChat = entity.Interaction.Count (x => x.IsChat == true);

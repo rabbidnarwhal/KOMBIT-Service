@@ -16,6 +16,7 @@ namespace KombitServer.Models
     public string CategoryName { get; set; }
     public string Description { get; set; }
     public Boolean IsIncludePrice { get; set; }
+    public string Currency { get; set; }
     public double? Price { get; set; }
     public string Credentials { get; set; }
     public string VideoPath { get; set; }
@@ -37,6 +38,7 @@ namespace KombitServer.Models
         CategoryName = entity.Category.Category,
         Description = entity.Description,
         IsIncludePrice = entity.IsIncludePrice,
+        Currency = entity.Currency,
         Price = entity.Price,
         Credentials = entity.Credentials,
         VideoPath = entity.VideoPath,
