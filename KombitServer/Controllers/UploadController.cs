@@ -67,7 +67,7 @@ namespace KombitServer.Controllers
       }
     }
 
-    [HttpPost ("/company/{id}")]
+    [HttpPost ("company/{id}")]
     [RequestSizeLimit (268435456)]
     public async Task<IActionResult> UploadCompanyImage (int? id)
     {

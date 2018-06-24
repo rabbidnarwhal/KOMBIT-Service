@@ -61,7 +61,7 @@ namespace KombitServer.Controllers
       {
         return BadRequest (new Exception ("Invalid Comment"));
       }
-      interaction.CommentDate = DateTime.Now.ToUniversalTime ();
+      interaction.CommentDate = DateTime.UtcNow;
       _context.Interaction.Add (interaction);
       _context.Commit ();
 
