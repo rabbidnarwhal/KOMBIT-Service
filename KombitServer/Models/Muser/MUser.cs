@@ -12,6 +12,7 @@ namespace KombitServer.Models
     public int Id { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
+    public string PushId { get; set; }
     public string IdNumber { get; set; }
     public int IdType { get; set; }
     public string Name { get; set; }

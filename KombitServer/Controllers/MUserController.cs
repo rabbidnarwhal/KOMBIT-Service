@@ -113,6 +113,41 @@ namespace KombitServer.Controllers
       return Ok ();
     }
 
+    [HttpPost ("push/{pushId}")]
+    [HttpPost ("push/{pushId}/{id}")]
+    public IActionResult AssignPushUser (int? id, string pushId)
+    {
+      if (pushId == null || id == 0)
+      {
+        return BadRequest ();
+      }
+      MUser updatedUser = new MUser ();
+      if (id == null)
+      {
+        updatedUser = _context.MUser
+          .FirstOrDefault (x => x.PushId == pushId);
+        if (updatedUser == null)
+        {
+          return Ok ();
+        }
+        updatedUser.PushId = null;
+      }
+      else
+      {
+        updatedUser = _context.MUser
+          .FirstOrDefault (x => x.Id == id);
+
+        if (updatedUser == null)
+        {
+          return NotFound (new Exception ("User not found"));
+        }
+        updatedUser.PushId = pushId;
+      }
+      _context.Update (updatedUser);
+      _context.Commit ();
+      return Ok ();
+    }
+
   }
 
 }

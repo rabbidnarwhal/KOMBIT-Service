@@ -4,21 +4,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KombitServer.Models
 {
-  public class PushNotification
+  public class NotificationRequest
   {
     public string Title { get; set; }
     public string Body { get; set; }
     public List<string> To { get; set; }
   }
-  public class PushNotificationRequestToTopic
+  public class NotificationRequestToTopic
   {
     public string to { get; set; }
     public string priority { get; set; }
-    public PushNotificationRequestData data { get; set; }
+    public NotificationRequestData data { get; set; }
 
-    public static PushNotificationRequestToTopic init (PushNotification push, string topic)
+    public static NotificationRequestToTopic init (NotificationRequest push, string topic)
     {
-      PushNotificationRequestData data = new PushNotificationRequestData ()
+      NotificationRequestData data = new NotificationRequestData ()
       {
         title = push.Title,
         body = push.Body,
@@ -26,7 +26,7 @@ namespace KombitServer.Models
         summaryText = "There are %n% notifications"
       };
 
-      PushNotificationRequestToTopic request = new PushNotificationRequestToTopic ()
+      NotificationRequestToTopic request = new NotificationRequestToTopic ()
       {
         to = "/topics/" + topic,
         priority = "normal",
@@ -35,15 +35,15 @@ namespace KombitServer.Models
       return request;
     }
   }
-  public class PushNotificationRequestToUser
+  public class NotificationRequestToUser
   {
     public string[] to { get; set; }
     public string priority { get; set; }
-    public PushNotificationRequestData data { get; set; }
+    public NotificationRequestData data { get; set; }
 
-    public static PushNotificationRequestToUser From (PushNotification push)
+    public static NotificationRequestToUser From (NotificationRequest push)
     {
-      PushNotificationRequestData data = new PushNotificationRequestData ()
+      NotificationRequestData data = new NotificationRequestData ()
       {
         title = push.Title,
         body = push.Body,
@@ -51,7 +51,7 @@ namespace KombitServer.Models
         summaryText = "There are %n% notifications"
       };
 
-      PushNotificationRequestToUser request = new PushNotificationRequestToUser ()
+      NotificationRequestToUser request = new NotificationRequestToUser ()
       {
         to = push.To.ToArray (),
         priority = "normal",
@@ -60,7 +60,7 @@ namespace KombitServer.Models
       return request;
     }
   }
-  public class PushNotificationRequestData
+  public class NotificationRequestData
   {
     public string title { get; set; }
     public string body { get; set; }
