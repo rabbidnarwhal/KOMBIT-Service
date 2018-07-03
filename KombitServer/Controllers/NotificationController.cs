@@ -46,16 +46,23 @@ namespace KombitServer.Controllers
       return Ok (Push (jsonBody));
     }
 
+    [HttpPost ("topics/{topic}/nopush")]
+    public IActionResult NotificationToTopicsWithoutPush ([FromBody] NotificationRequest notif, string topic)
+    {
+      var newNotif = Notification.newNotificationToTopic (notif, topic);
+      newNotif.PushDate = DateTime.UtcNow;
+      _context.Notification.Add (newNotif);
+      _context.Commit ();
+      return Ok ();
+    }
+
     [HttpPost]
     public IActionResult NotificationToUser ([FromBody] NotificationRequest notif)
     {
       try
       {
         if (notif.To == null || notif.To.Count == 0)
-        {
           return BadRequest ();
-        }
-
       }
       catch
       {
@@ -74,7 +81,29 @@ namespace KombitServer.Controllers
       string jsonBody = JsonConvert.SerializeObject (body);
 
       return Ok (Push (jsonBody));
+    }
 
+    [HttpPost ("nopush")]
+    public IActionResult NotificationToUserWithoutPush ([FromBody] NotificationRequest notif)
+    {
+      try
+      {
+        if (notif.To == null || notif.To.Count == 0)
+          return BadRequest ();
+      }
+      catch
+      {
+        return BadRequest ();
+      }
+      notif.To.ForEach (item =>
+      {
+        var userId = _context.MUser.FirstOrDefault (x => x.PushId == item).Id;
+        var newNotif = Notification.newNotificationToUser (notif, userId);
+        newNotif.PushDate = DateTime.UtcNow;
+        _context.Notification.Add (newNotif);
+      });
+      _context.Commit ();
+      return Ok ();
     }
 
     private string Push (string jsonBody)
