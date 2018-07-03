@@ -18,6 +18,8 @@ namespace KombitServer.Models
     public string Name { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
+    public int? ProvinsiId { get; set; }
+    public int? KabKotaId { get; set; }
     public string AddressKoordinat { get; set; }
     public string Occupation { get; set; }
     public string Handphone { get; set; }
@@ -31,6 +33,12 @@ namespace KombitServer.Models
     [ForeignKey ("CompanyId")]
     public MCompany Company { get; set; }
 
+    [ForeignKey ("ProvinsiId")]
+    public MProvinsi Provinsi { get; set; }
+
+    [ForeignKey ("KabKotaId")]
+    public MKabKota KabKota { get; set; }
+
     public static MUser UserMapping (MUser updatedUser, MUser user)
     {
       updatedUser.Address = user.Address;
@@ -43,6 +51,8 @@ namespace KombitServer.Models
       updatedUser.JobTitle = user.JobTitle;
       // updatedUser.Name = user.Name;
       updatedUser.Occupation = user.Occupation;
+      updatedUser.ProvinsiId = user.ProvinsiId;
+      updatedUser.KabKotaId = user.KabKotaId;
       return updatedUser;
     }
   }

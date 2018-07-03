@@ -21,6 +21,8 @@ namespace KombitServer.Models
     public int TotalView { get; set; }
     public int TotalChat { get; set; }
     public int UserId { get; set; }
+    public int? Provinsi { get; set; }
+    public int? KabKota { get; set; }
     public string Position { get; set; }
     public Boolean? IsLike { get; set; }
     public Boolean IsIncludePrice { get; set; }
@@ -49,6 +51,8 @@ namespace KombitServer.Models
       response.TotalView = entity.Interaction.Count (x => x.IsViewed == true);
       response.UserId = entity.UserId;
       response.Position = entity.User.AddressKoordinat;
+      response.Provinsi = entity.User.ProvinsiId;
+      response.KabKota = entity.User.KabKotaId;
 
       if (entity.FotoUpload.FirstOrDefault () == null)
         response.FotoPath = null;

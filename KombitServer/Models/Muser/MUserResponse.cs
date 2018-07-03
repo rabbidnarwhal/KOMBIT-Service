@@ -28,6 +28,10 @@ namespace KombitServer.Models
     public int HoldingId { get; set; }
     public string HoldingName { get; set; }
     public string Image { get; set; }
+    public int? ProvinsiId { get; set; }
+    public string ProvinsiName { get; set; }
+    public int? KabKotaId { get; set; }
+    public string KabKotaName { get; set; }
 
     public static MUserResponse FromData (MUser entity)
     {
@@ -55,7 +59,9 @@ namespace KombitServer.Models
         CompanyId = entity.Company.Id,
         HoldingName = entity.Company.Holding.HoldingName,
         HoldingId = entity.Company.Holding.Id,
-        Image = entity.Image
+        Image = entity.Image,
+        ProvinsiId = entity.ProvinsiId,
+        KabKotaId = entity.KabKotaId,
       };
       return response;
     }

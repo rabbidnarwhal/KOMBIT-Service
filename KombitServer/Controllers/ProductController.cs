@@ -33,7 +33,7 @@ namespace KombitServer.Controllers
         .Include (x => x.Interaction)
         .Include (x => x.Category)
         .ToList ();
-      return ProductResponse.FromArray (product, id);
+      return ProductResponse.FromArray (product, id).OrderByDescending (x => x.Id);
     }
 
     // Get All by user
@@ -54,7 +54,7 @@ namespace KombitServer.Controllers
         .Include (x => x.Category)
         .Where (x => x.UserId == id)
         .ToList ();
-      return ProductResponse.FromArray (product, id);
+      return ProductResponse.FromArray (product, id).OrderByDescending (x => x.Id);
     }
 
     [HttpGet ("{id}")]

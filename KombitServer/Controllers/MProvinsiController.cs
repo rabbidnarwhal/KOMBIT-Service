@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KombitServer.Controllers
 {
-  [Route ("api/idtype")]
+  [Route ("api/provinsi")]
   public class MProvinsiController : Controller
   {
     private readonly KombitDBContext _context;

@@ -42,7 +42,16 @@ namespace KombitServer.Controllers
       {
         return NotFound (new Exception ("User not found"));
       }
-      return Ok (MUserResponse.FromData (user));
+      MUserResponse response = MUserResponse.FromData (user);
+      if (response.ProvinsiId > 0)
+      {
+        response.ProvinsiName = _context.MProvinsi.FirstOrDefault (x => x.Id == response.ProvinsiId).Name;
+      }
+      if (response.KabKotaId > 0)
+      {
+        response.KabKotaName = _context.MKabKota.FirstOrDefault (x => x.Id == response.KabKotaId).Name;
+      }
+      return Ok (response);
     }
 
     //GET User by matching id & idCard

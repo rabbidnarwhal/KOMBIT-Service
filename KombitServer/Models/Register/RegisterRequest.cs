@@ -21,6 +21,8 @@ namespace KombitServer.Models
     public string Handphone { get; set; }
     public string JobTitle { get; set; }
     public int CompanyId { get; set; }
+    public int ProvinsiId { get; set; }
+    public int KabKotaId { get; set; }
 
     public IEnumerable<ValidationResult> Validate (System.ComponentModel.DataAnnotations.ValidationContext validationContext)
     {
@@ -45,6 +47,8 @@ namespace KombitServer.Models
         Handphone = registerRequest.Handphone,
         JobTitle = registerRequest.JobTitle,
         CompanyId = registerRequest.CompanyId,
+        ProvinsiId = registerRequest.ProvinsiId,
+        KabKotaId = registerRequest.KabKotaId
       };
       return user;
     }

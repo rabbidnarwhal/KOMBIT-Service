@@ -285,6 +285,16 @@ namespace KombitServer.Models
           .HasColumnName ("address")
           .HasMaxLength (255);
 
+        entity.Property (e => e.ProvinsiId)
+          .IsRequired ()
+          .HasColumnName ("provinsi_id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.KabKotaId)
+          .IsRequired ()
+          .HasColumnName ("kab_kota_id")
+          .HasColumnType ("int(11)");
+
         entity.Property (e => e.AddressKoordinat)
           .HasColumnName ("address_koordinat")
           .HasMaxLength (255);
