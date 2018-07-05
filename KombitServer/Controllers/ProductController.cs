@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KombitServer.Models;
+using KombitServer.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace KombitServer.Controllers
 {
@@ -57,9 +59,9 @@ namespace KombitServer.Controllers
       return ProductResponse.FromArray (product, id).OrderByDescending (x => x.Id);
     }
 
-    [HttpGet ("{id}")]
+    [HttpGet ("{id}/user/{userId}")]
     [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult GetDetail (int id)
+    public IActionResult GetDetail (int id, int userId)
     {
       var product = _context.Product
         .Include (x => x.Holding)
@@ -69,12 +71,12 @@ namespace KombitServer.Controllers
         .Include (x => x.Category)
         .Include (x => x.Interaction)
         .FirstOrDefault (x => x.Id == id);
-      var comment = _context.Interaction.Where (x => x.ProductId == id).Include (x => x.CommentUser).ToList ();
+      var interaction = _context.Interaction.Where (x => x.ProductId == id).Include (x => x.CommentUser).ToList ();
       if (product == null)
       {
         return NotFound (new Exception ("Product not found"));
       }
-      return Ok (ProductDetailResponse.FromData (product, comment));
+      return Ok (ProductDetailResponse.FromData (product, interaction, userId));
     }
 
     [HttpGet ("{id}/edit")]
@@ -113,6 +115,9 @@ namespace KombitServer.Controllers
         _context.FotoUpload.Add (newFoto);
         _context.Commit ();
       }
+      NotificationEmptyRequest body = NotificationEmptyRequest.Init ();
+      string jsonBody = JsonConvert.SerializeObject (body);
+      Utility.sendPushNotification (jsonBody);
       return Ok (new { msg = "Post Published" });
     }
 

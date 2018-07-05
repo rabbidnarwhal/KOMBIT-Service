@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KombitServer.Models;
+using KombitServer.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace KombitServer.Controllers
 {
@@ -49,8 +51,33 @@ namespace KombitServer.Controllers
         like.LikedDate = interaction.LikedDate;
         _context.Interaction.Update (like);
       }
-      _context.Commit ();
+      Product post = _context.Product.Include (x => x.User).FirstOrDefault (x => x.Id == interaction.ProductId);
 
+      if (interaction.LikedBy != post.UserId)
+      {
+
+        string likedBy = _context.MUser.FirstOrDefault (x => x.Id == interaction.LikedBy).Name;
+        string postOwner = post.User.Name;
+        string postName = post.ProductName;
+        string likeText = interaction.IsLike == true ? "liked" : "unliked";
+        NotificationRequest notif = new NotificationRequest ()
+        {
+          Body = "Hi " + postOwner + ", " + likedBy + " " + likeText + " your post.",
+          Title = "Post " + likeText
+        };
+
+        Notification newNotif = Notification.newNotificationToUser (notif, post.User.Id);
+        newNotif.PushDate = DateTime.UtcNow;
+        _context.Notification.Add (newNotif);
+
+        if (post.User.PushId != null)
+        {
+          NotificationRequestToTopic body = NotificationRequestToTopic.initComment (notif, post.User.PushId);
+          string jsonBody = JsonConvert.SerializeObject (body);
+          Utility.sendPushNotification (jsonBody);
+        }
+      }
+      _context.Commit ();
       return Ok ();
     }
 
@@ -63,8 +90,31 @@ namespace KombitServer.Controllers
       }
       interaction.CommentDate = DateTime.UtcNow;
       _context.Interaction.Add (interaction);
-      _context.Commit ();
 
+      Product post = _context.Product.Include (x => x.User).FirstOrDefault (x => x.Id == interaction.ProductId);
+      if (interaction.CommentBy != post.UserId)
+      {
+
+        string commentBy = _context.MUser.FirstOrDefault (x => x.Id == interaction.CommentBy).Name;
+        string postOwner = post.User.Name;
+        string postName = post.ProductName;
+        NotificationRequest notif = new NotificationRequest ()
+        {
+          Body = "Hi " + postOwner + ", " + commentBy + " commented your post.",
+          Title = "Post Commented"
+        };
+
+        Notification newNotif = Notification.newNotificationToUser (notif, post.User.Id);
+        newNotif.PushDate = DateTime.UtcNow;
+        _context.Notification.Add (newNotif);
+        if (post.User.PushId != null)
+        {
+          NotificationRequestToTopic body = NotificationRequestToTopic.initComment (notif, post.User.PushId);
+          string jsonBody = JsonConvert.SerializeObject (body);
+          Utility.sendPushNotification (jsonBody);
+        }
+      }
+      _context.Commit ();
       return Ok ();
     }
 

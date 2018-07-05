@@ -23,28 +23,28 @@ namespace KombitServer.Models
     public IEnumerable<FotoUpload> Foto { get; set; }
     public ProductContact Contact { get; set; }
     public ProductInteraction Interaction { get; set; }
-    public static ProductDetailResponse FromData (Product entity, ICollection<Interaction> interaction)
+    public static ProductDetailResponse FromData (Product product, ICollection<Interaction> interaction, int userId)
     {
-      if (entity == null)
+      if (product == null)
       {
         return null;
       }
       var response = new ProductDetailResponse ()
       {
-        Id = entity.Id,
-        CompanyName = entity.Company.CompanyName,
-        HoldingName = entity.Holding.HoldingName,
-        ProductName = entity.ProductName,
-        CategoryName = entity.Category.Category,
-        Description = entity.Description,
-        IsIncludePrice = entity.IsIncludePrice,
-        Currency = entity.Currency,
-        Price = entity.Price,
-        Credentials = entity.Credentials,
-        VideoPath = entity.VideoPath,
-        Foto = entity.FotoUpload,
-        Contact = ProductContact.FromData (entity.User),
-        Interaction = ProductInteraction.FromData (interaction, entity.UserId),
+        Id = product.Id,
+        CompanyName = product.Company.CompanyName,
+        HoldingName = product.Holding.HoldingName,
+        ProductName = product.ProductName,
+        CategoryName = product.Category.Category,
+        Description = product.Description,
+        IsIncludePrice = product.IsIncludePrice,
+        Currency = product.Currency,
+        Price = product.Price,
+        Credentials = product.Credentials,
+        VideoPath = product.VideoPath,
+        Foto = product.FotoUpload,
+        Contact = ProductContact.FromData (product.User),
+        Interaction = ProductInteraction.FromData (interaction, userId),
       };
       return response;
     }
