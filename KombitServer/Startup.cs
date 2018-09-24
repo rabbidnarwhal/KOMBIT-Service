@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace KombitServer {
   public class Startup {
@@ -22,6 +23,11 @@ namespace KombitServer {
     public IConfiguration Configuration { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
+
+    public static readonly Microsoft.Extensions.Logging.LoggerFactory _myLoggerFactory =
+      new LoggerFactory (new [] {
+        new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider ()
+      });
     public void ConfigureServices (IServiceCollection services) {
       string path = Path.Combine (Directory.GetCurrentDirectory (), "wwwroot");
       if (!Directory.Exists (path)) {
@@ -31,8 +37,13 @@ namespace KombitServer {
         new PhysicalFileProvider (path)
       );
       services.AddMvc ();
+      services.AddSwaggerGen (s => {
+        s.SwaggerDoc ("v1", new Info { Title = "KombitApi", Version = "v1" });
+      });
       services.AddDbContext<KombitDBContext> (options =>
-        options.UseMySql (Configuration.GetConnectionString ("KombitDatabase")));
+        options
+        .UseLoggerFactory (_myLoggerFactory)
+        .UseMySql (Configuration.GetConnectionString ("KombitDatabase")));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,13 +51,17 @@ namespace KombitServer {
       if (env.IsDevelopment ()) {
         app.UseDeveloperExceptionPage ();
       }
-      app.UseCors(option => {
-        option.AllowAnyOrigin();
-        option.AllowAnyMethod();
-        option.AllowAnyHeader();
+      app.UseCors (option => {
+        option.AllowAnyOrigin ();
+        option.AllowAnyMethod ();
+        option.AllowAnyHeader ();
       });
       app.UseStaticFiles ();
       app.UseMvc ();
+      app.UseSwagger ();
+      app.UseSwaggerUI (s => {
+        s.SwaggerEndpoint ("/swagger/v1/swagger.json", "Kombit Api");
+      });
     }
   }
 }
