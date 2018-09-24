@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using FluentValidation;
 
-namespace KombitServer.Models
-{
-  public class MUser
-  {
+namespace KombitServer.Models {
+  public class MUser {
     public int Id { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
@@ -25,6 +23,8 @@ namespace KombitServer.Models
     public string Handphone { get; set; }
     public string JobTitle { get; set; }
     public string Image { get; set; }
+
+    public string Role { get; set; }
     public int CompanyId { get; set; }
 
     [ForeignKey ("IdType")]
@@ -39,17 +39,11 @@ namespace KombitServer.Models
     [ForeignKey ("KabKotaId")]
     public MKabKota KabKota { get; set; }
 
-    public static MUser UserMapping (MUser updatedUser, MUser user)
-    {
+    public static MUser UserMapping (MUser updatedUser, MUser user) {
       updatedUser.Address = user.Address;
       updatedUser.AddressKoordinat = user.AddressKoordinat;
       updatedUser.CompanyId = user.CompanyId;
-      // updatedUser.Email = user.Email;
-      // updatedUser.Handphone = user.Handphone;
-      // updatedUser.IdNumber = user.IdNumber;
-      // updatedUser.IdType = user.IdType;
       updatedUser.JobTitle = user.JobTitle;
-      // updatedUser.Name = user.Name;
       updatedUser.Occupation = user.Occupation;
       updatedUser.ProvinsiId = user.ProvinsiId;
       updatedUser.KabKotaId = user.KabKotaId;

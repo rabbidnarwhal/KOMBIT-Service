@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using FluentValidation;
 
-namespace KombitServer.Models
-{
-  public class RegisterRequest : IValidatableObject
-  {
+namespace KombitServer.Models {
+  public class RegisterRequest : IValidatableObject {
     public string Username { get; set; }
     public string Password { get; set; }
     public string IdNumber { get; set; }
@@ -24,17 +22,16 @@ namespace KombitServer.Models
     public int ProvinsiId { get; set; }
     public int KabKotaId { get; set; }
 
-    public IEnumerable<ValidationResult> Validate (System.ComponentModel.DataAnnotations.ValidationContext validationContext)
-    {
+    public string Role { get; set; }
+
+    public IEnumerable<ValidationResult> Validate (System.ComponentModel.DataAnnotations.ValidationContext validationContext) {
       var validator = new RegisterValidator ();
       var result = validator.Validate (this);
       return result.Errors.Select (error => new ValidationResult (error.ErrorMessage, new [] { "errorMessage" }));
     }
 
-    public static MUser RegisterMapping (RegisterRequest registerRequest)
-    {
-      var user = new MUser ()
-      {
+    public static MUser RegisterMapping (RegisterRequest registerRequest) {
+      var user = new MUser () {
         Username = registerRequest.Username,
         Password = registerRequest.Password,
         IdNumber = registerRequest.IdNumber,
@@ -48,7 +45,8 @@ namespace KombitServer.Models
         JobTitle = registerRequest.JobTitle,
         CompanyId = registerRequest.CompanyId,
         ProvinsiId = registerRequest.ProvinsiId,
-        KabKotaId = registerRequest.KabKotaId
+        KabKotaId = registerRequest.KabKotaId,
+        Role = registerRequest.Role
       };
       return user;
     }
