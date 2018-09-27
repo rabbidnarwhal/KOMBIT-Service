@@ -49,17 +49,17 @@ namespace KombitServer.Controllers {
       return Ok (response);
     }
     /// <summary>Get user login from id and id card</summary>
-    [HttpGet ("{id}/{idCard}")]
+    [HttpGet ("{id}/{cardId}")]
     [ProducesResponseType (typeof (LoginResponse), 200)]
-    public IActionResult reAuth (int id, string idCard) {
-      if (idCard == null || idCard == "") {
+    public IActionResult reAuth (int id, string cardId) {
+      if (cardId == null || cardId == "") {
         return BadRequest (new Exception ("Invalid token"));
       }
       var user = _context.MUser
-        .Include (x => x.Company)
-        .Include (x => x.Type)
-        .Include (x => x.Company.Holding)
-        .FirstOrDefault (x => x.IdNumber == idCard && x.Id == id);
+        .Include (x => x.Company).DefaultIfEmpty ()
+        .Include (x => x.Type).DefaultIfEmpty ()
+        .Include (x => x.Company.Holding).DefaultIfEmpty ()
+        .FirstOrDefault (x => x.Id == id && x.IdNumber == (cardId.Equals ("null") ? x.IdNumber : cardId));
       if (user == null) {
         return Unauthorized ();
       }
