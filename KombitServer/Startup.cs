@@ -37,8 +37,10 @@ namespace KombitServer {
         new PhysicalFileProvider (path)
       );
       services.AddMvc ();
-      services.AddSwaggerGen (s => {
-        s.SwaggerDoc ("v1", new Info { Title = "KombitApi", Version = "v1" });
+      services.AddSwaggerGen (c => {
+        c.SwaggerDoc ("v1", new Info { Title = "KombitApi", Version = "v1" });
+        var filePath = Path.Combine (System.AppContext.BaseDirectory, "KombitServer.xml");
+        c.IncludeXmlComments (filePath);
       });
       services.AddDbContext<KombitDBContext> (options =>
         options
@@ -58,9 +60,11 @@ namespace KombitServer {
       });
       app.UseStaticFiles ();
       app.UseMvc ();
-      app.UseSwagger ();
-      app.UseSwaggerUI (s => {
-        s.SwaggerEndpoint ("/swagger/v1/swagger.json", "Kombit Api");
+      app.UseSwagger (c => {
+        c.RouteTemplate = "docs/{documentName}/swagger.json";
+      });
+      app.UseSwaggerUI (c => {
+        c.SwaggerEndpoint ("/docs/v1/swagger.json", "Kombit Api");
       });
     }
   }

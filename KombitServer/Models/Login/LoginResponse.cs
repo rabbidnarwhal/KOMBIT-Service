@@ -13,8 +13,8 @@ namespace KombitServer.Models {
     public string Name { get; set; }
     public string Email { get; set; }
     public string Image { get; set; }
-    public int CompanyId { get; set; }
-    public int HoldingId { get; set; }
+    public int? CompanyId { get; set; }
+    public int? HoldingId { get; set; }
     public string Role { get; set; }
 
     public static LoginResponse FromData (MUser entity) {
@@ -27,11 +27,15 @@ namespace KombitServer.Models {
         IdNumber = entity.IdNumber,
         Name = entity.Name,
         Email = entity.Email,
-        CompanyId = entity.Company.Id,
-        HoldingId = entity.Company.Holding.Id,
         Image = entity.Image,
-        Role = entity.Role
       };
+      if (entity.IdRole == 1) {
+        response.Role = "Customer";
+      } else if (entity.IdRole == 2) {
+        response.Role = "Supplier";
+        response.CompanyId = entity.Company?.Id;
+        response.HoldingId = entity.Company?.Holding.Id;
+      }
       return response;
     }
   }

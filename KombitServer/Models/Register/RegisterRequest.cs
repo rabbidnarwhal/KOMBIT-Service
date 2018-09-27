@@ -21,34 +21,12 @@ namespace KombitServer.Models {
     public int CompanyId { get; set; }
     public int ProvinsiId { get; set; }
     public int KabKotaId { get; set; }
-
-    public string Role { get; set; }
+    public int IdRole { get; set; }
 
     public IEnumerable<ValidationResult> Validate (System.ComponentModel.DataAnnotations.ValidationContext validationContext) {
       var validator = new RegisterValidator ();
       var result = validator.Validate (this);
       return result.Errors.Select (error => new ValidationResult (error.ErrorMessage, new [] { "errorMessage" }));
-    }
-
-    public static MUser RegisterMapping (RegisterRequest registerRequest) {
-      var user = new MUser () {
-        Username = registerRequest.Username,
-        Password = registerRequest.Password,
-        IdNumber = registerRequest.IdNumber,
-        IdType = registerRequest.IdType,
-        Name = registerRequest.Name,
-        Email = registerRequest.Email,
-        Address = registerRequest.Address,
-        AddressKoordinat = registerRequest.AddressKoordinat,
-        Occupation = registerRequest.Occupation,
-        Handphone = registerRequest.Handphone,
-        JobTitle = registerRequest.JobTitle,
-        CompanyId = registerRequest.CompanyId,
-        ProvinsiId = registerRequest.ProvinsiId,
-        KabKotaId = registerRequest.KabKotaId,
-        Role = registerRequest.Role
-      };
-      return user;
     }
   }
 }

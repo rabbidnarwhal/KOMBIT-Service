@@ -13,6 +13,7 @@ namespace KombitServer.Models {
     public string PushId { get; set; }
     public string IdNumber { get; set; }
     public int IdType { get; set; }
+    public int IdRole { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
     public string Address { get; set; }
@@ -23,32 +24,18 @@ namespace KombitServer.Models {
     public string Handphone { get; set; }
     public string JobTitle { get; set; }
     public string Image { get; set; }
-
-    public string Role { get; set; }
     public int CompanyId { get; set; }
 
     [ForeignKey ("IdType")]
-    public MTypeId Type { get; set; }
+    public virtual MTypeId Type { get; set; }
 
     [ForeignKey ("CompanyId")]
-    public MCompany Company { get; set; }
+    public virtual MCompany Company { get; set; }
 
     [ForeignKey ("ProvinsiId")]
-    public MProvinsi Provinsi { get; set; }
+    public virtual MProvinsi Provinsi { get; set; }
 
     [ForeignKey ("KabKotaId")]
-    public MKabKota KabKota { get; set; }
-
-    public static MUser UserMapping (MUser updatedUser, MUser user) {
-      updatedUser.Address = user.Address;
-      updatedUser.AddressKoordinat = user.AddressKoordinat;
-      updatedUser.CompanyId = user.CompanyId;
-      updatedUser.JobTitle = user.JobTitle;
-      updatedUser.Occupation = user.Occupation;
-      updatedUser.ProvinsiId = user.ProvinsiId;
-      updatedUser.KabKotaId = user.KabKotaId;
-      return updatedUser;
-    }
+    public virtual MKabKota KabKota { get; set; }
   }
-
 }

@@ -2,10 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace KombitServer.Models
-{
-  public partial class KombitDBContext : DbContext
-  {
+namespace KombitServer.Models {
+  public partial class KombitDBContext : DbContext {
     public virtual DbSet<FotoUpload> FotoUpload { get; set; }
     public virtual DbSet<Interaction> Interaction { get; set; }
     public virtual DbSet<MCategory> MCategory { get; set; }
@@ -20,14 +18,11 @@ namespace KombitServer.Models
     public virtual DbSet<SysParam> SysParam { get; set; }
 
     public KombitDBContext (DbContextOptions<KombitDBContext> options) : base (options) { }
-    public virtual void Commit ()
-    {
+    public virtual void Commit () {
       base.SaveChanges ();
     }
-    protected override void OnModelCreating (ModelBuilder modelBuilder)
-    {
-      modelBuilder.Entity<FotoUpload> (entity =>
-      {
+    protected override void OnModelCreating (ModelBuilder modelBuilder) {
+      modelBuilder.Entity<FotoUpload> (entity => {
         entity.ToTable ("foto_upload");
 
         entity.Property (e => e.Id)
@@ -49,8 +44,7 @@ namespace KombitServer.Models
           .HasColumnType ("int(11)");
       });
 
-      modelBuilder.Entity<Interaction> (entity =>
-      {
+      modelBuilder.Entity<Interaction> (entity => {
         entity.ToTable ("interaction");
 
         entity.Property (e => e.Id)
@@ -114,8 +108,7 @@ namespace KombitServer.Models
           .HasColumnType ("datetime");
       });
 
-      modelBuilder.Entity<MCategory> (entity =>
-      {
+      modelBuilder.Entity<MCategory> (entity => {
         entity.ToTable ("m_category");
 
         entity.Property (e => e.Id)
@@ -128,8 +121,7 @@ namespace KombitServer.Models
           .HasMaxLength (100);
       });
 
-      modelBuilder.Entity<MCompany> (entity =>
-      {
+      modelBuilder.Entity<MCompany> (entity => {
         entity.ToTable ("m_company");
 
         entity.Property (e => e.Id)
@@ -165,8 +157,7 @@ namespace KombitServer.Models
           .HasMaxLength (255);
       });
 
-      modelBuilder.Entity<MHolding> (entity =>
-      {
+      modelBuilder.Entity<MHolding> (entity => {
         entity.ToTable ("m_holding");
 
         entity.Property (e => e.Id)
@@ -194,54 +185,28 @@ namespace KombitServer.Models
           .HasMaxLength (100);
       });
 
-      modelBuilder.Entity<Notification> (entity =>
-      {
-        entity.ToTable ("notification");
+      modelBuilder.Entity<MKabKota> (entity => {
+        entity.HasKey (e => e.Id);
+
+        entity.ToTable ("m_kab_kota");
 
         entity.Property (e => e.Id)
-          .HasColumnName ("id")
+          .HasColumnName ("kab_kota_id")
           .HasColumnType ("int(11)");
 
-        entity.Property (e => e.Title)
+        entity.Property (e => e.Name)
           .IsRequired ()
-          .HasColumnName ("title")
-          .HasMaxLength (100);
-
-        entity.Property (e => e.Content)
-          .IsRequired ()
-          .HasColumnName ("content")
+          .HasColumnName ("kab_kota_name")
           .HasMaxLength (255);
 
-        entity.Property (e => e.Topic)
-          .HasColumnName ("topic")
-          .HasMaxLength (100);
-
-        entity.Property (e => e.To)
-          .HasColumnName ("to")
+        entity.Property (e => e.ProvinsiId)
+          .HasColumnName ("provinsi_id")
           .HasColumnType ("int(11)");
-
-        entity.Property (e => e.PushDate)
-          .IsRequired ()
-          .HasColumnName ("push_date")
-          .HasColumnType ("datetime");
       });
 
-      modelBuilder.Entity<MTypeId> (entity =>
-      {
-        entity.ToTable ("m_type_id");
+      modelBuilder.Entity<MProvinsi> (entity => {
+        entity.HasKey (e => e.Id);
 
-        entity.Property (e => e.Id)
-          .HasColumnName ("id")
-          .HasColumnType ("int(11)");
-
-        entity.Property (e => e.DescType)
-          .IsRequired ()
-          .HasColumnName ("desc_type")
-          .HasMaxLength (50);
-      });
-
-      modelBuilder.Entity<MProvinsi> (entity =>
-      {
         entity.ToTable ("m_provinsi");
 
         entity.Property (e => e.Id)
@@ -254,26 +219,20 @@ namespace KombitServer.Models
           .HasMaxLength (255);
       });
 
-      modelBuilder.Entity<MKabKota> (entity =>
-      {
-        entity.ToTable ("m_kab_kota");
+      modelBuilder.Entity<MTypeId> (entity => {
+        entity.ToTable ("m_type_id");
 
         entity.Property (e => e.Id)
-          .HasColumnName ("kab_kota_id")
+          .HasColumnName ("id")
           .HasColumnType ("int(11)");
 
-        entity.Property (e => e.ProvinsiId)
+        entity.Property (e => e.DescType)
           .IsRequired ()
-          .HasColumnName ("provinsi_id")
-          .HasColumnType ("int(11)");
-
-        entity.Property (e => e.Name)
-          .IsRequired ()
-          .HasColumnName ("kab_kota_name");
+          .HasColumnName ("desc_type")
+          .HasMaxLength (50);
       });
 
-      modelBuilder.Entity<MUser> (entity =>
-      {
+      modelBuilder.Entity<MUser> (entity => {
         entity.ToTable ("m_user");
 
         entity.Property (e => e.Id)
@@ -281,19 +240,8 @@ namespace KombitServer.Models
           .HasColumnType ("int(11)");
 
         entity.Property (e => e.Address)
-          .IsRequired ()
           .HasColumnName ("address")
           .HasMaxLength (255);
-
-        entity.Property (e => e.ProvinsiId)
-          .IsRequired ()
-          .HasColumnName ("provinsi_id")
-          .HasColumnType ("int(11)");
-
-        entity.Property (e => e.KabKotaId)
-          .IsRequired ()
-          .HasColumnName ("kab_kota_id")
-          .HasColumnType ("int(11)");
 
         entity.Property (e => e.AddressKoordinat)
           .HasColumnName ("address_koordinat")
@@ -309,25 +257,34 @@ namespace KombitServer.Models
           .HasMaxLength (100);
 
         entity.Property (e => e.Handphone)
-          .IsRequired ()
           .HasColumnName ("handphone")
           .HasMaxLength (15);
 
         entity.Property (e => e.IdNumber)
-          .IsRequired ()
           .HasColumnName ("id_number")
           .HasMaxLength (50);
+
+        entity.Property (e => e.IdRole)
+          .HasColumnName ("id_role")
+          .HasColumnType ("int(2)");
 
         entity.Property (e => e.IdType)
           .HasColumnName ("id_type")
           .HasColumnType ("int(11)");
 
+        entity.Property (e => e.Image)
+          .HasColumnName ("image")
+          .HasMaxLength (255);
+
         entity.Property (e => e.JobTitle)
           .HasColumnName ("job_title")
           .HasMaxLength (100);
 
+        entity.Property (e => e.KabKotaId)
+          .HasColumnName ("kab_kota_id")
+          .HasColumnType ("int(11)");
+
         entity.Property (e => e.Name)
-          .IsRequired ()
           .HasColumnName ("name")
           .HasMaxLength (100);
 
@@ -340,12 +297,12 @@ namespace KombitServer.Models
           .HasColumnName ("password")
           .HasMaxLength (255);
 
+        entity.Property (e => e.ProvinsiId)
+          .HasColumnName ("provinsi_id")
+          .HasColumnType ("int(11)");
+
         entity.Property (e => e.PushId)
           .HasColumnName ("push_id")
-          .HasMaxLength (255);
-
-        entity.Property (e => e.Image)
-          .HasColumnName ("image")
           .HasMaxLength (255);
 
         entity.Property (e => e.Username)
@@ -354,8 +311,37 @@ namespace KombitServer.Models
           .HasMaxLength (50);
       });
 
-      modelBuilder.Entity<Product> (entity =>
-      {
+      modelBuilder.Entity<Notification> (entity => {
+        entity.ToTable ("notification");
+
+        entity.Property (e => e.Id)
+          .HasColumnName ("id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.Content)
+          .IsRequired ()
+          .HasColumnName ("content")
+          .HasMaxLength (255);
+
+        entity.Property (e => e.PushDate)
+          .HasColumnName ("push_date")
+          .HasColumnType ("datetime");
+
+        entity.Property (e => e.Title)
+          .IsRequired ()
+          .HasColumnName ("title")
+          .HasMaxLength (100);
+
+        entity.Property (e => e.To)
+          .HasColumnName ("to")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.Topic)
+          .HasColumnName ("topic")
+          .HasMaxLength (100);
+      });
+
+      modelBuilder.Entity<Product> (entity => {
         entity.ToTable ("product");
 
         entity.Property (e => e.Id)
@@ -372,12 +358,16 @@ namespace KombitServer.Models
 
         entity.Property (e => e.Credentials)
           .HasColumnName ("credentials")
-          .HasMaxLength (255);
+          .HasColumnType ("text");
+
+        entity.Property (e => e.Currency)
+          .HasColumnName ("currency")
+          .HasMaxLength (3);
 
         entity.Property (e => e.Description)
           .IsRequired ()
           .HasColumnName ("description")
-          .HasMaxLength (255);
+          .HasColumnType ("text");
 
         entity.Property (e => e.HoldingId)
           .HasColumnName ("holding_id")
@@ -386,10 +376,6 @@ namespace KombitServer.Models
         entity.Property (e => e.IsIncludePrice)
           .HasColumnName ("is_include_price")
           .HasColumnType ("tinyint(1)");
-
-        entity.Property (e => e.Currency)
-          .HasColumnName ("currency")
-          .HasMaxLength (3);
 
         entity.Property (e => e.Price).HasColumnName ("price");
 
@@ -404,11 +390,10 @@ namespace KombitServer.Models
 
         entity.Property (e => e.VideoPath)
           .HasColumnName ("video_path")
-          .HasMaxLength (255);
+          .HasColumnType ("text");
       });
 
-      modelBuilder.Entity<SysParam> (entity =>
-      {
+      modelBuilder.Entity<SysParam> (entity => {
         entity.ToTable ("sys_param");
 
         entity.Property (e => e.Id)
