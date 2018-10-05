@@ -5,10 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using FluentValidation;
 
-namespace KombitServer.Models
-{
-  public class ProductResponse
-  {
+namespace KombitServer.Models {
+  public class ProductResponse {
     public int Id { get; set; }
     public string CompanyName { get; set; }
     public int HoldingId { get; set; }
@@ -25,60 +23,28 @@ namespace KombitServer.Models
     public int? KabKota { get; set; }
     public string Position { get; set; }
     public Boolean? IsLike { get; set; }
+    public Boolean IsPromoted { get; set; }
     public Boolean IsIncludePrice { get; set; }
     public string Currency { get; set; }
     public Double? Price { get; set; }
-
-    public static ProductResponse FromData (Product entity, int? id)
-    {
-      if (entity == null)
-      {
-        return null;
-      }
-      var response = new ProductResponse ();
-      response.Id = entity.Id;
-      response.CompanyName = entity.Company.CompanyName;
-      response.HoldingName = entity.Holding.HoldingName;
-      response.HoldingId = entity.Holding.Id;
-      response.ProductName = entity.ProductName;
-      response.CategoryName = entity.Category.Category;
-      response.IsIncludePrice = entity.IsIncludePrice;
-      response.Currency = entity.Currency;
-      response.Price = entity.Price;
-      response.TotalLike = entity.Interaction.Count (x => x.IsLike == true);
-      response.TotalChat = entity.Interaction.Count (x => x.IsChat == true);
-      response.TotalComment = entity.Interaction.Count (x => x.IsComment == true);
-      response.TotalView = entity.Interaction.Count (x => x.IsViewed == true);
-      response.UserId = entity.UserId;
-      response.Position = entity.User.AddressKoordinat;
-      response.Provinsi = entity.User.ProvinsiId;
-      response.KabKota = entity.User.KabKotaId;
-
-      if (entity.FotoUpload.FirstOrDefault () == null)
-        response.FotoPath = null;
-      else
-        response.FotoPath = entity.FotoUpload.FirstOrDefault ().FotoPath;
-
-      if (entity.Interaction.FirstOrDefault (x => x.LikedBy == id) == null)
-        response.IsLike = false;
-      else
-        response.IsLike = entity.Interaction.FirstOrDefault (x => x.LikedBy == id).IsLike;
-
-      return response;
-    }
-
-    public static IEnumerable<ProductResponse> FromArray (List<Product> entity, int? id)
-    {
-      if (entity == null)
-      {
-        return null;
-      }
-      List<ProductResponse> products = new List<ProductResponse> ();
-      foreach (var item in entity)
-      {
-        products.Add (ProductResponse.FromData (item, id));
-      }
-      return products;
+    public ProductResponse (Product product) {
+      Id = product.Id;
+      CompanyName = product.Company.CompanyName;
+      HoldingName = product.Holding.HoldingName;
+      HoldingId = product.Holding.Id;
+      ProductName = product.ProductName;
+      CategoryName = product.Category.Category;
+      IsIncludePrice = product.IsIncludePrice;
+      Currency = product.Currency;
+      Price = product.Price;
+      TotalLike = product.Interaction.Count (x => x.IsLike == true);
+      TotalChat = product.Interaction.Count (x => x.IsChat == true);
+      TotalComment = product.Interaction.Count (x => x.IsComment == true);
+      TotalView = product.Interaction.Count (x => x.IsViewed == true);
+      UserId = product.UserId;
+      Position = product.User.AddressKoordinat;
+      Provinsi = product.User.ProvinsiId;
+      KabKota = product.User.KabKotaId;
     }
   }
 }

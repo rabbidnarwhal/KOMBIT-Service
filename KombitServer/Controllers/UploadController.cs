@@ -10,44 +10,44 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace KombitServer.Controllers
-{
+namespace KombitServer.Controllers {
   [Route ("api/[controller]")]
-  public class UploadController : Controller
-  {
+  public class UploadController : Controller {
     private readonly IHostingEnvironment _env;
     private readonly KombitDBContext _context;
-    public UploadController (IHostingEnvironment env, KombitDBContext context)
-    {
+    public UploadController (IHostingEnvironment env, KombitDBContext context) {
       _env = env;
       _context = context;
-
+    }
+    /// <summary>Upload File</summary>
+    [HttpPost ("product/{type}/{useCase}")]
+    [RequestSizeLimit (268435456)]
+    public async Task<IActionResult> UploadProductFileWithUseCase (string type, string useCase) {
+      return await UploadProductFile (type, useCase);
     }
 
+    /// <summary>Upload File</summary>
     [HttpPost ("product/{type}")]
     [RequestSizeLimit (268435456)]
-    public async Task<IActionResult> UploadProductFile (string type)
-    {
-      try
-      {
-        if (!type.Equals ("foto") && !type.Equals ("video"))
+    public async Task<IActionResult> UploadProductFile (string type, string useCase) {
+      try {
+        if (!type.Equals ("foto") && !type.Equals ("video") && !type.Equals ("kit"))
           return BadRequest (new Exception ("Invalid Request " + type));
         var file = Request.Form.Files[0];
-        string path = Path.Combine ("uploads", "product_" + type + "s");
-        string physicalPath = Path.Combine ("wwwroot", path);
+        string path = Path.Combine ("upload", "product_" + type + "s" + (useCase.Equals ("") ? "" : "_" + useCase));
+        string physicalPath = Path.Combine ("assets", path);
         if (!Directory.Exists (physicalPath))
           Directory.CreateDirectory (physicalPath);
-        if (file.Length > 0)
-        {
-          string fileName = type.Equals ("foto") ? Guid.NewGuid ().ToString ("N") + ".jpg" : Guid.NewGuid ().ToString ("N") + ".mp4";
+        if (file.Length > 0) {
+          var extArray = file.FileName.Split ('.');
+          string ext = extArray[extArray.Length - 1];
+          string fileName = Guid.NewGuid ().ToString ("N") + "." + ext;
           string fullPath = Path.Combine (physicalPath, fileName);
-          using (var stream = new FileStream (fullPath, FileMode.Create))
-          {
+          using (var stream = new FileStream (fullPath, FileMode.Create)) {
             await file.CopyToAsync (stream);
           }
           var request = HttpContext.Request;
-          var uriBuilder = new UriBuilder
-          {
+          var uriBuilder = new UriBuilder {
             Host = request.Host.Host,
             Scheme = request.Scheme,
             Path = Path.Combine (path, fileName),
@@ -57,30 +57,24 @@ namespace KombitServer.Controllers
           var urlPath = uriBuilder.ToString ();
 
           return Ok (new { name = fileName, path = urlPath });
-        }
-        else
+        } else
           return BadRequest (new Exception ("Invalid File"));
-      }
-      catch (System.Exception ex)
-      {
+      } catch (System.Exception ex) {
         return StatusCode (StatusCodes.Status500InternalServerError, ex);
       }
     }
 
+    /// <summary>Upload company image</summary>
     [HttpPost ("company/{id}")]
     [RequestSizeLimit (268435456)]
-    public async Task<IActionResult> UploadCompanyImage (int? id)
-    {
-      if (id == null)
-      {
+    public async Task<IActionResult> UploadCompanyImage (int? id) {
+      if (id == null) {
         return BadRequest (new Exception ("Invalid Company"));
       }
-      try
-      {
+      try {
         var updatedCompany = _context.MCompany
           .FirstOrDefault (x => x.Id == id);
-        if (updatedCompany == null)
-        {
+        if (updatedCompany == null) {
           return NotFound (new Exception ("Company not found"));
         }
         var file = Request.Form.Files[0];
@@ -88,19 +82,16 @@ namespace KombitServer.Controllers
         string physicalPath = Path.Combine ("wwwroot", path);
         if (!Directory.Exists (physicalPath))
           Directory.CreateDirectory (physicalPath);
-        if (file.Length > 0)
-        {
+        if (file.Length > 0) {
           var extArray = file.FileName.Split ('.');
           string ext = extArray[extArray.Length - 1];
           string fileName = Guid.NewGuid ().ToString ("N") + "." + ext;
           string fullPath = Path.Combine (physicalPath, fileName);
-          using (var stream = new FileStream (fullPath, FileMode.Create))
-          {
+          using (var stream = new FileStream (fullPath, FileMode.Create)) {
             await file.CopyToAsync (stream);
           }
           var request = HttpContext.Request;
-          var uriBuilder = new UriBuilder
-          {
+          var uriBuilder = new UriBuilder {
             Host = request.Host.Host,
             Scheme = request.Scheme,
             Path = Path.Combine (path, fileName),
@@ -112,26 +103,21 @@ namespace KombitServer.Controllers
           _context.Update (updatedCompany);
           _context.Commit ();
           return Ok (new { name = fileName, path = urlPath });
-        }
-        else
+        } else
           return BadRequest (new Exception ("Invalid File"));
-      }
-      catch (System.Exception ex)
-      {
+      } catch (System.Exception ex) {
         return StatusCode (StatusCodes.Status500InternalServerError, ex);
       }
     }
 
+    /// <summary>Upload user image</summary>
     [HttpPost ("user/{id}")]
     [RequestSizeLimit (268435456)]
-    public async Task<IActionResult> UploadUserImage (int? id)
-    {
-      try
-      {
+    public async Task<IActionResult> UploadUserImage (int? id) {
+      try {
         var updatedUser = _context.MUser
           .FirstOrDefault (x => x.Id == id);
-        if (updatedUser == null)
-        {
+        if (updatedUser == null) {
           return NotFound (new Exception ("User not found"));
         }
         var file = Request.Form.Files[0];
@@ -139,21 +125,16 @@ namespace KombitServer.Controllers
         string physicalPath = Path.Combine ("wwwroot", path);
         if (!Directory.Exists (physicalPath))
           Directory.CreateDirectory (physicalPath);
-        if (file.Length > 0)
-        {
-          // Int32 unixTimestamp = (Int32) (DateTime.UtcNow.Subtract (new DateTime (1970, 1, 1))).TotalSeconds;
-          // string fileName = string.Concat (unixTimestamp.ToString (), "_", ContentDispositionHeaderValue.Parse (file.ContentDisposition).FileName.Trim ('"'));
+        if (file.Length > 0) {
           var extArray = file.FileName.Split ('.');
           string ext = extArray[extArray.Length - 1];
           string fileName = Guid.NewGuid ().ToString ("N") + "." + ext;
           string fullPath = Path.Combine (physicalPath, fileName);
-          using (var stream = new FileStream (fullPath, FileMode.Create))
-          {
+          using (var stream = new FileStream (fullPath, FileMode.Create)) {
             await file.CopyToAsync (stream);
           }
           var request = HttpContext.Request;
-          var uriBuilder = new UriBuilder
-          {
+          var uriBuilder = new UriBuilder {
             Host = request.Host.Host,
             Scheme = request.Scheme,
             Path = Path.Combine (path, fileName),
@@ -165,12 +146,9 @@ namespace KombitServer.Controllers
           _context.Update (updatedUser);
           _context.Commit ();
           return Ok (new { name = fileName, path = urlPath });
-        }
-        else
+        } else
           return BadRequest (new Exception ("Invalid File"));
-      }
-      catch (System.Exception ex)
-      {
+      } catch (System.Exception ex) {
         return StatusCode (StatusCodes.Status500InternalServerError, ex);
       }
     }

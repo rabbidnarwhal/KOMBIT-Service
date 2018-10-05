@@ -24,12 +24,8 @@ namespace KombitServer {
 
     // This method gets called by the runtime. Use this method to add services to the container.
 
-    public static readonly Microsoft.Extensions.Logging.LoggerFactory _myLoggerFactory =
-      new LoggerFactory (new [] {
-        new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider ()
-      });
     public void ConfigureServices (IServiceCollection services) {
-      string path = Path.Combine (Directory.GetCurrentDirectory (), "wwwroot");
+      string path = Path.Combine (Directory.GetCurrentDirectory (), "assets");
       if (!Directory.Exists (path)) {
         Directory.CreateDirectory (path);
       }
@@ -44,7 +40,6 @@ namespace KombitServer {
       });
       services.AddDbContext<KombitDBContext> (options =>
         options
-        .UseLoggerFactory (_myLoggerFactory)
         .UseMySql (Configuration.GetConnectionString ("KombitDatabase")));
     }
 

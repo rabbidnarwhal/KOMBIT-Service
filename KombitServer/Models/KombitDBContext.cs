@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 namespace KombitServer.Models {
   public partial class KombitDBContext : DbContext {
     public virtual DbSet<FotoUpload> FotoUpload { get; set; }
+    public virtual DbSet<AttachmentFile> AttachmentFile { get; set; }
     public virtual DbSet<Interaction> Interaction { get; set; }
     public virtual DbSet<MCategory> MCategory { get; set; }
     public virtual DbSet<MCompany> MCompany { get; set; }
@@ -22,6 +23,28 @@ namespace KombitServer.Models {
       base.SaveChanges ();
     }
     protected override void OnModelCreating (ModelBuilder modelBuilder) {
+      modelBuilder.Entity<AttachmentFile> (entity => {
+        entity.ToTable ("attachment_file");
+
+        entity.Property (e => e.Id)
+          .HasColumnName ("id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.FileName)
+          .IsRequired ()
+          .HasColumnName ("file_name")
+          .HasMaxLength (50);
+
+        entity.Property (e => e.FilePath)
+          .IsRequired ()
+          .HasColumnName ("file_path")
+          .HasMaxLength (255);
+
+        entity.Property (e => e.ProductId)
+          .HasColumnName ("product_id")
+          .HasColumnType ("int(11)");
+      });
+
       modelBuilder.Entity<FotoUpload> (entity => {
         entity.ToTable ("foto_upload");
 
@@ -42,6 +65,11 @@ namespace KombitServer.Models {
         entity.Property (e => e.ProductId)
           .HasColumnName ("product_id")
           .HasColumnType ("int(11)");
+
+        entity.Property (e => e.UseCase)
+          .IsRequired ()
+          .HasColumnName ("use_case")
+          .HasMaxLength (50);
       });
 
       modelBuilder.Entity<Interaction> (entity => {
@@ -348,6 +376,14 @@ namespace KombitServer.Models {
           .HasColumnName ("id")
           .HasColumnType ("int(11)");
 
+        entity.Property (e => e.Benefit)
+          .HasColumnName ("benefit")
+          .HasColumnType ("text");
+
+        entity.Property (e => e.BusinessTarget)
+          .HasColumnName ("business_target")
+          .HasColumnType ("text");
+
         entity.Property (e => e.CategoryId)
           .HasColumnName ("category_id")
           .HasColumnType ("int(11)");
@@ -355,6 +391,21 @@ namespace KombitServer.Models {
         entity.Property (e => e.CompanyId)
           .HasColumnName ("company_id")
           .HasColumnType ("int(11)");
+
+        entity.Property (e => e.ContactEmail)
+          .IsRequired ()
+          .HasColumnName ("contact_email")
+          .HasMaxLength (100);
+
+        entity.Property (e => e.ContactHandphone)
+          .IsRequired ()
+          .HasColumnName ("contact_handphone")
+          .HasMaxLength (15);
+
+        entity.Property (e => e.ContactName)
+          .IsRequired ()
+          .HasColumnName ("contact_name")
+          .HasMaxLength (50);
 
         entity.Property (e => e.Credentials)
           .HasColumnName ("credentials")
@@ -369,13 +420,30 @@ namespace KombitServer.Models {
           .HasColumnName ("description")
           .HasColumnType ("text");
 
+        entity.Property (e => e.Faq)
+          .HasColumnName ("faq")
+          .HasColumnType ("text");
+
+        entity.Property (e => e.Feature)
+          .HasColumnName ("feature")
+          .HasColumnType ("text");
+
         entity.Property (e => e.HoldingId)
           .HasColumnName ("holding_id")
           .HasColumnType ("int(11)");
 
+        entity.Property (e => e.Implementation)
+          .HasColumnName ("implementation")
+          .HasColumnType ("text");
+
         entity.Property (e => e.IsIncludePrice)
           .HasColumnName ("is_include_price")
           .HasColumnType ("tinyint(1)");
+
+        entity.Property (e => e.IsPromoted)
+          .HasColumnName ("is_promoted")
+          .HasColumnType ("tinyint(1)")
+          .HasDefaultValueSql ("'0'");
 
         entity.Property (e => e.Price).HasColumnName ("price");
 
