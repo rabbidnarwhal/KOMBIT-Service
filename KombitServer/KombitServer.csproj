@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="assets\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
