@@ -35,6 +35,7 @@ namespace KombitServer.Models {
       ProductName = product.ProductName;
       CategoryName = product.Category.Category;
       IsIncludePrice = product.IsIncludePrice;
+      IsPromoted = product.IsPromoted;
       Currency = product.Currency;
       Price = product.Price;
       TotalLike = product.Interaction.Count (x => x.IsLike == true);

@@ -24,9 +24,6 @@ namespace KombitServer.Models {
     public double? Price { get; set; }
     public string Credentials { get; set; }
     public string VideoPath { get; set; }
-    public string ContactName { get; set; }
-    public string ContactHandphone { get; set; }
-    public string ContactEmail { get; set; }
     public IEnumerable<FotoUpload> Foto { get; set; }
     public IEnumerable<AttachmentFile> Attachment { get; set; }
     public ProductContact Contact { get; set; }
@@ -50,9 +47,6 @@ namespace KombitServer.Models {
       Price = product.Price;
       Credentials = product.Credentials;
       VideoPath = product.VideoPath;
-      ContactName = product.ContactName;
-      ContactHandphone = product.ContactHandphone;
-      ContactEmail = product.ContactEmail;
       Foto = product.FotoUpload;
       Attachment = product.AttachmentFile;
       Contact = new ProductContact (product.User);

@@ -86,7 +86,14 @@ ALTER TABLE `product`
 	ADD COLUMN `benefit` TEXT NULL AFTER `feature`,
 	ADD COLUMN `implementation` TEXT NULL AFTER `benefit`,
 	ADD COLUMN `faq` TEXT NULL AFTER `implementation`,
-	ADD COLUMN `is_promoted` TINYINT(1) NOT NULL DEFAULT '0' AFTER `faq`,
-	ADD COLUMN `contact_name` VARCHAR(50) NOT NULL AFTER `user_id`,
-	ADD COLUMN `contact_handphone` VARCHAR(15) NOT NULL AFTER `contact_name`,
-	ADD COLUMN `contact_email` VARCHAR(100) NOT NULL AFTER `contact_handphone`;
+	ADD COLUMN `is_promoted` TINYINT(1) NOT NULL DEFAULT '0' AFTER `faq`;
+	-- ADD COLUMN `contact_name` VARCHAR(50) NOT NULL AFTER `user_id`,
+	-- ADD COLUMN `contact_handphone` VARCHAR(15) NOT NULL AFTER `contact_name`,
+	-- ADD COLUMN `contact_email` VARCHAR(100) NOT NULL AFTER `contact_handphone`;
+
+ALTER TABLE `m_category`
+	ADD COLUMN `image` VARCHAR(255) NULL DEFAULT NULL AFTER `category`;
+
+
+ALTER TABLE `product`
+	ADD COLUMN `poster_id` INT(11) NOT NULL AFTER `user_id`;

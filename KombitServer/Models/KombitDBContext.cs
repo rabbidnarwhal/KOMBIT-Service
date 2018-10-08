@@ -147,6 +147,10 @@ namespace KombitServer.Models {
           .IsRequired ()
           .HasColumnName ("category")
           .HasMaxLength (100);
+
+        entity.Property (e => e.Image)
+          .HasColumnName ("image")
+          .HasMaxLength (255);
       });
 
       modelBuilder.Entity<MCompany> (entity => {
@@ -392,21 +396,6 @@ namespace KombitServer.Models {
           .HasColumnName ("company_id")
           .HasColumnType ("int(11)");
 
-        entity.Property (e => e.ContactEmail)
-          .IsRequired ()
-          .HasColumnName ("contact_email")
-          .HasMaxLength (100);
-
-        entity.Property (e => e.ContactHandphone)
-          .IsRequired ()
-          .HasColumnName ("contact_handphone")
-          .HasMaxLength (15);
-
-        entity.Property (e => e.ContactName)
-          .IsRequired ()
-          .HasColumnName ("contact_name")
-          .HasMaxLength (50);
-
         entity.Property (e => e.Credentials)
           .HasColumnName ("credentials")
           .HasColumnType ("text");
@@ -454,6 +443,10 @@ namespace KombitServer.Models {
 
         entity.Property (e => e.UserId)
           .HasColumnName ("user_id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.PosterId)
+          .HasColumnName ("poster_id")
           .HasColumnType ("int(11)");
 
         entity.Property (e => e.VideoPath)

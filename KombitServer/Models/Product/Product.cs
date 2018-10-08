@@ -24,10 +24,11 @@ namespace KombitServer.Models {
     public double? Price { get; set; }
     public string Credentials { get; set; }
     public string VideoPath { get; set; }
-    public string ContactName { get; set; }
-    public string ContactHandphone { get; set; }
-    public string ContactEmail { get; set; }
+    public int PosterId { get; set; }
     public int UserId { get; set; }
+
+    [ForeignKey ("PosterId")]
+    public MUser Poster { get; set; }
 
     [ForeignKey ("UserId")]
     public MUser User { get; set; }
@@ -53,17 +54,23 @@ namespace KombitServer.Models {
     public Product () { }
     public Product (ProductRequest productRequest = null) {
       if (productRequest != null) {
-        HoldingId = productRequest.HoldingId;
+        Benefit = productRequest.Benefit;
+        BusinessTarget = productRequest.BusinessTarget;
         CategoryId = productRequest.CategoryId;
         CompanyId = productRequest.CompanyId;
         Credentials = productRequest.Credentials;
-        ProductName = productRequest.ProductName;
-        Description = productRequest.Description;
-        IsIncludePrice = productRequest.IsIncludePrice;
         Currency = productRequest.Currency;
+        Description = productRequest.Description;
+        Faq = productRequest.Implementation;
+        Feature = productRequest.Feature;
+        HoldingId = productRequest.HoldingId;
+        Implementation = productRequest.Implementation;
+        IsIncludePrice = productRequest.IsIncludePrice;
+        PosterId = productRequest.PosterId;
         Price = productRequest.Price;
-        VideoPath = productRequest.VideoPath;
+        ProductName = productRequest.ProductName;
         UserId = productRequest.UserId;
+        VideoPath = productRequest.VideoPath;
       }
     }
   }

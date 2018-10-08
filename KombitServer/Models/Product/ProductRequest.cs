@@ -2,12 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace KombitServer.Models
-{
-    public class ProductRequest : IValidatableObject
-    {
-        public ProductRequest(Product product)
-        {
+namespace KombitServer.Models {
+    public class ProductRequest : IValidatableObject {
+        public ProductRequest (Product product) {
             if (product == null)
                 return;
 
@@ -21,6 +18,7 @@ namespace KombitServer.Models
             Price = product.Price;
             ProductName = product.ProductName;
             UserId = product.UserId;
+            PosterId = product.PosterId;
             VideoPath = product.VideoPath;
             BusinessTarget = product.BusinessTarget;
             Feature = product.Feature;
@@ -28,12 +26,9 @@ namespace KombitServer.Models
             Implementation = product.Implementation;
             Faq = product.Faq;
             IsPromoted = product.IsPromoted;
-            ContactName = product.ContactName;
-            ContactHandphone = product.ContactHandphone;
-            ContactEmail = product.ContactEmail;
 
-            Foto = product.FotoUpload.ToArray();
-            Attachment = product.AttachmentFile.ToArray();
+            Foto = product.FotoUpload.ToArray ();
+            Attachment = product.AttachmentFile.ToArray ();
         }
 
         public int Id { get; set; }
@@ -55,16 +50,13 @@ namespace KombitServer.Models
         public string VideoPath { get; set; }
         public FotoUpload[] Foto { get; set; }
         public AttachmentFile[] Attachment { get; set; }
-        public string ContactName { get; set; }
-        public string ContactHandphone { get; set; }
-        public string ContactEmail { get; set; }
         public int UserId { get; set; }
+        public int PosterId { get; set; }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            var validator = new ProductValidator();
-            var result = validator.Validate(this);
-            return result.Errors.Select(error => new ValidationResult(error.ErrorMessage, new[] {"errorMessage"}));
+        public IEnumerable<ValidationResult> Validate (ValidationContext validationContext) {
+            var validator = new ProductValidator ();
+            var result = validator.Validate (this);
+            return result.Errors.Select (error => new ValidationResult (error.ErrorMessage, new [] { "errorMessage" }));
         }
     }
 }
