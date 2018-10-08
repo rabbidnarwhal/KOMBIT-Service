@@ -27,6 +27,17 @@ namespace KombitServer.Controllers {
       return user;
     }
 
+    /// <summary>Get all user names only</summary>
+    [HttpGet ("list/{id}")]
+    [ProducesResponseType (typeof (MUser), 200)]
+    public IEnumerable<Object> GetListUserName (int id) {
+      var user = _context.MUser
+        .Select (x => new { Id = x.Id, Name = x.Name })
+        .Where (x => x.Id != id)
+        .ToList ();
+      return user;
+    }
+
     /// <summary>Get user by user id</summary>
     [HttpGet ("{id}")]
     [ProducesResponseType (typeof (MUserResponse), 200)]
