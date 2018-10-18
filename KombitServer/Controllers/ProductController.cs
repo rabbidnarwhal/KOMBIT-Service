@@ -128,23 +128,21 @@ namespace KombitServer.Controllers {
         [HttpPost ("{id}")]
         public IActionResult UpdateProduct ([FromBody] ProductRequest productRequest, int id) {
             if (!ModelState.IsValid) return BadRequest (ModelState);
+            if (!productRequest.Foto.Any ()) return BadRequest ("At least 1 image required.");
+
             var product = _context.Product.FirstOrDefault (x => x.Id == id);
             product = ProductMapping.UpdateProductMapping (productRequest, product);
             _context.Product.Update (product);
 
-            if (!productRequest.Foto.Any ()) return Ok (new { msg = "Post Published" });
             var removedFotoPath = new List<string> ();
             foreach (var foto in productRequest.Foto) {
                 if (foto.Id == 0) {
                     _context.FotoUpload.Add (new FotoUpload (foto, id, "foto"));
                 } else {
                     var existingFoto = _context.FotoUpload.FirstOrDefault (x => x.Id == foto.Id);
-                    removedFotoPath.Add (existingFoto.FotoPath);
                     if (foto.FotoPath == null) {
+                        removedFotoPath.Add (existingFoto.FotoPath);
                         _context.FotoUpload.Remove (existingFoto);
-                    } else {
-                        existingFoto = FotoUploadMapping.UpdateFotoUploadMapping (foto, existingFoto);
-                        _context.FotoUpload.Update (existingFoto);
                     }
                 }
             }
@@ -170,7 +168,42 @@ namespace KombitServer.Controllers {
 
             _context.Commit ();
 
-            return Ok (new { msg = "Post Edited" });
+            if (!productRequest.Attachment.Any ()) return Ok (new { msg = "Post Updated" });
+            var removedAttachmentPath = new List<string> ();
+            foreach (var attachment in productRequest.Attachment) {
+                if (attachment.Id == 0) {
+                    _context.AttachmentFile.Add (new AttachmentFile (attachment, id));
+                } else {
+                    var existingAttachment = _context.AttachmentFile.FirstOrDefault (x => x.Id == attachment.Id);
+                    if (attachment.FilePath == null) {
+                        removedAttachmentPath.Add (existingAttachment.FilePath);
+                        _context.AttachmentFile.Remove (existingAttachment);
+                    }
+                }
+            }
+
+            foreach (var deletedAttachment in removedAttachmentPath) {
+                var webRootPath = _hostingEnvironment.WebRootPath;
+
+                var request = HttpContext.Request;
+                var uriBuilder = new UriBuilder {
+                    Host = request.Host.Host,
+                    Scheme = request.Scheme
+                };
+                if (request.Host.Port.HasValue)
+                    uriBuilder.Port = request.Host.Port.Value;
+
+                var urlPath = uriBuilder.ToString ();
+
+                var path = deletedAttachment.Replace (urlPath, webRootPath + @"\\").Replace ("/", @"\\");
+
+                if (System.IO.File.Exists (path))
+                    System.IO.File.Delete (path);
+            }
+
+            _context.Commit ();
+
+            return Ok (new { msg = "Post Updated" });
         }
 
         /// <summary>Delete product</summary>

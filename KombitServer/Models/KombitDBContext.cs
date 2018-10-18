@@ -89,7 +89,7 @@ namespace KombitServer.Models {
 
         entity.Property (e => e.Comment)
           .HasColumnName ("comment")
-          .HasMaxLength (255);
+          .HasColumnType ("text");
 
         entity.Property (e => e.CommentBy)
           .HasColumnName ("comment_by")
@@ -367,6 +367,11 @@ namespace KombitServer.Models {
         entity.Property (e => e.To)
           .HasColumnName ("to")
           .HasColumnType ("int(11)");
+
+        entity.Property (e => e.IsRead)
+          .HasColumnName ("is_read")
+          .HasColumnType ("tinyint(1)")
+          .HasDefaultValueSql ("'0'");
 
         entity.Property (e => e.Topic)
           .HasColumnName ("topic")

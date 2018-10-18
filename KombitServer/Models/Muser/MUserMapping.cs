@@ -11,29 +11,29 @@ namespace KombitServer.Models {
       if (entity == null) {
         return null;
       }
-      var response = new MUserResponse () {
-        Id = entity.Id,
-        Username = entity.Username,
-        IdNumber = entity.IdNumber,
-        IdType = entity.Type.DescType,
-        Name = entity.Name,
-        Email = entity.Email,
-        Address = entity.Address,
-        AddressKoordinat = entity.AddressKoordinat,
-        Occupation = entity.Occupation,
-        Handphone = entity.Handphone,
-        JobTitle = entity.JobTitle,
-        CompanyCoordinate = entity.Company.AddressKoordinat,
-        CompanyFixedCall = entity.Company.FixedCall,
-        CompanyAddress = entity.Company.Address,
-        CompanyName = entity.Company.CompanyName,
-        CompanyId = entity.Company.Id,
-        HoldingName = entity.Company.Holding.HoldingName,
-        HoldingId = entity.Company.Holding.Id,
-        Image = entity.Image,
-        ProvinsiId = entity.ProvinsiId,
-        KabKotaId = entity.KabKotaId,
-      };
+      var response = new MUserResponse ();
+
+      response.Id = entity.Id;
+      response.Username = entity.Username;
+      response.IdNumber = entity.IdNumber;
+      response.IdType = entity.Type?.DescType;
+      response.Name = entity.Name;
+      response.Email = entity.Email;
+      response.Address = entity.Address;
+      response.AddressKoordinat = entity.AddressKoordinat;
+      response.Occupation = entity.Occupation;
+      response.Handphone = entity.Handphone;
+      response.JobTitle = entity.JobTitle;
+      response.CompanyCoordinate = entity.Company?.AddressKoordinat;
+      response.CompanyFixedCall = entity.Company?.FixedCall;
+      response.CompanyAddress = entity.Company?.Address;
+      response.CompanyName = entity.Company?.CompanyName;
+      response.CompanyId = entity.Company?.Id;
+      response.HoldingName = entity.Company?.Holding.HoldingName;
+      response.HoldingId = entity.Company?.Holding.Id;
+      response.Image = entity.Image;
+      response.ProvinsiId = entity.ProvinsiId;
+      response.KabKotaId = entity.KabKotaId;
       return response;
     }
 

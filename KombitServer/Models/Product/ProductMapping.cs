@@ -37,19 +37,24 @@ namespace KombitServer.Models {
       return products;
     }
 
-    public static Product UpdateProductMapping (ProductRequest request, Product response) {
-      response.HoldingId = request.HoldingId;
-      response.CategoryId = request.CategoryId;
-      response.CompanyId = request.CompanyId;
-      response.Credentials = request.Credentials;
-      response.ProductName = request.ProductName;
-      response.Description = request.Description;
-      response.IsIncludePrice = request.IsIncludePrice;
-      response.Currency = request.Currency;
-      response.Price = request.Price;
-      response.VideoPath = request.VideoPath;
-      response.UserId = request.UserId;
-      return response;
+    public static Product UpdateProductMapping (ProductRequest request, Product existing) {
+      existing.Benefit = request.Benefit;
+      existing.BusinessTarget = request.BusinessTarget;
+      existing.Faq = request.Faq;
+      existing.Feature = request.Feature;
+      existing.Implementation = request.Implementation;
+      existing.HoldingId = request.HoldingId;
+      existing.CategoryId = request.CategoryId;
+      existing.CompanyId = request.CompanyId;
+      existing.Credentials = request.Credentials;
+      existing.ProductName = request.ProductName;
+      existing.Description = request.Description;
+      existing.IsIncludePrice = request.IsIncludePrice;
+      existing.Currency = request.Currency;
+      existing.Price = request.Price;
+      existing.VideoPath = request.VideoPath;
+      existing.UserId = request.UserId;
+      return existing;
     }
     public static ICollection<ProductComment> CommentMapping (ICollection<Interaction> interaction) {
       List<ProductComment> productComment = new List<ProductComment> ();

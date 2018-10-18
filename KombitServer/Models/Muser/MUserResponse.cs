@@ -22,8 +22,8 @@ namespace KombitServer.Models {
     public string CompanyFixedCall { get; set; }
     public string CompanyAddress { get; set; }
     public string CompanyName { get; set; }
-    public int CompanyId { get; set; }
-    public int HoldingId { get; set; }
+    public int? CompanyId { get; set; }
+    public int? HoldingId { get; set; }
     public string HoldingName { get; set; }
     public string Image { get; set; }
     public int? ProvinsiId { get; set; }

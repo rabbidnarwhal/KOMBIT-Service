@@ -19,6 +19,7 @@ namespace KombitServer.Models {
     public int TotalView { get; set; }
     public int TotalChat { get; set; }
     public int UserId { get; set; }
+    public int PosterId { get; set; }
     public int? Provinsi { get; set; }
     public int? KabKota { get; set; }
     public string Position { get; set; }
@@ -43,6 +44,7 @@ namespace KombitServer.Models {
       TotalComment = product.Interaction.Count (x => x.IsComment == true);
       TotalView = product.Interaction.Count (x => x.IsViewed == true);
       UserId = product.UserId;
+      PosterId = product.PosterId;
       Position = product.User.AddressKoordinat;
       Provinsi = product.User.ProvinsiId;
       KabKota = product.User.KabKotaId;

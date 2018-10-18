@@ -97,3 +97,9 @@ ALTER TABLE `m_category`
 
 ALTER TABLE `product`
 	ADD COLUMN `poster_id` INT(11) NOT NULL AFTER `user_id`;
+
+ALTER TABLE `notification`
+	ADD COLUMN `is_read` TINYINT(1) NOT NULL DEFAULT '0' AFTER `to`;
+
+ALTER TABLE `interaction`
+	CHANGE COLUMN `comment` `comment` TEXT NULL DEFAULT NULL AFTER `liked_date`;
