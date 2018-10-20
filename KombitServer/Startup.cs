@@ -41,6 +41,9 @@ namespace KombitServer {
       services.AddDbContext<KombitDBContext> (options =>
         options
         .UseMySql (Configuration.GetConnectionString ("KombitDatabase")));
+      // services.AddSpaStaticFiles(configuration => {
+      //   configuration.RootPath = "ClientApp/dist";
+      // })
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +56,23 @@ namespace KombitServer {
         option.AllowAnyMethod ();
         option.AllowAnyHeader ();
       });
+      app.Use(async (context, next) => {
+        await next();
+        if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value) && !context.Request.Path.Value.StartsWith("/api")) {
+          context.Request.Path = "/index.html";
+          context.Response.StatusCode = 200;
+          await next();
+        }
+      });
+      app.UseMvcWithDefaultRoute();
+      app.UseDefaultFiles();
       app.UseStaticFiles ();
+      // app.UseStaticFiles(new StaticFileOptions
+      // {
+      //   FileProvider = new PhysicalFileProvider(
+      //   Path.Combine(Directory.GetCurrentDirectory(), "assets")),
+      //   RequestPath = ""
+      // });
       app.UseMvc ();
       app.UseSwagger (c => {
         c.RouteTemplate = "docs/{documentName}/swagger.json";

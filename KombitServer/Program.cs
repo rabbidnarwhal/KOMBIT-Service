@@ -17,7 +17,7 @@ namespace KombitServer {
         public static IWebHost BuildWebHost (string[] args) =>
             WebHost.CreateDefaultBuilder (args)
             .UseKestrel ()
-            .UseWebRoot("assets")
+            .UseWebRoot("wwwroot")
             .UseIISIntegration ()
             .UseStartup<Startup> ()
             .Build ();
