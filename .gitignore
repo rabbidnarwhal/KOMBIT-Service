@@ -336,5 +336,7 @@ ASALocalRun/
 
 */Dockerfile
 */www/*
+*/wwwroot/*
 */wwwroot/uploads/*
 */assets/*
+

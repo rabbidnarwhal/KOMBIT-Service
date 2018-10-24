@@ -26,7 +26,7 @@ namespace KombitServer.Controllers {
         .Include (x => x.Company.Holding).DefaultIfEmpty ()
         .FirstOrDefault (x => x.Username == loginRequest.Username && x.Password == loginRequest.Password);
       if (user == null) {
-        return NotFound (new Exception ("Username or password is missmatch"));
+        return NotFound (new Exception ("Username or password is not found"));
       }
       return Ok (LoginResponse.FromData (user));
     }

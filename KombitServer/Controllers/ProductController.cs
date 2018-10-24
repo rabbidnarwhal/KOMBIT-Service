@@ -22,12 +22,16 @@ namespace KombitServer.Controllers {
 
         /// <summary>Get All product</summary>
         [HttpGet]
+        [ProducesResponseType (typeof (List<ProductResponse>), 200)]
+
         public IEnumerable<ProductResponse> GetAll () {
             return GetAllWithLikedIndicator (null);
         }
 
         /// <summary>Get All product with liked indicator by user</summary>
         [HttpGet ("like/user/{id}")]
+        [ProducesResponseType (typeof (List<ProductResponse>), 200)]
+
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IEnumerable<ProductResponse> GetAllWithLikedIndicator (int? id) {
             var product = _context.Product
@@ -43,6 +47,8 @@ namespace KombitServer.Controllers {
 
         /// <summary>Get all product created by user</summary>
         [HttpGet ("user/{id}")]
+        [ProducesResponseType (typeof (List<ProductResponse>), 200)]
+
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IEnumerable<ProductResponse> GetAllByUser (int? id) {
             if (id == null) return GetAll ();
@@ -60,6 +66,8 @@ namespace KombitServer.Controllers {
 
         /// <summary>Get product with liked indicator by user</summary>
         [HttpGet ("{id}/user/{userId}")]
+        [ProducesResponseType (typeof (ProductDetailResponse), 200)]
+
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetDetail (int id, int userId) {
             var product = _context.Product
@@ -78,6 +86,8 @@ namespace KombitServer.Controllers {
 
         /// <summary>Get editable product request</summary>
         [HttpGet ("{id}/edit")]
+        [ProducesResponseType (typeof (ProductRequest), 200)]
+
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetProductEdit (int id) {
             var product = _context.Product
@@ -91,6 +101,22 @@ namespace KombitServer.Controllers {
                 .FirstOrDefault (x => x.Id == id);
             if (product == null) return NotFound (new Exception ("Product not found"));
             return Ok (new ProductRequest (product));
+        }
+
+        /// <summary>Get top 10 of popular product based on interaction</summary>
+
+        [HttpGet ("popular")]
+        [ProducesResponseType (typeof (ProductMostPopularResponse), 200)]
+
+        public IActionResult GetPopularProducts () {
+            var products = _context.Product.Include(x => x.Interaction).ToList();
+            var popularProducts = new List<ProductMostPopular>();
+            foreach (var product in products)
+            {
+                popularProducts.Add(new ProductMostPopular(product));
+            }
+            ProductMostPopularResponse response = new ProductMostPopularResponse(popularProducts.OrderByDescending(x => x.TotalInteraction).Take(10).ToList());
+            return Ok(response);
         }
 
         /// <summary>Add new product</summary>

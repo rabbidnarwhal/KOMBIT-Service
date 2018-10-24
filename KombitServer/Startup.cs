@@ -67,12 +67,12 @@ namespace KombitServer {
       app.UseMvcWithDefaultRoute();
       app.UseDefaultFiles();
       app.UseStaticFiles ();
-      // app.UseStaticFiles(new StaticFileOptions
-      // {
-      //   FileProvider = new PhysicalFileProvider(
-      //   Path.Combine(Directory.GetCurrentDirectory(), "assets")),
-      //   RequestPath = ""
-      // });
+      app.UseStaticFiles(new StaticFileOptions
+      {
+        FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "assets")),
+        RequestPath = ""
+      });
       app.UseMvc ();
       app.UseSwagger (c => {
         c.RouteTemplate = "docs/{documentName}/swagger.json";

@@ -35,6 +35,8 @@ namespace KombitServer.Models {
         response.Role = "Supplier";
         response.CompanyId = entity.Company?.Id;
         response.HoldingId = entity.Company?.Holding.Id;
+      } else if (entity.IdRole == 3) {
+        response.Role = "Administrator";
       }
       return response;
     }

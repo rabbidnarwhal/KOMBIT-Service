@@ -17,7 +17,7 @@ namespace KombitServer.Controllers {
     }
     /// <summary>Get all user</summary>
     [HttpGet]
-    [ProducesResponseType (typeof (MUser), 200)]
+    [ProducesResponseType (typeof (List<MUser>), 200)]
     public IEnumerable<MUser> Get () {
       var user = _context.MUser
         .Include (x => x.Company).DefaultIfEmpty ()
@@ -77,13 +77,47 @@ namespace KombitServer.Controllers {
       return Ok (LoginResponse.FromData (user));
     }
 
+    /// <summary>Get top 10 of active customer based on interaction</summary>
+    [HttpGet ("active/customer")]
+
+    [ProducesResponseType (typeof (ActiveCustomerResponse), 200)]
+
+    public IActionResult GetActiveCustomers() {
+      var customers = _context.MUser.Where(x => x.IdRole == 1);
+      var interaction = _context.Interaction.ToList();
+      var listActiveCustomer = new List<ActiveCustomer>();
+      foreach (var customer in customers)
+      {
+        listActiveCustomer.Add(new ActiveCustomer(customer, interaction));
+      }
+      ActiveCustomerResponse response = new ActiveCustomerResponse(listActiveCustomer.OrderByDescending(x => x.TotalInteraction).Take(10).ToList());
+      return Ok(response);
+    }
+
+    /// <summary>Get top 10 of active supplier based on product posted</summary>
+
+    [HttpGet ("active/supplier")]
+    [ProducesResponseType (typeof (ActiveSupplierResponse), 200)]
+
+    public IActionResult GetActiveSuppliers() {
+      var customers = _context.MUser.Where(x => x.IdRole == 2);
+      var products = _context.Product.ToList();
+      var listActiveSupplier = new List<ActiveSupplier>();
+      foreach (var customer in customers)
+      {
+        listActiveSupplier.Add(new ActiveSupplier(customer, products));
+      }
+      ActiveSupplierResponse response = new ActiveSupplierResponse(listActiveSupplier.OrderByDescending(x => x.TotalProduct).Take(10).ToList());
+      return Ok(response);
+    }
+
     /// <summary>Add new user</summary>
     [HttpPost ("register")]
     public IActionResult Register ([FromBody] RegisterRequest registerRequest) {
       if (!ModelState.IsValid) { return BadRequest (ModelState); }
       var user = _context.MUser.FirstOrDefault (x => x.Username == registerRequest.Username);
       if (user != null) {
-        return BadRequest (new Exception ("Username already used"));
+        return BadRequest (new Exception ("Username already exist"));
       }
       var newUser = RegisterMapping.RequestMapping (registerRequest);
       _context.MUser.Add (newUser);
@@ -92,8 +126,8 @@ namespace KombitServer.Controllers {
     }
 
     /// <summary>User login</summary>
-    [ProducesResponseType (typeof (LoginResponse), 200)]
     [HttpPost ("login")]
+    [ProducesResponseType (typeof (LoginResponse), 200)]
     public IActionResult Login ([FromBody] LoginRequest loginRequest) {
       if (!ModelState.IsValid) { return BadRequest (ModelState); }
       var user = _context.MUser
@@ -102,7 +136,7 @@ namespace KombitServer.Controllers {
         .Include (x => x.Company.Holding).DefaultIfEmpty ()
         .FirstOrDefault (x => x.Username == loginRequest.Username && x.Password == loginRequest.Password);
       if (user == null) {
-        return NotFound (new Exception ("Username or password is missmatch"));
+        return NotFound (new Exception ("Username or password is not found"));
       }
       return Ok (LoginResponse.FromData (user));
     }
