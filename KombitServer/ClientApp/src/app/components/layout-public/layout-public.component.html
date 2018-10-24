@@ -1,0 +1,36 @@
+<nz-layout class="layout">
+  <nz-header>
+    <div class="logo">
+      <button class="logo-button" nz-button nzType="default" routerLink="/">
+        Combits
+      </button>
+      <!-- <img src="../../../assets/images/kombit-logo-transparent.png" /> -->
+    </div>
+    <ul class="top-menu left" *ngIf="isLogin && isSupplier" nz-menu [nzMode]="'horizontal'">
+      <li nz-menu-item routerLink="/product/new"><i class="anticon anticon-plus-circle"></i>Post new product</li>
+    </ul>
+    <button *ngIf="!isLogin" class="login-button" nz-button nzType="default" routerLink="/login">
+      <i class="anticon anticon-login"></i>
+      Login
+    </button>
+    <ul class="top-menu" *ngIf="isLogin" nz-menu [nzMode]="'horizontal'">
+      <li nz-submenu>
+        <span title><i class="anticon anticon-user"></i>{{userName}}</span>
+        <ul class="submenu-overlay">
+          <li nz-menu-group *ngIf="!isSupplier" (click)="toMemberArea()">
+            <span title>Dashboard</span>
+          </li>
+          <li nz-menu-group (click)="logout()">
+            <span title>Logout</span>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nz-header>
+  <nz-content style="padding:0 50px;">
+    <div class="router-container">
+      <router-outlet></router-outlet>
+    </div>
+  </nz-content>
+  <!-- <nz-footer style="text-align: center;">Combits ©2018</nz-footer> -->
+</nz-layout>

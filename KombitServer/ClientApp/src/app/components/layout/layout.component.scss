@@ -1,0 +1,56 @@
+:host ::ng-deep .trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+:host ::ng-deep .logout-button {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+  float: right;
+}
+
+:host ::ng-deep .trigger:hover {
+  color: #1890ff;
+}
+
+:host ::ng-deep .logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+
+.menu-collapsed {
+  margin-left: 80px;
+}
+
+.menu-not-collapsed {
+  margin-left: 200px;
+}
+
+.router-container {
+  padding: 24px;
+  min-height: calc(100vh - 186px);
+}
+
+.top-menu {
+  float: right;
+  color: #eee;
+  background-color: transparent;
+  margin-top: 10px;
+  border: none;
+  padding-right: 24px;
+}
+
+.logo-button {
+  background-color: transparent;
+  border: none;
+  font-weight: 500;
+  color: #eee;
+  width: 100%;
+}

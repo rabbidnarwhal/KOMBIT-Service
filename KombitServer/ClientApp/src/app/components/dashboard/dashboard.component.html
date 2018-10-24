@@ -1,0 +1,18 @@
+<nz-card>
+  <h3>Active Customer</h3>
+  <div nz-col [nzPush]="4" [nzSpan]="16" class="chart-container">
+    <ngx-chartjs *ngIf="dataCustomer" [data]="dataCustomer" type="bar"></ngx-chartjs>
+  </div>
+</nz-card>
+<nz-card>
+  <h3>Active Supplier</h3>
+  <div nz-col [nzPush]="4" [nzSpan]="16" class="chart-container">
+    <ngx-chartjs *ngIf="dataSupplier" [data]="dataSupplier" type="bar"></ngx-chartjs>
+  </div>
+</nz-card>
+<nz-card>
+  <h3>Most Popular Product</h3>
+  <div nz-col [nzPush]="4" [nzSpan]="16" class="chart-container">
+    <ngx-chartjs *ngIf="dataProduct" [data]="dataProduct" type="bar"></ngx-chartjs>
+  </div>
+</nz-card>

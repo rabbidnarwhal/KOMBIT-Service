@@ -1,0 +1,48 @@
+<nz-layout>
+  <nz-sider style="overflow: auto; height: 100vh; position: fixed; left: 0" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="triggerTemplate">
+    <div class="logo">
+      <button class="logo-button" nz-button nzType="default" routerLink="/">
+        {{isCollapsed ? 'C' : 'Combits'}}
+      </button>
+    </div>
+    <ul nz-menu [nzTheme]="'dark'" [nzMode]="'inline'" [nzInlineCollapsed]="isCollapsed">
+      <li nz-menu-item routerLink="/dashboard" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact:true}">
+        <span>
+          <i class="anticon anticon-user"></i>
+          <span class="nav-text">Dashboard</span>
+        </span>
+      </li>
+    </ul>
+  </nz-sider>
+
+  <nz-layout [class.menu-collapsed]="isCollapsed" [class.menu-not-collapsed]="!isCollapsed">
+    <nz-header style="background: #001529; color: #fff; padding:0;">
+      <i class="anticon trigger" [class.anticon-menu-fold]="!isCollapsed" [class.anticon-menu-unfold]="isCollapsed" (click)="isCollapsed=!isCollapsed"></i>
+      <!-- <i class="anticon logout-button anticon-logout" (click)="logout()"></i> -->
+      <ul class="top-menu" nz-menu [nzMode]="'horizontal'">
+        <li nz-submenu>
+          <span title><i class="anticon anticon-user"></i>{{userName}}</span>
+          <ul>
+            <li nz-menu-group (click)="logout()">
+              <span title>Logout</span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nz-header>
+    <nz-content style="margin:0 16px; overflow: initial">
+      <nz-breadcrumb style="margin:16px 0;">
+        <nz-breadcrumb-item>
+          <a [routerLink]="['..']">{{breadcrumbsText}}</a>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <div class="router-container">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+    <!-- <nz-footer style="text-align: center;">Combits ©2018</nz-footer> -->
+  </nz-layout>
+</nz-layout>
+<ng-template #trigger>
+  <i class="anticon anticon-up"></i>
+</ng-template>

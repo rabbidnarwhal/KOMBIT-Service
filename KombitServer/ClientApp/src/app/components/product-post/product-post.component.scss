@@ -1,0 +1,44 @@
+:host ::ng-deep i {
+  font-size: 32px;
+  color: #999;
+}
+:host ::ng-deep .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+
+:host ::ng-deep .quill-editor .ql-container > .ql-editor {
+  height: 250px;
+}
+
+.button-right {
+  float: right;
+}
+
+.segment-button {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  button {
+    margin: 0 16px;
+  }
+}
+
+.video-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 1px;
+  position: relative;
+  .placeholder {
+    position: relative;
+    background-size: cover;
+    background-position: center center;
+    img {
+      object-fit: contain;
+      width: 20%;
+    }
+  }
+}
