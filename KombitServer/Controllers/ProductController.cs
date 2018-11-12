@@ -64,7 +64,7 @@ namespace KombitServer.Controllers {
             return ProductMapping.ListResponseMapping (product, id).OrderByDescending (x => x.Id);
         }
 
-        /// <summary>Get product with liked indicator by user</summary>
+        /// <summary>Get product detail with liked indicator by user</summary>
         [HttpGet ("{id}/user/{userId}")]
         [ProducesResponseType (typeof (ProductDetailResponse), 200)]
 
@@ -74,6 +74,7 @@ namespace KombitServer.Controllers {
                 .Include (x => x.Holding)
                 .Include (x => x.Company)
                 .Include (x => x.User)
+                .Include (x => x.Poster)
                 .Include (x => x.FotoUpload)
                 .Include (x => x.Category)
                 .Include (x => x.Interaction)
@@ -133,7 +134,22 @@ namespace KombitServer.Controllers {
                 x.UserId == productRequest.UserId && x.PosterId == productRequest.PosterId).Id;
 
             foreach (var foto in productRequest.Foto) {
-                _context.FotoUpload.Add (new FotoUpload (foto, productId, "foto"));
+                _context.FotoUpload.Add (new FotoUpload (foto, productId));
+                _context.Commit ();
+            }
+
+            foreach (var foto in productRequest.ProductCertificate) {
+                _context.FotoUpload.Add (new FotoUpload (foto, productId));
+                _context.Commit ();
+            }
+
+            foreach (var foto in productRequest.ProductClient) {
+                _context.FotoUpload.Add (new FotoUpload (foto, productId));
+                _context.Commit ();
+            }
+
+            foreach (var foto in productRequest.ProductImplementation) {
+                _context.FotoUpload.Add (new FotoUpload (foto, productId));
                 _context.Commit ();
             }
 
@@ -163,7 +179,7 @@ namespace KombitServer.Controllers {
             var removedFotoPath = new List<string> ();
             foreach (var foto in productRequest.Foto) {
                 if (foto.Id == 0) {
-                    _context.FotoUpload.Add (new FotoUpload (foto, id, "foto"));
+                    _context.FotoUpload.Add (new FotoUpload (foto, id));
                 } else {
                     var existingFoto = _context.FotoUpload.FirstOrDefault (x => x.Id == foto.Id);
                     if (foto.FotoPath == null) {
@@ -222,6 +238,109 @@ namespace KombitServer.Controllers {
                 var urlPath = uriBuilder.ToString ();
 
                 var path = deletedAttachment.Replace (urlPath, webRootPath + @"\\").Replace ("/", @"\\");
+
+                if (System.IO.File.Exists (path))
+                    System.IO.File.Delete (path);
+            }
+
+            _context.Commit ();
+            
+            if (!productRequest.ProductCertificate.Any ()) return Ok (new { msg = "Post Updated" });
+            var removedCertificatePath = new List<string> ();
+            foreach (var certificate in productRequest.ProductCertificate) {
+                if (certificate.Id == 0) {
+                    _context.FotoUpload.Add (new FotoUpload (certificate, id));
+                } else {
+                    var existingCertificate = _context.FotoUpload.FirstOrDefault (x => x.Id == certificate.Id);
+                    if (certificate.FotoPath == null) {
+                        removedCertificatePath.Add (existingCertificate.FotoPath);
+                        _context.FotoUpload.Remove (existingCertificate);
+                    }
+                }
+            }
+
+            foreach (var deletedCertificate in removedCertificatePath) {
+                var webRootPath = _hostingEnvironment.WebRootPath;
+
+                var request = HttpContext.Request;
+                var uriBuilder = new UriBuilder {
+                    Host = request.Host.Host,
+                    Scheme = request.Scheme
+                };
+                if (request.Host.Port.HasValue)
+                    uriBuilder.Port = request.Host.Port.Value;
+
+                var urlPath = uriBuilder.ToString ();
+
+                var path = deletedCertificate.Replace (urlPath, webRootPath + @"\\").Replace ("/", @"\\");
+
+                if (System.IO.File.Exists (path))
+                    System.IO.File.Delete (path);
+            }
+
+            _context.Commit ();
+            if (!productRequest.ProductClient.Any ()) return Ok (new { msg = "Post Updated" });
+            var removedClient = new List<string> ();
+            foreach (var client in productRequest.ProductClient) {
+                if (client.Id == 0) {
+                    _context.FotoUpload.Add (new FotoUpload (client, id));
+                } else {
+                    var existingClient = _context.FotoUpload.FirstOrDefault (x => x.Id == client.Id);
+                    if (client.FotoPath == null) {
+                        removedClient.Add (existingClient.FotoPath);
+                        _context.FotoUpload.Remove (existingClient);
+                    }
+                }
+            }
+
+            foreach (var deletedClient in removedClient) {
+                var webRootPath = _hostingEnvironment.WebRootPath;
+
+                var request = HttpContext.Request;
+                var uriBuilder = new UriBuilder {
+                    Host = request.Host.Host,
+                    Scheme = request.Scheme
+                };
+                if (request.Host.Port.HasValue)
+                    uriBuilder.Port = request.Host.Port.Value;
+
+                var urlPath = uriBuilder.ToString ();
+
+                var path = deletedClient.Replace (urlPath, webRootPath + @"\\").Replace ("/", @"\\");
+
+                if (System.IO.File.Exists (path))
+                    System.IO.File.Delete (path);
+            }
+
+            _context.Commit ();
+            if (!productRequest.ProductImplementation.Any ()) return Ok (new { msg = "Post Updated" });
+            var removedProductImplementation = new List<string> ();
+            foreach (var implementation in productRequest.ProductImplementation) {
+                if (implementation.Id == 0) {
+                    _context.FotoUpload.Add (new FotoUpload (implementation, id));
+                } else {
+                    var existingImplementation = _context.FotoUpload.FirstOrDefault (x => x.Id == implementation.Id);
+                    if (implementation.FotoPath == null) {
+                        removedProductImplementation.Add (existingImplementation.FotoPath);
+                        _context.FotoUpload.Remove (existingImplementation);
+                    }
+                }
+            }
+
+            foreach (var deletedProductImplementation in removedProductImplementation) {
+                var webRootPath = _hostingEnvironment.WebRootPath;
+
+                var request = HttpContext.Request;
+                var uriBuilder = new UriBuilder {
+                    Host = request.Host.Host,
+                    Scheme = request.Scheme
+                };
+                if (request.Host.Port.HasValue)
+                    uriBuilder.Port = request.Host.Port.Value;
+
+                var urlPath = uriBuilder.ToString ();
+
+                var path = deletedProductImplementation.Replace (urlPath, webRootPath + @"\\").Replace ("/", @"\\");
 
                 if (System.IO.File.Exists (path))
                     System.IO.File.Delete (path);

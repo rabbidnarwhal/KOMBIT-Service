@@ -16,7 +16,7 @@ namespace KombitServer.Models {
       if (product.FotoUpload.FirstOrDefault () == null)
         response.FotoPath = null;
       else
-        response.FotoPath = product.FotoUpload.FirstOrDefault ().FotoPath;
+        response.FotoPath = product.FotoUpload.FirstOrDefault (x => x.UseCase.Equals("foto")).FotoPath;
 
       if (product.Interaction.FirstOrDefault (x => x.LikedBy == id) == null)
         response.IsLike = false;
@@ -47,6 +47,7 @@ namespace KombitServer.Models {
       existing.CategoryId = request.CategoryId;
       existing.CompanyId = request.CompanyId;
       existing.Credentials = request.Credentials;
+      existing.Certificate = request.Certificate;
       existing.ProductName = request.ProductName;
       existing.Description = request.Description;
       existing.IsIncludePrice = request.IsIncludePrice;
@@ -54,6 +55,9 @@ namespace KombitServer.Models {
       existing.Price = request.Price;
       existing.VideoPath = request.VideoPath;
       existing.UserId = request.UserId;
+      existing.ContactEmail = request.ContactEmail;
+      existing.ContactName = request.ContactName;
+      existing.ContactHandphone = request.ContactHandphone;
       return existing;
     }
     public static ICollection<ProductComment> CommentMapping (ICollection<Interaction> interaction) {

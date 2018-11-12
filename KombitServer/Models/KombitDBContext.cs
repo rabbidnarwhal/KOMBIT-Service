@@ -40,6 +40,11 @@ namespace KombitServer.Models {
           .HasColumnName ("file_path")
           .HasMaxLength (255);
 
+        entity.Property (e => e.FileType)
+          .IsRequired ()
+          .HasColumnName ("file_type")
+          .HasMaxLength (10);
+
         entity.Property (e => e.ProductId)
           .HasColumnName ("product_id")
           .HasColumnType ("int(11)");
@@ -70,6 +75,10 @@ namespace KombitServer.Models {
           .IsRequired ()
           .HasColumnName ("use_case")
           .HasMaxLength (50);
+
+        entity.Property (e => e.Title)
+          .HasColumnName ("title")
+          .HasMaxLength (255);
       });
 
       modelBuilder.Entity<Interaction> (entity => {
@@ -405,6 +414,10 @@ namespace KombitServer.Models {
           .HasColumnName ("credentials")
           .HasColumnType ("text");
 
+        entity.Property (e => e.Certificate)
+          .HasColumnName ("certificate")
+          .HasColumnType ("text");
+
         entity.Property (e => e.Currency)
           .HasColumnName ("currency")
           .HasMaxLength (3);
@@ -457,6 +470,18 @@ namespace KombitServer.Models {
         entity.Property (e => e.VideoPath)
           .HasColumnName ("video_path")
           .HasColumnType ("text");
+
+        entity.Property (e => e.ContactName)
+          .HasColumnName ("contact_name")
+          .HasMaxLength (50);
+
+        entity.Property (e => e.ContactHandphone)
+          .HasColumnName ("contact_handphone")
+          .HasMaxLength (15);
+
+        entity.Property (e => e.ContactEmail)
+          .HasColumnName ("contact_email")
+          .HasMaxLength (100);
       });
 
       modelBuilder.Entity<SysParam> (entity => {

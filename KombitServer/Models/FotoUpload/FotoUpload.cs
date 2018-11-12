@@ -9,13 +9,14 @@ namespace KombitServer.Models {
     public string FotoName { get; set; }
     public string FotoPath { get; set; }
     public string UseCase { get; set; }
-
+    public string Title { get; set; }
     public FotoUpload () { }
-    public FotoUpload (FotoUpload foto, int productId, string useCase) {
+    public FotoUpload (FotoUpload foto, int productId) {
       ProductId = productId;
       FotoName = foto.FotoName;
       FotoPath = foto.FotoPath;
-      UseCase = useCase;
+      UseCase = foto.UseCase;
+      Title = foto.Title;
     }
   }
 }

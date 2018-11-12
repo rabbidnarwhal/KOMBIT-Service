@@ -16,6 +16,7 @@ namespace KombitServer.Models {
     public int? CompanyId { get; set; }
     public int? HoldingId { get; set; }
     public string Role { get; set; }
+    public string PhoneNumber { get; set; }
 
     public static LoginResponse FromData (MUser entity) {
       if (entity == null) {
@@ -28,6 +29,7 @@ namespace KombitServer.Models {
         Name = entity.Name,
         Email = entity.Email,
         Image = entity.Image,
+        PhoneNumber = entity.Handphone
       };
       if (entity.IdRole == 1) {
         response.Role = "Customer";

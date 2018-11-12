@@ -23,11 +23,19 @@ namespace KombitServer.Models {
     public string Currency { get; set; }
     public double? Price { get; set; }
     public string Credentials { get; set; }
+    public string Certificate { get; set; }
     public string VideoPath { get; set; }
     public IEnumerable<FotoUpload> Foto { get; set; }
+    public IEnumerable<FotoUpload> ProductImplementation { get; set; }
+    public IEnumerable<FotoUpload> ProductCertificate { get; set; }
+    public IEnumerable<FotoUpload> ProductClient { get; set; }
     public IEnumerable<AttachmentFile> Attachment { get; set; }
     public ProductContact Contact { get; set; }
+    public ProductContact Poster { get; set; }
     public ProductInteraction Interaction { get; set; }
+    public string ContactEmail { get; set; }
+    public string ContactName { get; set; }
+    public string ContactHandphone { get; set; }
 
     public ProductDetailResponse (Product product, ICollection<Interaction> interaction, int userId) {
       Id = product.Id;
@@ -41,17 +49,24 @@ namespace KombitServer.Models {
       Benefit = product.Benefit;
       Implementation = product.Implementation;
       Faq = product.Faq;
+      Certificate = product.Certificate;
       IsPromoted = product.IsPromoted;
       IsIncludePrice = product.IsIncludePrice;
       Currency = product.Currency;
       Price = product.Price;
       Credentials = product.Credentials;
       VideoPath = product.VideoPath;
-      Foto = product.FotoUpload;
+      Foto = product.FotoUpload.Where(x => x.UseCase.Equals("foto"));
+      ProductCertificate = product.FotoUpload.Where(x => x.UseCase.Equals("certificate"));
+      ProductClient = product.FotoUpload.Where(x => x.UseCase.Equals("client"));
+      ProductImplementation = product.FotoUpload.Where(x => x.UseCase.Equals("implementationImage") || x.UseCase.Equals("implementationVideo"));
       Attachment = product.AttachmentFile;
       Contact = new ProductContact (product.User);
+      Poster = new ProductContact (product.Poster);
       Interaction = ProductMapping.InteractionMapping (interaction, userId);
-
+      ContactEmail = product.ContactEmail;
+      ContactName = product.ContactName;
+      ContactHandphone = product.ContactHandphone;
     }
   }
 }

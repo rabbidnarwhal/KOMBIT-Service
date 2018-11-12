@@ -27,14 +27,14 @@ namespace KombitServer.Controllers {
                 if (!model.Type.Equals ("foto") && !model.Type.Equals ("video") && !model.Type.Equals ("kit"))
                     return BadRequest (new Exception ("Invalid Request " + model.Type));
                 var file = model.File;
-                var path = Path.Combine ("upload", "product_" + model.UserId);
+                var path = Path.Combine ("upload", "products", "poster_" + model.UserId, model.ProductName, model.UseCase);
                 var physicalPath = Path.Combine ("assets", path);
                 if (!Directory.Exists (physicalPath))
                     Directory.CreateDirectory (physicalPath);
                 if (file.Length > 0) {
                     var extArray = file.FileName.Split ('.');
                     var ext = extArray[extArray.Length - 1];
-                    var fileName = model.Type + "_" + model.UseCase + "_" + Guid.NewGuid ().ToString ("N") + "." + ext;
+                    var fileName = Guid.NewGuid ().ToString ("N") + "." + ext;
                     var fullPath = Path.Combine (physicalPath, fileName);
                     using (var stream = new FileStream (fullPath, FileMode.Create)) {
                         await file.CopyToAsync (stream);
@@ -68,14 +68,14 @@ namespace KombitServer.Controllers {
                     .FirstOrDefault (x => x.Id == id);
                 if (updatedCompany == null) return NotFound (new Exception ("Company not found"));
                 var file = Request.Form.Files[0];
-                var path = Path.Combine ("upload", "company_images");
-                var physicalPath = Path.Combine ("assets", path);
+                var path = Path.Combine ("upload", "companies");
+                var physicalPath = Path.Combine ("assets", path, id.ToString());
                 if (!Directory.Exists (physicalPath))
                     Directory.CreateDirectory (physicalPath);
                 if (file.Length > 0) {
                     var extArray = file.FileName.Split ('.');
                     var ext = extArray[extArray.Length - 1];
-                    var fileName = "company_" + id + "_" + Guid.NewGuid ().ToString ("N") + "." + ext;
+                    var fileName = Guid.NewGuid ().ToString ("N") + "." + ext;
                     var fullPath = Path.Combine (physicalPath, fileName);
                     using (var stream = new FileStream (fullPath, FileMode.Create)) {
                         await file.CopyToAsync (stream);
@@ -112,14 +112,14 @@ namespace KombitServer.Controllers {
                     .FirstOrDefault (x => x.Id == id);
                 if (updatedCategpry == null) return NotFound (new Exception ("Company not found"));
                 var file = Request.Form.Files[0];
-                var path = Path.Combine ("upload", "category_images");
-                var physicalPath = Path.Combine ("assets", path);
+                var path = Path.Combine ("upload", "categories");
+                var physicalPath = Path.Combine ("assets", path, id.ToString());
                 if (!Directory.Exists (physicalPath))
                     Directory.CreateDirectory (physicalPath);
                 if (file.Length > 0) {
                     var extArray = file.FileName.Split ('.');
                     var ext = extArray[extArray.Length - 1];
-                    var fileName = "category_" + id + "_" + Guid.NewGuid ().ToString ("N") + "." + ext;
+                    var fileName = Guid.NewGuid ().ToString ("N") + "." + ext;
                     var fullPath = Path.Combine (physicalPath, fileName);
                     using (var stream = new FileStream (fullPath, FileMode.Create)) {
                         await file.CopyToAsync (stream);
@@ -155,14 +155,14 @@ namespace KombitServer.Controllers {
                     .FirstOrDefault (x => x.Id == id);
                 if (updatedUser == null) return NotFound (new Exception ("User not found"));
                 var file = Request.Form.Files[0];
-                var path = Path.Combine ("upload", "user_images");
-                var physicalPath = Path.Combine ("assets", path);
+                var path = Path.Combine ("upload", "users");
+                var physicalPath = Path.Combine ("assets", path, id.ToString());
                 if (!Directory.Exists (physicalPath))
                     Directory.CreateDirectory (physicalPath);
                 if (file.Length > 0) {
                     var extArray = file.FileName.Split ('.');
                     var ext = extArray[extArray.Length - 1];
-                    var fileName = "user_" + id + "_" + Guid.NewGuid ().ToString ("N") + "." + ext;
+                    var fileName = Guid.NewGuid ().ToString ("N") + "." + ext;
                     var fullPath = Path.Combine (physicalPath, fileName);
                     using (var stream = new FileStream (fullPath, FileMode.Create)) {
                         await file.CopyToAsync (stream);

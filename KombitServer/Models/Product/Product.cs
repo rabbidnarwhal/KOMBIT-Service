@@ -23,9 +23,13 @@ namespace KombitServer.Models {
     public string Currency { get; set; }
     public double? Price { get; set; }
     public string Credentials { get; set; }
+    public string Certificate { get; set; }
     public string VideoPath { get; set; }
     public int PosterId { get; set; }
     public int UserId { get; set; }
+    public string ContactName { get; set; }
+    public string ContactHandphone { get; set; }
+    public string ContactEmail { get; set; }
 
     [ForeignKey ("PosterId")]
     public MUser Poster { get; set; }
@@ -59,9 +63,10 @@ namespace KombitServer.Models {
         CategoryId = productRequest.CategoryId;
         CompanyId = productRequest.CompanyId;
         Credentials = productRequest.Credentials;
+        Certificate = productRequest.Certificate;
         Currency = productRequest.Currency;
         Description = productRequest.Description;
-        Faq = productRequest.Implementation;
+        Faq = productRequest.Faq;
         Feature = productRequest.Feature;
         HoldingId = productRequest.HoldingId;
         Implementation = productRequest.Implementation;
@@ -71,6 +76,9 @@ namespace KombitServer.Models {
         ProductName = productRequest.ProductName;
         UserId = productRequest.UserId;
         VideoPath = productRequest.VideoPath;
+        ContactEmail = productRequest.ContactEmail;
+        ContactName = productRequest.ContactName;
+        ContactHandphone = productRequest.ContactHandphone;
       }
     }
   }
