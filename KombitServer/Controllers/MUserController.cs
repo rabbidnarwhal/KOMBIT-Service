@@ -28,12 +28,11 @@ namespace KombitServer.Controllers {
     }
 
     /// <summary>Get all user names only</summary>
-    [HttpGet ("list/{id}")]
+    [HttpGet ("list")]
     [ProducesResponseType (typeof (MUser), 200)]
     public IEnumerable<Object> GetListUserName (int id) {
       var user = _context.MUser
-        .Select (x => new { Id = x.Id, Name = x.Name })
-        .Where (x => x.Id != id)
+        .Select (x => new { Id = x.Id, Name = x.Name, Handphone = x.Handphone })
         .ToList ();
       return user;
     }
