@@ -328,7 +328,7 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 
-.vscode/*
+*/.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -339,4 +339,3 @@ ASALocalRun/
 */wwwroot/*
 */wwwroot/uploads/*
 */assets/*
-

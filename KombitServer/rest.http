@@ -10,8 +10,7 @@ GET http://localhost:49205/api/company
 ###
 GET http://localhost:49205/api/category/1
 ###
-GET http://localhost:49205/api/product
-###
+GET http://localhost:49205/api/product/37/user/1
 
 POST http://localhost:49205/api/users/login
 Content-Type: application/json
