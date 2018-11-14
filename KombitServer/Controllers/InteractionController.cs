@@ -45,7 +45,7 @@ namespace KombitServer.Controllers {
       }
       Product post = _context.Product.Include (x => x.Poster).FirstOrDefault (x => x.Id == interaction.ProductId);
 
-      if (interaction.LikedBy != post.UserId) {
+      if (interaction.LikedBy != post.PosterId) {
 
         string likedBy = _context.MUser.FirstOrDefault (x => x.Id == interaction.LikedBy).Name;
         string postOwner = post.Poster.Name;
@@ -79,7 +79,7 @@ namespace KombitServer.Controllers {
       _context.Interaction.Add (interaction);
 
       Product post = _context.Product.Include (x => x.Poster).FirstOrDefault (x => x.Id == interaction.ProductId);
-      if (interaction.CommentBy != post.UserId) {
+      if (interaction.CommentBy != post.PosterId) {
 
         string commentBy = _context.MUser.FirstOrDefault (x => x.Id == interaction.CommentBy).Name;
         string postOwner = post.Poster.Name;

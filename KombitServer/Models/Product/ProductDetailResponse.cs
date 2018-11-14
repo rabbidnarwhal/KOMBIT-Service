@@ -61,7 +61,7 @@ namespace KombitServer.Models {
       ProductClient = product.FotoUpload.Where(x => x.UseCase.Equals("client"));
       ProductImplementation = product.FotoUpload.Where(x => x.UseCase.Equals("implementationImage") || x.UseCase.Equals("implementationVideo"));
       Attachment = product.AttachmentFile;
-      Contact = new ProductContact (product.User);
+      Contact = product.Contact == null ? null : new ProductContact (product.Contact);
       Poster = new ProductContact (product.Poster);
       Interaction = ProductMapping.InteractionMapping (interaction, userId);
       ContactEmail = product.ContactEmail;

@@ -35,12 +35,12 @@ namespace KombitServer.Controllers {
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IEnumerable<ProductResponse> GetAllWithLikedIndicator (int? id) {
             var product = _context.Product
-                .Include (x => x.Holding)
-                .Include (x => x.Company)
-                .Include (x => x.User)
-                .Include (x => x.FotoUpload)
-                .Include (x => x.Interaction)
-                .Include (x => x.Category)
+                .Include (x => x.Holding).DefaultIfEmpty()
+                .Include (x => x.Company).DefaultIfEmpty()
+                .Include (x => x.Contact).DefaultIfEmpty()
+                .Include (x => x.FotoUpload).DefaultIfEmpty()
+                .Include (x => x.Interaction).DefaultIfEmpty()
+                .Include (x => x.Category).DefaultIfEmpty()
                 .ToList ();
             return ProductMapping.ListResponseMapping (product, id).OrderByDescending (x => x.Id);
         }
@@ -53,12 +53,12 @@ namespace KombitServer.Controllers {
         public IEnumerable<ProductResponse> GetAllByUser (int? id) {
             if (id == null) return GetAll ();
             var product = _context.Product
-                .Include (x => x.Holding)
-                .Include (x => x.Company)
-                .Include (x => x.User)
-                .Include (x => x.FotoUpload)
-                .Include (x => x.Interaction)
-                .Include (x => x.Category)
+                .Include (x => x.Holding).DefaultIfEmpty()
+                .Include (x => x.Company).DefaultIfEmpty()
+                .Include (x => x.Contact).DefaultIfEmpty()
+                .Include (x => x.FotoUpload).DefaultIfEmpty()
+                .Include (x => x.Interaction).DefaultIfEmpty()
+                .Include (x => x.Category).DefaultIfEmpty()
                 .Where (x => x.PosterId == id)
                 .ToList ();
             return ProductMapping.ListResponseMapping (product, id).OrderByDescending (x => x.Id);
@@ -71,14 +71,14 @@ namespace KombitServer.Controllers {
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetDetail (int id, int userId) {
             var product = _context.Product
-                .Include (x => x.Holding)
-                .Include (x => x.Company)
-                .Include (x => x.User)
-                .Include (x => x.Poster)
-                .Include (x => x.FotoUpload)
-                .Include (x => x.Category)
-                .Include (x => x.Interaction)
-                .Include (x => x.AttachmentFile)
+                .Include (x => x.Holding).DefaultIfEmpty()
+                .Include (x => x.Company).DefaultIfEmpty()
+                .Include (x => x.Contact).DefaultIfEmpty()
+                .Include (x => x.Poster).DefaultIfEmpty()
+                .Include (x => x.FotoUpload).DefaultIfEmpty()
+                .Include (x => x.Category).DefaultIfEmpty()
+                .Include (x => x.Interaction).DefaultIfEmpty()
+                .Include (x => x.AttachmentFile).DefaultIfEmpty()
                 .FirstOrDefault (x => x.Id == id);
             var interaction = _context.Interaction.Where (x => x.ProductId == id).Include (x => x.CommentUser).ToList ();
             if (product == null) return NotFound (new Exception ("Product not found"));
@@ -92,13 +92,13 @@ namespace KombitServer.Controllers {
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetProductEdit (int id) {
             var product = _context.Product
-                .Include (x => x.Holding)
-                .Include (x => x.Company)
-                .Include (x => x.User)
-                .Include (x => x.FotoUpload)
-                .Include (x => x.Category)
-                .Include (x => x.Interaction)
-                .Include (x => x.AttachmentFile)
+                .Include (x => x.Holding).DefaultIfEmpty()
+                .Include (x => x.Company).DefaultIfEmpty()
+                .Include (x => x.Contact).DefaultIfEmpty()
+                .Include (x => x.FotoUpload).DefaultIfEmpty()
+                .Include (x => x.Category).DefaultIfEmpty()
+                .Include (x => x.Interaction).DefaultIfEmpty()
+                .Include (x => x.AttachmentFile).DefaultIfEmpty()
                 .FirstOrDefault (x => x.Id == id);
             if (product == null) return NotFound (new Exception ("Product not found"));
             return Ok (new ProductRequest (product));
@@ -131,7 +131,7 @@ namespace KombitServer.Controllers {
 
             var productId = _context.Product.LastOrDefault (x =>
                 x.ProductName == productRequest.ProductName && x.CategoryId == productRequest.CategoryId &&
-                x.UserId == productRequest.UserId && x.PosterId == productRequest.PosterId).Id;
+                x.ContactId == productRequest.ContactId && x.PosterId == productRequest.PosterId).Id;
 
             foreach (var foto in productRequest.Foto) {
                 _context.FotoUpload.Add (new FotoUpload (foto, productId));

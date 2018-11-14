@@ -54,7 +54,7 @@ namespace KombitServer.Models {
       existing.Currency = request.Currency;
       existing.Price = request.Price;
       existing.VideoPath = request.VideoPath;
-      existing.UserId = request.UserId;
+      existing.ContactId = request.ContactId;
       existing.ContactEmail = request.ContactEmail;
       existing.ContactName = request.ContactName;
       existing.ContactHandphone = request.ContactHandphone;

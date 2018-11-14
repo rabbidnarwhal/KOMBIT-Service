@@ -459,8 +459,8 @@ namespace KombitServer.Models {
           .HasColumnName ("product_name")
           .HasMaxLength (200);
 
-        entity.Property (e => e.UserId)
-          .HasColumnName ("user_id")
+        entity.Property (e => e.ContactId)
+          .HasColumnName ("contact_id")
           .HasColumnType ("int(11)");
 
         entity.Property (e => e.PosterId)

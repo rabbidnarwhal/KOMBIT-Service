@@ -7,6 +7,7 @@ using FluentValidation;
 
 namespace KombitServer.Models {
   public class ProductContact {
+    public int Id {get; set;}
     public string Name { get; set; }
     public string Email { get; set; }
     public string JobTitle { get; set; }
@@ -16,6 +17,7 @@ namespace KombitServer.Models {
     public string AddressKoordinat { get; set; }
     public string Image { get; set; }
     public ProductContact (MUser user) {
+      Id = user.Id;
       Name = user.Name;
       Email = user.Email;
       JobTitle = user.JobTitle;

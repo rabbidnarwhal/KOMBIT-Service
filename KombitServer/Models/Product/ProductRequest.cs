@@ -27,7 +27,7 @@ namespace KombitServer.Models {
         public FotoUpload[] ProductCertificate { get; set; }
         public FotoUpload[] ProductClient { get; set; }
         public AttachmentFile[] Attachment { get; set; }
-        public int UserId { get; set; }
+        public int ContactId { get; set; }
         public int PosterId { get; set; }
         public string ContactName { get; set; }
         public string ContactHandphone { get; set; }
@@ -47,7 +47,7 @@ namespace KombitServer.Models {
             Currency = product.Currency;
             Price = product.Price;
             ProductName = product.ProductName;
-            UserId = product.UserId;
+            ContactId = product.ContactId;
             PosterId = product.PosterId;
             VideoPath = product.VideoPath;
             BusinessTarget = product.BusinessTarget;
