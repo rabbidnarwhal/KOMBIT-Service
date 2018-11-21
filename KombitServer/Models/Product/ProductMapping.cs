@@ -58,6 +58,9 @@ namespace KombitServer.Models {
       existing.ContactEmail = request.ContactEmail;
       existing.ContactName = request.ContactName;
       existing.ContactHandphone = request.ContactHandphone;
+      existing.PosterAsContact = request.PosterAsContact;
+      existing.IsActive = true;
+      existing.UpdatedDate = DateTime.Now.ToUniversalTime();
       return existing;
     }
     public static ICollection<ProductComment> CommentMapping (ICollection<Interaction> interaction) {

@@ -20,6 +20,8 @@ namespace KombitServer.Models {
     public string Faq { get; set; }
     public Boolean IsPromoted { get; set; }
     public Boolean IsIncludePrice { get; set; }
+    public Boolean IsActive { get; set; }
+    public Boolean PosterAsContact { get; set; }
     public string Currency { get; set; }
     public double? Price { get; set; }
     public string Credentials { get; set; }
@@ -30,6 +32,8 @@ namespace KombitServer.Models {
     public string ContactName { get; set; }
     public string ContactHandphone { get; set; }
     public string ContactEmail { get; set; }
+    public string UpdateIntervalInSecond { get; set; }
+    public DateTime UpdatedDate { get; set; }
 
     [ForeignKey ("PosterId")]
     public MUser Poster { get; set; }
@@ -56,7 +60,7 @@ namespace KombitServer.Models {
     public MCategory Category { get; set; }
 
     public Product () { }
-    public Product (ProductRequest productRequest = null) {
+    public Product (ProductRequest productRequest, string inteval) {
       if (productRequest != null) {
         Benefit = productRequest.Benefit;
         BusinessTarget = productRequest.BusinessTarget;
@@ -79,6 +83,10 @@ namespace KombitServer.Models {
         ContactEmail = productRequest.ContactEmail;
         ContactName = productRequest.ContactName;
         ContactHandphone = productRequest.ContactHandphone;
+        PosterAsContact = productRequest.PosterAsContact;
+        UpdatedDate = DateTime.Now.ToUniversalTime();
+        IsActive = true;
+        UpdateIntervalInSecond = inteval;
       }
     }
   }

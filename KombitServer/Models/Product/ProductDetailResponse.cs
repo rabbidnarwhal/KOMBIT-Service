@@ -20,6 +20,7 @@ namespace KombitServer.Models {
     public string Faq { get; set; }
     public Boolean IsPromoted { get; set; }
     public Boolean IsIncludePrice { get; set; }
+    public Boolean PosterAsContact { get; set; }
     public string Currency { get; set; }
     public double? Price { get; set; }
     public string Credentials { get; set; }
@@ -52,6 +53,7 @@ namespace KombitServer.Models {
       Certificate = product.Certificate;
       IsPromoted = product.IsPromoted;
       IsIncludePrice = product.IsIncludePrice;
+      PosterAsContact = product.PosterAsContact;
       Currency = product.Currency;
       Price = product.Price;
       Credentials = product.Credentials;

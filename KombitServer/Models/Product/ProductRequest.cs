@@ -17,6 +17,7 @@ namespace KombitServer.Models {
         public string Faq { get; set; }
         public bool IsPromoted { get; set; }
         public bool IsIncludePrice { get; set; }
+        public bool PosterAsContact { get; set; }
         public string Currency { get; set; }
         public double? Price { get; set; }
         public string Credentials { get; set; }
@@ -58,6 +59,7 @@ namespace KombitServer.Models {
             IsPromoted = product.IsPromoted;
             ContactName = product.ContactName;
             ContactHandphone = product.ContactHandphone;
+            PosterAsContact = product.PosterAsContact;
 
             Foto = product.FotoUpload.Where(x => x.UseCase.Equals("foto")).ToArray ();
             ProductCertificate = product.FotoUpload.Where(x => x.UseCase.Equals("certificate")).ToArray ();
