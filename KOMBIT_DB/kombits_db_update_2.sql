@@ -6,6 +6,27 @@ CREATE TABLE `sys_param` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `kombit`.`sys_param` (
+	`param_code`, 
+	`param_value`, 
+	`description`
+) VALUES (
+	'DEFAULT_CURRENCY', 
+	'Rp', 
+	'Currency default yang digunakan system'
+);
+
+INSERT INTO `kombit`.`sys_param` (
+	`param_code`, 
+	`param_value`, 
+	`description`
+) VALUES (
+	'DEFAULT_PRODUCT_INTERVAL', 
+	'2592000', 
+	'Product interval default yang digunakan system untuk menentukan interval saat pertama kali post dibuat, value dalam satuan detik'
+);
+
+
 CREATE TABLE `notification` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`content` VARCHAR(255) NOT NULL,
