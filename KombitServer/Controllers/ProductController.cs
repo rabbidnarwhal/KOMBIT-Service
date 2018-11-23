@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KombitServer.Models;
 using KombitServer.Services;
@@ -20,27 +21,42 @@ namespace KombitServer.Controllers {
             _hostingEnvironment = hostingEnvironment;
         }
 
-        /// <summary>Get All product</summary>
+        /// <summary>Get All active product</summary>
         [HttpGet]
         [ProducesResponseType (typeof (List<ProductResponse>), 200)]
 
-        public IEnumerable<ProductResponse> GetAll () {
-            return GetAllWithLikedIndicator (null);
+        public IEnumerable<ProductResponse> GetAllActive () {
+          return GetAllWithLikedIndicator(null);
+        }
+
+        /// <summary>Get All product</summary>
+
+        [HttpGet ("all")]
+        public IEnumerable<ProductResponse> GetAllProducts () {
+            var product = _context.Product
+                .Include (x => x.Holding)
+                .Include (x => x.Company)
+                .Include (x => x.Contact)
+                .Include (x => x.FotoUpload)
+                .Include (x => x.Interaction)
+                .Include (x => x.Category)
+                .ToList ();
+            return ProductMapping.ListResponseMapping (product, null).OrderByDescending (x => x.Id);
         }
 
         /// <summary>Get All product with liked indicator by user</summary>
         [HttpGet ("like/user/{id}")]
         [ProducesResponseType (typeof (List<ProductResponse>), 200)]
-
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IEnumerable<ProductResponse> GetAllWithLikedIndicator (int? id) {
             var product = _context.Product
-                .Include (x => x.Holding).DefaultIfEmpty()
-                .Include (x => x.Company).DefaultIfEmpty()
-                .Include (x => x.Contact).DefaultIfEmpty()
-                .Include (x => x.FotoUpload).DefaultIfEmpty()
-                .Include (x => x.Interaction).DefaultIfEmpty()
-                .Include (x => x.Category).DefaultIfEmpty()
+                .Include (x => x.Holding)
+                .Include (x => x.Company)
+                .Include (x => x.Contact)
+                .Include (x => x.FotoUpload)
+                .Include (x => x.Interaction)
+                .Include (x => x.Category)
+                .Where(x => x.IsActive)
                 .ToList ();
             return ProductMapping.ListResponseMapping (product, id).OrderByDescending (x => x.Id);
         }
@@ -51,14 +67,14 @@ namespace KombitServer.Controllers {
 
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IEnumerable<ProductResponse> GetAllByUser (int? id) {
-            if (id == null) return GetAll ();
+            if (id == null) return GetAllActive ();
             var product = _context.Product
-                .Include (x => x.Holding).DefaultIfEmpty()
-                .Include (x => x.Company).DefaultIfEmpty()
-                .Include (x => x.Contact).DefaultIfEmpty()
-                .Include (x => x.FotoUpload).DefaultIfEmpty()
-                .Include (x => x.Interaction).DefaultIfEmpty()
-                .Include (x => x.Category).DefaultIfEmpty()
+                .Include (x => x.Holding)
+                .Include (x => x.Company)
+                .Include (x => x.Contact)
+                .Include (x => x.FotoUpload)
+                .Include (x => x.Interaction)
+                .Include (x => x.Category)
                 .Where (x => x.PosterId == id)
                 .ToList ();
             return ProductMapping.ListResponseMapping (product, id).OrderByDescending (x => x.Id);
@@ -71,14 +87,14 @@ namespace KombitServer.Controllers {
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetDetail (int id, int userId) {
             var product = _context.Product
-                .Include (x => x.Holding).DefaultIfEmpty()
-                .Include (x => x.Company).DefaultIfEmpty()
-                .Include (x => x.Contact).DefaultIfEmpty()
-                .Include (x => x.Poster).DefaultIfEmpty()
-                .Include (x => x.FotoUpload).DefaultIfEmpty()
-                .Include (x => x.Category).DefaultIfEmpty()
-                .Include (x => x.Interaction).DefaultIfEmpty()
-                .Include (x => x.AttachmentFile).DefaultIfEmpty()
+                .Include (x => x.Holding)
+                .Include (x => x.Company)
+                .Include (x => x.Contact)
+                .Include (x => x.Poster)
+                .Include (x => x.FotoUpload)
+                .Include (x => x.Category)
+                .Include (x => x.Interaction)
+                .Include (x => x.AttachmentFile)
                 .FirstOrDefault (x => x.Id == id);
             var interaction = _context.Interaction.Where (x => x.ProductId == id).Include (x => x.CommentUser).ToList ();
             if (product == null) return NotFound (new Exception ("Product not found"));
@@ -92,13 +108,13 @@ namespace KombitServer.Controllers {
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetProductEdit (int id) {
             var product = _context.Product
-                .Include (x => x.Holding).DefaultIfEmpty()
-                .Include (x => x.Company).DefaultIfEmpty()
-                .Include (x => x.Contact).DefaultIfEmpty()
-                .Include (x => x.FotoUpload).DefaultIfEmpty()
-                .Include (x => x.Category).DefaultIfEmpty()
-                .Include (x => x.Interaction).DefaultIfEmpty()
-                .Include (x => x.AttachmentFile).DefaultIfEmpty()
+                .Include (x => x.Holding)
+                .Include (x => x.Company)
+                .Include (x => x.Contact)
+                .Include (x => x.FotoUpload)
+                .Include (x => x.Category)
+                .Include (x => x.Interaction)
+                .Include (x => x.AttachmentFile)
                 .FirstOrDefault (x => x.Id == id);
             if (product == null) return NotFound (new Exception ("Product not found"));
             return Ok (new ProductRequest (product));
@@ -120,13 +136,56 @@ namespace KombitServer.Controllers {
             return Ok(response);
         }
 
+        [HttpGet ("check_update_status")]
+        [ProducesResponseType (200)]
+        public async Task<IActionResult> CheckUpdateStatus () {
+            var interval = _context.SysParam.FirstOrDefault(x => x.ParamCode == "DEFAULT_PRODUCT_INTERVAL").ParamValue;
+            var products = _context.Product
+                .Include(x => x.Poster)
+                .Where(x => x.IsActive && x.UpdatedDate.AddSeconds(int.Parse(interval)).CompareTo(DateTime.UtcNow) < 1)
+                .ToList();
+            if (products == null) {
+                return Ok();
+            }
+            foreach(var item in products) {
+                // var interval = int.Parse(item.UpdateIntervalInSecond);
+                // var dateTimeProduct = item.UpdatedDate;
+                // var dateTimeNow = DateTime.UtcNow;
+                // dateTimeProduct.AddSeconds(interval);
+                // var compare = dateTimeProduct.CompareTo(dateTimeNow);
+                item.IsActive = false;
+                _context.Product.Update(item);
+                NotificationRequest notif = new NotificationRequest () {
+                    Body = item.ProductName + " is diactivated, please update your product to make it active again",
+                    Title = "Update Product",
+                };
+                Notification newNotif = new Notification(notif) {
+                    To = item.Poster.Id,
+                    ModuleId = item.Id,
+                    ModuleName = "product",
+                    ModuleUseCase = "expired",
+                    PushDate = DateTime.UtcNow
+                };
+                _context.Notification.Add (newNotif);
+                if (item.Poster.PushId != null) {
+                  NotificationRequestToTopic body = new NotificationRequestToTopic (notif, item.Poster.PushId);
+                  body.data.notId = item.Id;
+                  string jsonBody = JsonConvert.SerializeObject (body);
+                  Utility.sendPushNotification (jsonBody);
+                }
+            }
+            await _context.SaveChangesAsync();
+            return Ok(products.Count() + " product need to be updated");
+        }
+
         /// <summary>Add new product</summary>
         [HttpPost]
         public IActionResult NewProduct ([FromBody] ProductRequest productRequest) {
             if (!ModelState.IsValid) return BadRequest (ModelState);
             if (!productRequest.Foto.Any ()) return BadRequest ("At least 1 image required.");
 
-            _context.Product.Add (new Product (productRequest));
+            var interval = _context.SysParam.FirstOrDefault(x => x.ParamCode.Equals("DEFAULT_PRODUCT_INTERVAL"));
+            _context.Product.Add (new Product (productRequest, interval.ParamValue));
             _context.Commit ();
 
             var productId = _context.Product.LastOrDefault (x =>
@@ -160,7 +219,7 @@ namespace KombitServer.Controllers {
                 }
             }
 
-            var body = NotificationEmptyRequest.Init ();
+            var body = new NotificationEmptyRequest ();
             var jsonBody = JsonConvert.SerializeObject (body);
             Utility.sendPushNotification (jsonBody);
             return Ok (new { msg = "Post Published" });
@@ -349,6 +408,57 @@ namespace KombitServer.Controllers {
             _context.Commit ();
 
             return Ok (new { msg = "Post Updated" });
+        }
+
+        /// <summary>Update product interval</summary>
+        [HttpPost ("{id}/interval/{interval}")]
+        public async Task<IActionResult> UpdateProductInterval (int? id, string interval) {
+            if (id == null) return BadRequest ();
+            if (!Regex.IsMatch(interval, @"\d")) {
+                return BadRequest();
+            }
+
+            var product = await _context.Product.FirstOrDefaultAsync (x => x.Id == id);
+            product.UpdateIntervalInSecond = interval;
+            _context.Update (product);
+            await _context.SaveChangesAsync ();
+            return Ok ();
+        }
+
+        [HttpPost ("{id}/{actionProduct}")]
+        public async Task<IActionResult> updateProductStatus (int? id, string interval, string actionProduct) {
+            var listAction = new List<string> ();
+            listAction.Add("promote");
+            listAction.Add("demote");
+            listAction.Add("active");
+            listAction.Add("deactive");
+            if (id == null || !listAction.Contains(actionProduct)) return BadRequest ();
+
+            var product = await _context.Product.FirstOrDefaultAsync (x => x.Id == id);
+            switch (actionProduct)
+            {
+                case("promote"): {
+                    product.IsPromoted = true;
+                    break;
+                }
+                case("demote"): {
+                    product.IsPromoted = false;
+                    break;
+                }
+                case("active"): {
+                    product.IsActive = true;
+                    break;
+                }
+                case("deactive"): {
+                    product.IsActive = false;
+                    break;
+                }
+                default:
+                    break;
+            }
+            _context.Update (product);
+            await _context.SaveChangesAsync ();
+            return Ok ();
         }
 
         /// <summary>Delete product</summary>

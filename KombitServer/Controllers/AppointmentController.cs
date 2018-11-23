@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KombitServer.Models;
+using KombitServer.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace KombitServer.Controllers {
   [Route ("api/appointment")]
@@ -21,7 +23,7 @@ namespace KombitServer.Controllers {
     public IActionResult GetAppointments (int id) {
       List<string> status = new List<string> ();
       status.Add ("DONE");
-      status.Add ("REJECT");
+      status.Add ("REJECTED");
 
       var appointment = _context.Appointment
         .OrderByDescending (x => x.Date)
@@ -62,6 +64,31 @@ namespace KombitServer.Controllers {
       var appointment = new Appointment (request, "PENDING");
       _context.Appointment.Add (appointment);
       _context.Commit ();
+
+      var createdAppointment = _context.Appointment
+        .Include(x => x.Maker)
+        .Include(x => x.Recepient)
+        .LastOrDefault(x => x.Date == request.Date && x.LocationCoords == request.LocationCoords && x.RecepientId == request.RecepientId);
+
+      NotificationRequest notif = new NotificationRequest () {
+        Body = "Hi " + createdAppointment.Recepient.Name + ", " + createdAppointment.Maker.Name + " want to arrange meeting with you",
+        Title = "Meeting Arranged"
+      };
+
+      Notification newNotif = new Notification (notif) {
+        To = createdAppointment.RecepientId,
+        ModuleId = createdAppointment.Id,
+        ModuleName = "appointment",
+        ModuleUseCase = "create",
+        PushDate = DateTime.UtcNow
+      };
+      _context.Notification.Add (newNotif);
+      if (createdAppointment.Recepient.PushId != null) {
+        NotificationRequestToTopic body = new NotificationRequestToTopic (notif, createdAppointment.Recepient.PushId);
+        string jsonBody = JsonConvert.SerializeObject (body);
+        Utility.sendPushNotification (jsonBody);
+      }
+      _context.Commit();
       return Ok ();
     }
 
@@ -69,12 +96,36 @@ namespace KombitServer.Controllers {
     [HttpPost ("{appointmentId}")]
     [ProducesResponseType (200)]
     public IActionResult ChangeAppointmentStatus ([FromBody] AppointmentUpdateStatusRequest statusRequest, int appointmentId) {
-      if (statusRequest.Status.ToLower().Contains("reject") || statusRequest.Status.ToLower().Contains("approve") || statusRequest.Status.ToLower().Contains("done") || statusRequest.Status.ToLower().Contains("delete")) {
-        var appointment = _context.Appointment.FirstOrDefault (x => x.Id == appointmentId);
+      if (statusRequest.Status.ToLower().Contains("rejected") || statusRequest.Status.ToLower().Contains("approved") || statusRequest.Status.ToLower().Contains("done") || statusRequest.Status.ToLower().Contains("deleted")) {
+        var appointment = _context.Appointment
+          .Include(x => x.Maker)
+          .Include(x => x.Recepient)
+          .FirstOrDefault (x => x.Id == appointmentId);
         appointment.Status = statusRequest.Status.ToUpper();
         appointment.RejectMessage = statusRequest.RejectMessage;
         _context.Appointment.Update (appointment);
         _context.Commit ();
+
+        var statusMessage = statusRequest.Status.ToLower();
+
+        NotificationRequest notif = new NotificationRequest () {
+          Body = "Hi " + appointment.Maker.Name + ", your meeting with " + appointment.Recepient.Name + " has been " + statusMessage,
+          Title = "Meeting " + statusMessage.First().ToString().ToUpper() + statusMessage.Substring(1)
+        };
+
+        Notification newNotif = new Notification (notif) {
+          To = appointment.MakerId,
+          ModuleId = appointment.Id,
+          ModuleName = "appointment",
+          ModuleUseCase = "status",
+          PushDate = DateTime.UtcNow
+        };
+        _context.Notification.Add (newNotif);
+        if (appointment.Maker.PushId != null) {
+          NotificationRequestToTopic body = new NotificationRequestToTopic (notif, appointment.Maker.PushId);
+          string jsonBody = JsonConvert.SerializeObject (body);
+          Utility.sendPushNotification (jsonBody);
+        }
         return Ok ();
       } else {
         return NotFound();

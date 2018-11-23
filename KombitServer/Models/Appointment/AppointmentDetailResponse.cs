@@ -8,6 +8,7 @@ namespace KombitServer.Models
         public int Id { get; set; }
         public string MakerName { get; set; }
         public string RecepientName { get; set; }
+        public int ProductId {get; set;}
         public string ProductName { get; set; }
         public string ProductSolution { get; set; }
         public string ProductCompany { get; set; }
@@ -21,6 +22,7 @@ namespace KombitServer.Models
         
         public AppointmentDetailResponse(Appointment appointment) {
             this.Id = appointment.Id;
+            this.ProductId = appointment.ProductId;
             this.MakerName = appointment.Maker.Name;
             this.RecepientName = appointment.Recepient.Name;
             this.ProductName = appointment.Product.ProductName;

@@ -25,6 +25,7 @@ namespace KombitServer.Models {
     public string Position { get; set; }
     public Boolean? IsLike { get; set; }
     public Boolean IsPromoted { get; set; }
+    public Boolean IsActive { get; set; }
     public Boolean IsIncludePrice { get; set; }
     public string Currency { get; set; }
     public Double? Price { get; set; }
@@ -37,6 +38,7 @@ namespace KombitServer.Models {
       CategoryName = product.Category.Category;
       IsIncludePrice = product.IsIncludePrice;
       IsPromoted = product.IsPromoted;
+      IsActive = product.IsActive;
       Currency = product.Currency;
       Price = product.Price;
       TotalLike = product.Interaction.Count (x => x.IsLike == true);
