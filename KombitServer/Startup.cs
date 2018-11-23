@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using KombitServer.Models;
+using KombitServer.ScheduleTask;
+using KombitServer.ScheduleTask.Scheduling;
+using KombitServer.ScheduleTask.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +35,12 @@ namespace KombitServer {
       services.AddSingleton<IFileProvider> (
         new PhysicalFileProvider (path)
       );
+      services.AddSingleton<IScheduledTask, CheckProductUpdate>();
+      services.AddScheduler((sender, args) =>
+      {
+          Console.Write(args.Exception.Message);
+          args.SetObserved();
+      });
       services.AddMvc ();
       services.AddSwaggerGen (c => {
         c.SwaggerDoc ("v1", new Info { Title = "KombitApi", Version = "v1" });
