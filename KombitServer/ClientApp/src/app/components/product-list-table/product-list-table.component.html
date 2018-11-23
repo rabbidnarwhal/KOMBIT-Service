@@ -1,0 +1,63 @@
+<div class="title-page">
+  <h2>Produk List</h2>
+</div>
+<form nz-form class="ant-advanced-search-form">
+  <div nz-row>
+    <div nz-col [nzSpan]="12">
+      <nz-form-item nzFlex>
+        <button nz-button type="button" [nzType]="'primary'" (click)="changeIntervalProduct()">Change Update Interval</button>
+        <nz-divider style="height: 100%;" nzType="vertical"></nz-divider>
+        <!-- <button nz-button type="button" [disabled]="disabledButton" [nzType]="'primary'" [nzLoading]="operating" (click)="promoteProduct()">
+          Promote
+        </button> -->
+        <nz-dropdown>
+          <button nz-button type="button" [nzType]="'primary'" [nzLoading]="operating" nz-dropdown [disabled]="disabledButton">
+            Action<i class="anticon anticon-down"></i>
+          </button>
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item>
+              <button class="dropdown-button" (click)="promoteProduct()">Promote</button>
+            </li>
+            <li nz-menu-item>
+              <button class="dropdown-button" (click)="promoteProduct(null, false)">Demote</button>
+            </li>
+          </ul>
+        </nz-dropdown>
+        <span style="margin: 6px;" *ngIf="checkedNumber">Selected {{checkedNumber}} product(s)</span>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12" class="right-search">
+      <nz-form-item nzFlex>
+        <nz-form-label [nzSpan]="16" [nzFor]="'search'">Search</nz-form-label>
+        <nz-form-control [nzSpan]="8">
+          <input nz-input placeholder="" [(ngModel)]="searchString" name="search" id="search" (input)="updateFilter()">
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</form>
+<nz-table #ajaxTable [nzShowTotal] [nzFrontPagination]="true" nzSize="small" [nzData]="dataSet" [nzLoading]="loading" [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" (nzCurrentPageDataChange)="currentPageDataChange($event)">
+  <thead (nzSortChange)="sort($event)" nzSingleSort>
+    <tr>
+      <th nzShowCheckbox [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)"></th>
+      <th>Product Name</th>
+      <th>Active</th>
+      <th>Promote</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
+      <tr>
+        <td nzShowCheckbox [(nzChecked)]="data.checked" (nzCheckedChange)="refreshStatus()"></td>
+        <td>{{data.productName}}</td>
+        <td>{{data.isActive ? 'Yes' : 'No'}}</td>
+        <td>{{data.isPromoted ? 'Yes' : 'No'}}</td>
+        <td>
+          <a (click)="promoteProduct(data)">{{data.isPromoted ? 'Demote' : 'Promote'}}</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="activeProduct(data)">{{data.isActive ? 'Deactive' : 'Active'}}</a>
+        </td>
+      </tr>
+    </ng-template>
+  </tbody>
+</nz-table>

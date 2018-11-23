@@ -8,8 +8,14 @@
     <ul nz-menu [nzTheme]="'dark'" [nzMode]="'inline'" [nzInlineCollapsed]="isCollapsed">
       <li nz-menu-item routerLink="/dashboard" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact:true}">
         <span>
-          <i class="anticon anticon-user"></i>
+          <i class="anticon anticon-layout"></i>
           <span class="nav-text">Dashboard</span>
+        </span>
+      </li>
+      <li nz-menu-item routerLink="/dashboard/product" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact:true}">
+        <span>
+          <i class="anticon anticon-database"></i>
+          <span class="nav-text">Product</span>
         </span>
       </li>
     </ul>

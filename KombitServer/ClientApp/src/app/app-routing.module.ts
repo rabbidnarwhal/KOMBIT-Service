@@ -9,15 +9,11 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { ProductPostComponent } from './components/product-post/product-post.component';
 import { RoleGuard } from './guards/role.guard';
 import { ProductPosterGuard } from './guards/product-poster.guard';
+import { ProductListTableComponent } from './components/product-list-table/product-list-table.component';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/home',
-    pathMatch: 'full'
-  },
-  {
-    path: 'home',
     component: LayoutPublicComponent,
     children: [
       {
@@ -40,6 +36,13 @@ const routes: Routes = [
         component: DashboardComponent,
         data: {
           breadcrumb: 'Dashboard'
+        }
+      },
+      {
+        path: 'product',
+        component: ProductListTableComponent,
+        data: {
+          breadcrumb: 'Product'
         }
       }
     ]

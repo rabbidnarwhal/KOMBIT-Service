@@ -1,0 +1,23 @@
+<form nz-form [formGroup]="intervalForm">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="6" nzRequired>Product Interval</nz-form-label>
+    <nz-form-control [nzSpan]="16">
+      <nz-form-control [nzSpan]="6" nzHasFeedback>
+        <input nz-input min="1" formControlName="interval" placeholder="" type="number">
+      </nz-form-control>
+      <div nz-col [nzSpan]="1"> </div>
+      <nz-form-control [nzSpan]="12" nzHasFeedback>
+        <nz-select formControlName="intervalType" nzPlaceHolder="">
+          <ng-template ngFor let-data [ngForOf]="intervalData">
+            <nz-option [nzValue]="data.type" [nzLabel]="data.label"></nz-option>
+          </ng-template>
+        </nz-select>
+      </nz-form-control>
+      <nz-form-explain *ngIf="intervalForm.get('interval').dirty && intervalForm.get('interval').errors">
+        <ng-container *ngIf="intervalForm.get('interval').hasError('required')">
+          Product interval is required!
+        </ng-container>
+      </nz-form-explain>
+    </nz-form-control>
+  </nz-form-item>
+</form>

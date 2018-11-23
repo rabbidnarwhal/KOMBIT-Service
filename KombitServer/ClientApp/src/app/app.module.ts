@@ -19,6 +19,8 @@ import { ChartjsModule } from '@ctrl/ngx-chartjs';
 import { ProductPostComponent } from './components/product-post/product-post.component';
 import { NumbersOnly } from './directives/number-only.directive';
 import { QuillModule } from 'ngx-quill';
+import { ProductListTableComponent } from './components/product-list-table/product-list-table.component';
+import { ProductIntervalComponent } from './components/product-interval/product-interval.component';
 
 registerLocaleData(en);
 
@@ -31,7 +33,9 @@ registerLocaleData(en);
     LayoutPublicComponent,
     ProductListComponent,
     ProductPostComponent,
-    NumbersOnly
+    NumbersOnly,
+    ProductListTableComponent,
+    ProductIntervalComponent
   ],
   imports: [
     BrowserModule,
@@ -45,6 +49,7 @@ registerLocaleData(en);
     QuillModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
+  entryComponents: [ ProductIntervalComponent ],
   providers: [ { provide: NZ_I18N, useValue: en_US } ],
   bootstrap: [ AppComponent ]
 })
