@@ -11,23 +11,15 @@ namespace KombitServer.Models {
     public int? To { get; set; }
     public Boolean IsRead { get; set; }
     public DateTime PushDate { get; set; }
-
-    public static Notification newNotificationToTopic (NotificationRequest notif, string topic) {
-      var newNotif = new Notification () {
-        Title = notif.Title,
-        Content = notif.Body,
-        Topic = topic
-      };
-      return newNotif;
+    public int? ModuleId { get; set; }
+    public string ModuleName { get; set; }
+    public string ModuleUseCase { get; set; }
+    public Notification (){
+      
     }
-    public static Notification newNotificationToUser (NotificationRequest notif, int userId) {
-      var newNotif = new Notification () {
-        Title = notif.Title,
-        Content = notif.Body,
-        To = userId,
-      };
-      return newNotif;
+    public Notification(NotificationRequest request) {
+      this.Title = request.Title;
+      this.Content = request.Body;
     }
-
   }
 }

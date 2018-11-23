@@ -10,15 +10,11 @@ namespace KombitServer.Models
     public string priority { get; set; }
     public object data { get; set; }
 
-    public static NotificationEmptyRequest Init ()
+    public NotificationEmptyRequest ()
     {
-      NotificationEmptyRequest request = new NotificationEmptyRequest ()
-      {
-        to = "/topics/combits",
-        priority = "normal",
-        data = new { newPost = "True" }
-      };
-      return request;
+        this.to = "/topics/combits";
+        this.priority = "normal";
+        this.data = new { newPost = "True" };
     }
   }
 }

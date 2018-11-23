@@ -22,7 +22,7 @@ namespace KombitServer.Controllers {
       if (interaction.IsViewed == null || interaction.ViewedBy == null || interaction.ProductId == 0) {
         return BadRequest (new Exception ("Invalid View"));
       }
-      interaction.ViewedDate = DateTime.Now.ToUniversalTime ();
+      interaction.ViewedDate = DateTime.UtcNow;
       _context.Interaction.Add (interaction);
       _context.Commit ();
 
@@ -34,7 +34,7 @@ namespace KombitServer.Controllers {
       if (interaction.IsLike == null || interaction.LikedBy == null || interaction.ProductId == 0) {
         return BadRequest (new Exception ("Invalid Like"));
       }
-      interaction.LikedDate = DateTime.Now.ToUniversalTime ();
+      interaction.LikedDate = DateTime.UtcNow;
       var like = _context.Interaction.FirstOrDefault (x => x.LikedBy == interaction.LikedBy && x.ProductId == interaction.ProductId);
       if (like == null) _context.Interaction.Add (interaction);
       else {
@@ -56,12 +56,17 @@ namespace KombitServer.Controllers {
           Title = "Post " + likeText
         };
 
-        Notification newNotif = Notification.newNotificationToUser (notif, post.Poster.Id);
-        newNotif.PushDate = DateTime.UtcNow;
+        Notification newNotif = new Notification (notif) {
+          To = post.Poster.Id,
+          ModuleId = interaction.ProductId,
+          ModuleName = "product",
+          ModuleUseCase = "like",
+          PushDate = DateTime.UtcNow
+        };
         _context.Notification.Add (newNotif);
 
         if (post.Poster.PushId != null) {
-          NotificationRequestToTopic body = NotificationRequestToTopic.initComment (notif, post.Poster.PushId);
+          NotificationRequestToTopic body = new NotificationRequestToTopic (notif, post.Poster.PushId);
           string jsonBody = JsonConvert.SerializeObject (body);
           Utility.sendPushNotification (jsonBody);
         }
@@ -89,11 +94,16 @@ namespace KombitServer.Controllers {
           Title = "Post Commented"
         };
 
-        Notification newNotif = Notification.newNotificationToUser (notif, post.Poster.Id);
-        newNotif.PushDate = DateTime.UtcNow;
+        Notification newNotif = new Notification (notif) {
+          To = post.Poster.Id,
+          ModuleId = interaction.ProductId,
+          ModuleName = "product",
+          ModuleUseCase = "comment",
+          PushDate = DateTime.UtcNow
+        };
         _context.Notification.Add (newNotif);
         if (post.Poster.PushId != null) {
-          NotificationRequestToTopic body = NotificationRequestToTopic.initComment (notif, post.Poster.PushId);
+          NotificationRequestToTopic body = new NotificationRequestToTopic (notif, post.Poster.PushId);
           string jsonBody = JsonConvert.SerializeObject (body);
           Utility.sendPushNotification (jsonBody);
         }
@@ -107,7 +117,7 @@ namespace KombitServer.Controllers {
       if (interaction.IsChat == null || interaction.ChatBy == null || interaction.ProductId == 0) {
         return BadRequest (new Exception ("Invalid Chat"));
       }
-      interaction.ChatDate = DateTime.Now.ToUniversalTime ();
+      interaction.ChatDate = DateTime.UtcNow;
       _context.Interaction.Add (interaction);
       _context.Commit ();
 

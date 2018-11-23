@@ -435,6 +435,18 @@ namespace KombitServer.Models {
         entity.Property (e => e.Topic)
           .HasColumnName ("topic")
           .HasMaxLength (100);
+          
+        entity.Property (e => e.ModuleId)
+          .HasColumnName ("module_id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.ModuleName)
+          .HasColumnName ("module_name")
+          .HasMaxLength (50);
+
+        entity.Property (e => e.ModuleUseCase)
+          .HasColumnName ("module_use_case")
+          .HasMaxLength (50);
       });
 
       modelBuilder.Entity<Product> (entity => {

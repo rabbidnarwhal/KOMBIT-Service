@@ -46,12 +46,16 @@ namespace KombitServer.Controllers {
 
     [HttpPost ("topics/{topic}")]
     public IActionResult NotificationToTopics ([FromBody] NotificationRequest notif, string topic) {
-      var newNotif = Notification.newNotificationToTopic (notif, topic);
-      newNotif.PushDate = DateTime.UtcNow;
+      var newNotif = new Notification (notif) {
+        Topic = topic,
+        PushDate = DateTime.UtcNow
+      };
       _context.Notification.Add (newNotif);
       _context.Commit ();
 
-      NotificationRequestToTopic body = NotificationRequestToTopic.init (notif, topic);
+      var toTopic = "/topics/" + topic;
+
+      NotificationRequestToTopic body = new NotificationRequestToTopic (notif, toTopic);
       string jsonBody = JsonConvert.SerializeObject (body);
       return Ok (Utility.sendPushNotification (jsonBody));
 
@@ -67,13 +71,15 @@ namespace KombitServer.Controllers {
       }
       notif.To.ForEach (item => {
         var userId = _context.MUser.FirstOrDefault (x => x.PushId == item).Id;
-        var newNotif = Notification.newNotificationToUser (notif, userId);
-        newNotif.PushDate = DateTime.UtcNow;
+        var newNotif = new Notification (notif) {
+          To = userId,
+          PushDate = DateTime.UtcNow
+        };
         _context.Notification.Add (newNotif);
       });
 
       _context.Commit ();
-      NotificationRequestToUser body = NotificationRequestToUser.From (notif);
+      NotificationRequestToMultipleUser body = new NotificationRequestToMultipleUser (notif);
       string jsonBody = JsonConvert.SerializeObject (body);
       return Ok (Utility.sendPushNotification (jsonBody));
     }

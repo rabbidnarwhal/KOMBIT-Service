@@ -10,6 +10,7 @@ namespace KombitServer.Models
     public string body { get; set; }
     public string style { get; set; }
     public string summaryText { get; set; }
+    public int notId {get; set;}
   }
 
 }
