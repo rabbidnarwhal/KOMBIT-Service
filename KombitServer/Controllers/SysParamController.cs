@@ -36,5 +36,34 @@ namespace KombitServer.Controllers
         .FirstOrDefault (x => x.ParamCode == code);
       return Ok (config);
     }
+
+    [HttpPost ("product_interval")]
+    public async Task<IActionResult> ChangeProductInterval ([FromBody] SysParamRequest paramRequest)
+    {
+      if (paramRequest.ParamCode == null && !paramRequest.ParamCode.Equals("DEFAULT_PRODUCT_INTERVAL") && paramRequest.ParamValue == null)
+      {
+        return BadRequest ();
+      }
+
+      var config = await _context.SysParam.FirstOrDefaultAsync(x => x.ParamCode.Equals(paramRequest.ParamCode));
+      if (config == null) {
+        return BadRequest ();
+      }
+      config.ParamValue = paramRequest.ParamValue;
+      _context.Update(config);
+      _context.Commit();
+
+      // var products = _context.Product.ToList();
+      // foreach (var item in products)
+      // {
+      //   item.UpdateIntervalInSecond = paramRequest.ParamValue;
+      //   _context.Update(item);
+      // }
+      // _context.Commit();
+
+      return Ok();
+    }
+
+
   }
 }
