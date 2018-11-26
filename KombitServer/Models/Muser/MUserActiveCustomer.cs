@@ -12,7 +12,7 @@ namespace KombitServer.Models {
     public int TotalComment { get; set; }
     public int TotalView { get; set; }
     public int TotalChat { get; set; }
-    public int TotalInteraction{ get; set;}
+    public int TotalInteraction { get; set; }
     public ActiveCustomer (MUser user, List<Interaction> interactions) {
       Name = user.Name;
       TotalLike = interactions.Count (x => x.IsLike == true && x.LikedBy == user.Id);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -24,55 +24,54 @@ namespace KombitServer.Models {
       base.SaveChanges ();
     }
     protected override void OnModelCreating (ModelBuilder modelBuilder) {
-      
-       modelBuilder.Entity<Appointment>(entity =>
-            {
-                entity.ToTable("appointment");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasColumnType("int(11)");
+      modelBuilder.Entity<Appointment> (entity => {
+        entity.ToTable ("appointment");
 
-                entity.Property(e => e.Date)
-                    .HasColumnName("date")
-                    .HasColumnType("datetime");
+        entity.Property (e => e.Id)
+          .HasColumnName ("id")
+          .HasColumnType ("int(11)");
 
-                entity.Property(e => e.LocationCoords)
-                    .IsRequired()
-                    .HasColumnName("location_coords")
-                    .HasMaxLength(255);
+        entity.Property (e => e.Date)
+          .HasColumnName ("date")
+          .HasColumnType ("datetime");
 
-                entity.Property(e => e.LocationName)
-                    .IsRequired()
-                    .HasColumnName("location_name")
-                    .HasMaxLength(255);
+        entity.Property (e => e.LocationCoords)
+          .IsRequired ()
+          .HasColumnName ("location_coords")
+          .HasMaxLength (255);
 
-                entity.Property(e => e.MakerId)
-                    .HasColumnName("maker_id")
-                    .HasColumnType("int(11)");
+        entity.Property (e => e.LocationName)
+          .IsRequired ()
+          .HasColumnName ("location_name")
+          .HasMaxLength (255);
 
-                entity.Property(e => e.Note)
-                    .HasColumnName("note")
-                    .HasMaxLength(255);
+        entity.Property (e => e.MakerId)
+          .HasColumnName ("maker_id")
+          .HasColumnType ("int(11)");
 
-                entity.Property(e => e.ProductId)
-                    .HasColumnName("product_id")
-                    .HasColumnType("int(11)");
+        entity.Property (e => e.Note)
+          .HasColumnName ("note")
+          .HasMaxLength (255);
 
-                entity.Property(e => e.RecepientId)
-                    .HasColumnName("recepient_id")
-                    .HasColumnType("int(11)");
+        entity.Property (e => e.ProductId)
+          .HasColumnName ("product_id")
+          .HasColumnType ("int(11)");
 
-                entity.Property(e => e.RejectMessage)
-                    .HasColumnName("reject_message")
-                    .HasMaxLength(255);
+        entity.Property (e => e.RecepientId)
+          .HasColumnName ("recepient_id")
+          .HasColumnType ("int(11)");
 
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasColumnName("status")
-                    .HasMaxLength(50);
-            });
-      
+        entity.Property (e => e.RejectMessage)
+          .HasColumnName ("reject_message")
+          .HasMaxLength (255);
+
+        entity.Property (e => e.Status)
+          .IsRequired ()
+          .HasColumnName ("status")
+          .HasMaxLength (50);
+      });
+
       modelBuilder.Entity<AttachmentFile> (entity => {
         entity.ToTable ("attachment_file");
 
@@ -435,7 +434,7 @@ namespace KombitServer.Models {
         entity.Property (e => e.Topic)
           .HasColumnName ("topic")
           .HasMaxLength (100);
-          
+
         entity.Property (e => e.ModuleId)
           .HasColumnName ("module_id")
           .HasColumnType ("int(11)");
@@ -545,13 +544,13 @@ namespace KombitServer.Models {
           .HasColumnName ("contact_email")
           .HasMaxLength (100);
 
-        entity.Property(e => e.UpdateIntervalInSecond)
-          .HasColumnName("update_interval_in_second")
+        entity.Property (e => e.UpdateIntervalInSecond)
+          .HasColumnName ("update_interval_in_second")
           .HasMaxLength (15);
 
-        entity.Property(e => e.UpdatedDate)
-          .HasColumnName("updated_date")
-          .HasColumnType("datetime");
+        entity.Property (e => e.UpdatedDate)
+          .HasColumnName ("updated_date")
+          .HasColumnType ("datetime");
 
         entity.Property (e => e.IsActive)
           .HasColumnName ("is_active")

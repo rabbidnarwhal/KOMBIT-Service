@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,8 +14,8 @@ namespace KombitServer.Models {
       RuleFor (x => x.Foto.Length).GreaterThan (0).WithMessage ("At least 1 photo is required");
       RuleFor (x => x.HoldingId).NotEmpty ();
       RuleFor (x => x.ProductName).NotEmpty ();
-      RuleFor (x => x.ContactName).NotEmpty();
-      RuleFor (x => x.ContactHandphone).NotEmpty();
+      RuleFor (x => x.ContactName).NotEmpty ();
+      RuleFor (x => x.ContactHandphone).NotEmpty ();
     }
   }
 }

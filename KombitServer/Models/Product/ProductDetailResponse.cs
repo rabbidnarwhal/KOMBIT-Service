@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -58,10 +58,10 @@ namespace KombitServer.Models {
       Price = product.Price;
       Credentials = product.Credentials;
       VideoPath = product.VideoPath;
-      Foto = product.FotoUpload.Where(x => x.UseCase.Equals("foto"));
-      ProductCertificate = product.FotoUpload.Where(x => x.UseCase.Equals("certificate"));
-      ProductClient = product.FotoUpload.Where(x => x.UseCase.Equals("client"));
-      ProductImplementation = product.FotoUpload.Where(x => x.UseCase.Equals("implementationImage") || x.UseCase.Equals("implementationVideo"));
+      Foto = product.FotoUpload.Where (x => x.UseCase.Equals ("foto"));
+      ProductCertificate = product.FotoUpload.Where (x => x.UseCase.Equals ("certificate"));
+      ProductClient = product.FotoUpload.Where (x => x.UseCase.Equals ("client"));
+      ProductImplementation = product.FotoUpload.Where (x => x.UseCase.Equals ("implementationImage") || x.UseCase.Equals ("implementationVideo"));
       Attachment = product.AttachmentFile;
       Contact = product.Contact == null ? null : new ProductContact (product.Contact);
       Poster = new ProductContact (product.Poster);

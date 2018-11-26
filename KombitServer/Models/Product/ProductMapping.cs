@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,7 +16,7 @@ namespace KombitServer.Models {
       if (product.FotoUpload.FirstOrDefault () == null)
         response.FotoPath = null;
       else
-        response.FotoPath = product.FotoUpload.FirstOrDefault (x => x.UseCase.Equals("foto")).FotoPath;
+        response.FotoPath = product.FotoUpload.FirstOrDefault (x => x.UseCase.Equals ("foto")).FotoPath;
 
       if (product.Interaction.FirstOrDefault (x => x.LikedBy == id) == null)
         response.IsLike = false;
@@ -60,7 +60,7 @@ namespace KombitServer.Models {
       existing.ContactHandphone = request.ContactHandphone;
       existing.PosterAsContact = request.PosterAsContact;
       existing.IsActive = true;
-      existing.UpdatedDate = DateTime.Now.ToUniversalTime();
+      existing.UpdatedDate = DateTime.Now.ToUniversalTime ();
       return existing;
     }
     public static ICollection<ProductComment> CommentMapping (ICollection<Interaction> interaction) {

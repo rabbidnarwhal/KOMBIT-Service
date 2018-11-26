@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KombitServer.Models
-{
-  public partial class MCompany
-  {
+namespace KombitServer.Models {
+  public partial class MCompany {
     public int Id { get; set; }
     public int HoldingId { get; set; }
     public string CompanyName { get; set; }

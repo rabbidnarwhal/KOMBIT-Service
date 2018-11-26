@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -84,7 +84,7 @@ namespace KombitServer.Models {
         ContactName = productRequest.ContactName;
         ContactHandphone = productRequest.ContactHandphone;
         PosterAsContact = productRequest.PosterAsContact;
-        UpdatedDate = DateTime.Now.ToUniversalTime();
+        UpdatedDate = DateTime.Now.ToUniversalTime ();
         IsActive = true;
         UpdateIntervalInSecond = inteval;
       }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,10 +14,10 @@ namespace KombitServer.Models {
     public int? ModuleId { get; set; }
     public string ModuleName { get; set; }
     public string ModuleUseCase { get; set; }
-    public Notification (){
-      
+    public Notification () {
+
     }
-    public Notification(NotificationRequest request) {
+    public Notification (NotificationRequest request) {
       this.Title = request.Title;
       this.Content = request.Body;
     }

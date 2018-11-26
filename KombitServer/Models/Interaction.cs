@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KombitServer.Models
-{
-  public partial class Interaction
-  {
+namespace KombitServer.Models {
+  public partial class Interaction {
     public int Id { get; set; }
     public int ProductId { get; set; }
     public Boolean? IsLike { get; set; }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,7 +7,7 @@ using FluentValidation;
 
 namespace KombitServer.Models {
   public class ProductContact {
-    public int Id {get; set;}
+    public int Id { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
     public string JobTitle { get; set; }
