@@ -154,6 +154,19 @@ namespace KombitServer.Controllers {
       return Ok ();
     }
 
+    [HttpPost ("{id}/change-password")]
+    public IActionResult ChangeUserPassword ([FromBody] ChangePassword password, int id) {
+      var user = _context.MUser
+        .FirstOrDefault (x => x.Id == id && x.Username.Equals(password.UserName) && x.Password.Equals(password.Current));
+      if (user == null) {
+        return NotFound (new Exception ("Current password is mismatch"));
+      }
+      user.Password = password.New;
+      _context.Update (user);
+      _context.Commit ();
+      return Ok ();
+    }
+
     /// <summary>Add push notification id</summary>
     [HttpPost ("{id}/subscribe/{pushId}")]
     public IActionResult SubscribePush (int id, string pushId) {
