@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using KombitServer.Models;
+using KombitServer.Models.Email;
 using KombitServer.ScheduleTask;
 using KombitServer.ScheduleTask.Scheduling;
 using KombitServer.ScheduleTask.Tasks;
+using KombitServer.Services.Email;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -35,12 +37,6 @@ namespace KombitServer {
       services.AddSingleton<IFileProvider> (
         new PhysicalFileProvider (path)
       );
-      services.AddSingleton<IScheduledTask, CheckProductUpdate>();
-      services.AddScheduler((sender, args) =>
-      {
-          Console.Write(args.Exception.Message);
-          args.SetObserved();
-      });
       services.AddMvc ();
       services.AddSwaggerGen (c => {
         c.SwaggerDoc ("v1", new Info { Title = "KombitApi", Version = "v1" });
@@ -53,6 +49,14 @@ namespace KombitServer {
       // services.AddSpaStaticFiles(configuration => {
       //   configuration.RootPath = "ClientApp/dist";
       // })
+      services.AddSingleton<IScheduledTask, CheckProductUpdate>();
+      services.AddScheduler((sender, args) =>
+      {
+          Console.Write(args.Exception.Message);
+          args.SetObserved();
+      });
+      services.AddSingleton<IEmailService, EmailService>();
+      services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
