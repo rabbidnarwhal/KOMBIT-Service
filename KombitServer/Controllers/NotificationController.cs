@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using KombitServer.Models;
-using KombitServer.Services;
+using KombitServer.Services.PushNotification;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -57,7 +57,7 @@ namespace KombitServer.Controllers {
 
       NotificationRequestToTopic body = new NotificationRequestToTopic (notif, toTopic);
       string jsonBody = JsonConvert.SerializeObject (body);
-      return Ok (Utility.sendPushNotification (jsonBody));
+      return Ok (PushNotificationService.sendPushNotification (jsonBody));
 
     }
 
@@ -81,7 +81,7 @@ namespace KombitServer.Controllers {
       _context.Commit ();
       NotificationRequestToMultipleUser body = new NotificationRequestToMultipleUser (notif);
       string jsonBody = JsonConvert.SerializeObject (body);
-      return Ok (Utility.sendPushNotification (jsonBody));
+      return Ok (PushNotificationService.sendPushNotification (jsonBody));
     }
 
   }

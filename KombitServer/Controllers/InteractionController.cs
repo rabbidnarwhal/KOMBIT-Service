@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KombitServer.Models;
-using KombitServer.Services;
+using KombitServer.Services.PushNotification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -68,7 +68,7 @@ namespace KombitServer.Controllers {
         if (post.Poster.PushId != null) {
           NotificationRequestToTopic body = new NotificationRequestToTopic (notif, post.Poster.PushId);
           string jsonBody = JsonConvert.SerializeObject (body);
-          Utility.sendPushNotification (jsonBody);
+          PushNotificationService.sendPushNotification (jsonBody);
         }
       }
       _context.Commit ();
@@ -105,7 +105,7 @@ namespace KombitServer.Controllers {
         if (post.Poster.PushId != null) {
           NotificationRequestToTopic body = new NotificationRequestToTopic (notif, post.Poster.PushId);
           string jsonBody = JsonConvert.SerializeObject (body);
-          Utility.sendPushNotification (jsonBody);
+          PushNotificationService.sendPushNotification (jsonBody);
         }
       }
       _context.Commit ();

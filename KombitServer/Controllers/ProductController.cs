@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using KombitServer.Models;
-using KombitServer.Services;
+using KombitServer.Services.PushNotification;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -171,7 +171,7 @@ namespace KombitServer.Controllers {
                   NotificationRequestToTopic body = new NotificationRequestToTopic (notif, item.Poster.PushId);
                   body.data.notId = item.Id;
                   string jsonBody = JsonConvert.SerializeObject (body);
-                  Utility.sendPushNotification (jsonBody);
+                  PushNotificationService.sendPushNotification (jsonBody);
                 }
             }
             await _context.SaveChangesAsync();
@@ -221,7 +221,7 @@ namespace KombitServer.Controllers {
 
             var body = new NotificationEmptyRequest ();
             var jsonBody = JsonConvert.SerializeObject (body);
-            Utility.sendPushNotification (jsonBody);
+            PushNotificationService.sendPushNotification (jsonBody);
             return Ok (new { msg = "Post Published" });
         }
 
