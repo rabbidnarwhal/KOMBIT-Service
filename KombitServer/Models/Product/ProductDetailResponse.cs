@@ -65,7 +65,7 @@ namespace KombitServer.Models {
       Attachment = product.AttachmentFile;
       Contact = product.Contact == null ? null : new ProductContact (product.Contact);
       Poster = new ProductContact (product.Poster);
-      Interaction = ProductMapping.InteractionMapping (interaction, userId);
+      Interaction = interaction.Count == 0 ?null : ProductMapping.InteractionMapping (interaction, userId);
       ContactEmail = product.ContactEmail;
       ContactName = product.ContactName;
       ContactHandphone = product.ContactHandphone;
