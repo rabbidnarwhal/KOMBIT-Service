@@ -21,6 +21,7 @@ import { NumbersOnly } from './directives/number-only.directive';
 import { QuillModule } from 'ngx-quill';
 import { ProductListTableComponent } from './components/product-list-table/product-list-table.component';
 import { ProductIntervalComponent } from './components/product-interval/product-interval.component';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 
 registerLocaleData(en);
 
@@ -35,7 +36,8 @@ registerLocaleData(en);
     ProductPostComponent,
     NumbersOnly,
     ProductListTableComponent,
-    ProductIntervalComponent
+    ProductIntervalComponent,
+    ProductDetailComponent
   ],
   imports: [
     BrowserModule,

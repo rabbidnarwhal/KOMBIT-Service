@@ -1,30 +1,32 @@
 <ng-container *ngFor="let product of products">
-  <nz-skeleton [nzLoading]="!product.id" [nzActive]="true" [nzAvatar]="true">
-    <nz-card *ngIf="product.id" class="card-container">
-      <div nz-col [nzSpan]="20">
-        <h1>{{product.productName}}</h1>
-      </div>
-      <div nz-col [nzSpan]="4">
-        <span *ngIf="uid && product.posterId === uid" class="extra-label" (click)="editProduct(product.id, product.posterId)">Edit</span>
-      </div>
-      <div nz-col [nzSpan]="8" class="image-container">
-        <img src="{{product.fotoPath}}" />
-      </div>
-      <div nz-col [nzSpan]="16" class="product-desctiption">
-        <p>Company Name: {{product.companyName}}</p>
-        <p>Holding Name: {{product.holdingName}}</p>
-        <p>Category: {{product.categoryName}}</p>
-        <p *ngIf="product.isIncludePrice">{{product.currency}}. {{product.price | number}}</p>
-      </div>
-      <div nz-col [nzSpan]="24" class="extra-action">
-        <span class="extra-label icon-container" (click)="openGooglePlay()">
-          <img class="icon-image" src="../../../assets/images/comment.png" />
-          <label>Post Comment</label>
-        </span>
-        <span class="extra-label" (click)="openGooglePlay()">Read More</span>
-        <span class="extra-label" (click)="openGooglePlay()">Feature</span>
-        <span class="extra-label" (click)="openGooglePlay()">Benefit</span>
-      </div>
-    </nz-card>
-  </nz-skeleton>
+  <div nz-col [nzPush]="2" [nzSpan]="16">
+    <nz-skeleton [nzLoading]="!product.id" [nzActive]="true" [nzAvatar]="true">
+      <nz-card *ngIf="product.id" class="card-container">
+        <div nz-col [nzSpan]="20">
+          <h1>{{product.productName}}</h1>
+        </div>
+        <div nz-col [nzSpan]="4">
+          <span *ngIf="uid && product.posterId === uid" class="extra-label" (click)="editProduct(product.id, product.posterId)">Edit</span>
+        </div>
+        <div nz-col [nzSpan]="8" class="image-container">
+          <img src="{{product.fotoPath}}" />
+        </div>
+        <div nz-col [nzSpan]="16" class="product-desctiption">
+          <p>Company Name: {{product.companyName}}</p>
+          <p>Holding Name: {{product.holdingName}}</p>
+          <p>Category: {{product.categoryName}}</p>
+          <p *ngIf="product.isIncludePrice">{{product.currency}}. {{product.price | number}}</p>
+        </div>
+        <div nz-col [nzSpan]="24" class="extra-action">
+          <span class="extra-label icon-container" (click)="openGooglePlay()">
+            <img class="icon-image" src="../../../assets/images/comment.png" />
+            <label>Post Comment</label>
+          </span>
+          <span class="extra-label" routerLink="{{'/product/' + product.id}}">Read More</span>
+          <span class="extra-label" (click)="openGooglePlay()">Feature</span>
+          <span class="extra-label" (click)="openGooglePlay()">Benefit</span>
+        </div>
+      </nz-card>
+    </nz-skeleton>
+  </div>
 </ng-container>

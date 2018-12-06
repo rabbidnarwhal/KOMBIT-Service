@@ -27,6 +27,10 @@ export class ProductService {
     return this.apiService.get('/product');
   }
 
+  getDetailProduct(id) {
+    return this.apiService.get('/product/' + id);
+  }
+
   getListAllProduct() {
     return this.apiService.get('/product/all');
   }
@@ -60,7 +64,7 @@ export class ProductService {
   }
 
   fetchListUser() {
-    return this.apiService.get('/users/list/' + this.authService.getUserId());
+    return this.apiService.get('/users/list');
   }
 
   fetchCurrency() {

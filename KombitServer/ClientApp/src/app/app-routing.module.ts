@@ -10,6 +10,7 @@ import { ProductPostComponent } from './components/product-post/product-post.com
 import { RoleGuard } from './guards/role.guard';
 import { ProductPosterGuard } from './guards/product-poster.guard';
 import { ProductListTableComponent } from './components/product-list-table/product-list-table.component';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 
 const routes: Routes = [
   {
@@ -49,27 +50,51 @@ const routes: Routes = [
   },
   {
     path: 'product',
-    canActivate: [ RoleGuard ],
     component: LayoutPublicComponent,
-    canActivateChild: [ AuthGuard ],
-    data: {
-      expectedRole: 'Supplier'
-    },
+
     children: [
       {
-        path: 'new',
-        component: ProductPostComponent,
-        data: {
-          breadcrumb: 'Post Product'
-        }
+        path: '',
+        component: ProductListComponent
       },
       {
-        path: 'edit/:productId',
-        canActivate: [ ProductPosterGuard ],
-        component: ProductPostComponent,
+        path: 'new',
+        canActivate: [ RoleGuard ],
+        canActivateChild: [ AuthGuard ],
         data: {
-          breadcrumb: 'Edit Product'
-        }
+          expectedRole: 'Supplier'
+        },
+        children: [
+          {
+            path: '',
+            component: ProductPostComponent,
+            data: {
+              breadcrumb: 'Post Product'
+            }
+          }
+        ]
+      },
+      {
+        path: 'edit',
+        canActivate: [ RoleGuard ],
+        canActivateChild: [ AuthGuard ],
+        data: {
+          expectedRole: 'Supplier'
+        },
+        children: [
+          {
+            path: ':productId',
+            canActivate: [ ProductPosterGuard ],
+            component: ProductPostComponent,
+            data: {
+              breadcrumb: 'Edit Product'
+            }
+          }
+        ]
+      },
+      {
+        path: ':productId',
+        component: ProductDetailComponent
       }
     ]
   },
