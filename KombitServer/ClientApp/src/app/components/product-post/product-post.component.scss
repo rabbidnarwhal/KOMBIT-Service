@@ -42,3 +42,26 @@
     }
   }
 }
+
+.implementation-card-wrapper {
+  .implementation-media-wrapper {
+    height: 50px;
+    text-align: center;
+    img {
+      height: 100%;
+    }
+    video {
+      height: 100%;
+    }
+  }
+  .implementation-title {
+    margin-top: 5px;
+  }
+}
+
+.back-button {
+  margin-left: 24px;
+  + .content-wrapper {
+    margin: 24px;
+  }
+}

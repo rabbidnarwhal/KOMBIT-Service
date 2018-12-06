@@ -1,18 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NzMessageService, UploadFile } from 'ng-zorro-antd';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 
-import Quill from 'quill';
 import { QuillEditorComponent } from 'ngx-quill';
-import { ApiService } from 'src/app/services/api.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { NewProduct } from 'src/app/models/new-product';
 import { AuthService } from 'src/app/services/auth.service';
 import { ProductService } from 'src/app/services/product.service';
 import { Router, ActivatedRoute } from '@angular/router';
-const ATTRIBUTES = [ 'alt', 'height', 'width' ];
+import { AttachmentFileResponse, FotoResponse, EditProductResponse } from 'src/app/models/edit-product-response';
 
 @Component({
   selector: 'app-product-post',
@@ -22,25 +20,39 @@ const ATTRIBUTES = [ 'alt', 'height', 'width' ];
 export class ProductPostComponent implements OnInit {
   currency: string;
   currencyFetchedFromDetail = false;
-  fileListImage = [];
-  deletedImages = [];
-  fileListMarketingKit = [];
-  deletedMarketingKits = [];
+
   fileListVideo = [];
+  fileListImage = [];
+  fileListMarketingKit = [];
+  fileListProductCertificate = [];
+  fileListProductImplementation = [];
+  fileListExistingClient = [];
+
+  deletedImages = [];
+  deletedMarketingKits = [];
+  deletedProductCertificate = [];
+  deletedProductImplementation = [];
+  deteledExistingClient = [];
+
   isLoading = false;
   isSkeleton = false;
+  isEdit = false;
+
+  previewVisible = false;
+  previewImage = '';
+
   listSolution = [];
   listUser = [];
   modules: any;
   oldProductData: any;
   videoUrl: any;
-  previewImage = '';
-  previewVisible = false;
+
   quill = {};
   quillContent = {};
+
   segmentName = 'description';
+
   validateForm: FormGroup;
-  isEdit = false;
 
   constructor(
     private message: NzMessageService,
@@ -52,6 +64,7 @@ export class ProductPostComponent implements OnInit {
     private route: Router,
     private activedRoute: ActivatedRoute
   ) {
+    console.log('pass init');
     this.quill = {};
     this.quillContent = {};
     this.modules = {
@@ -70,30 +83,41 @@ export class ProductPostComponent implements OnInit {
   }
 
   async ngOnInit() {
+    console.log('pass 0');
     this.isSkeleton = true;
     this.loadParameterData();
     this.validateForm = this.fb.group({
       productName: [ , [ Validators.required ] ],
       solution: [ , [ Validators.required ] ],
-      isSupplierAsContact: [ true ],
-      selectedContact: [ , [ Validators.required ] ],
-      price: [],
       Description: [ , [ Validators.required ] ],
-      BusinessTarget: [],
-      Feature: [],
+      isSupplierAsContact: [ true ],
+      selectedContact: [ this.authService.getUserId(), [ Validators.required ] ],
+      selectedContactPhone: [ this.authService.getPrincipal().phoneNumber ],
+      selectedContactNameManual: [ , [ Validators.required ] ],
+      selectedContactPhoneManual: [ , [ Validators.required ] ],
       Benefit: [],
-      Implementation: [],
-      Credentials: [],
-      Faq: []
+      price: [],
+      Feature: [],
+      productCertificate: [],
+      productImplementation: []
+
+      // BusinessTarget: [],
+      // Implementation: [],
+      // Credentials: [],
+      // Faq: []
     });
 
+    console.log('pass 1');
     this.isSkeleton = false;
     this.checkRouteParameter();
+    console.log('pass 2');
   }
 
   checkRouteParameter() {
+    console.log('pass 3');
     this.activedRoute.params.subscribe((params) => {
       const id = +params['productId'];
+      console.log('id', id);
       if (id) {
         this.isLoading = true;
         this.isSkeleton = true;
@@ -105,7 +129,8 @@ export class ProductPostComponent implements OnInit {
   async loadEditableProductData(id) {
     this.productService
       .fetchEditableProductData(id)
-      .then((res) => {
+      .then((res: EditProductResponse) => {
+        console.log('data', res);
         this.isEdit = true;
         this.oldProductData = {
           companyId: res.companyId,
@@ -123,35 +148,75 @@ export class ProductPostComponent implements OnInit {
           .get('price')
           .setValue(this.currency + ' ' + String(res.price).replace(/\B(?=(\d{3})+(?!\d))/g, ','));
         this.validateForm.get('Description').setValue(res.description);
-        this.validateForm.get('BusinessTarget').setValue(res.businessTarget);
         this.validateForm.get('Feature').setValue(res.feature);
         this.validateForm.get('Benefit').setValue(res.benefit);
-        this.validateForm.get('Implementation').setValue(res.implementation);
-        this.validateForm.get('Credentials').setValue(res.credentials);
-        this.validateForm.get('Faq').setValue(res.faq);
+        // this.validateForm.get('BusinessTarget').setValue(res.businessTarget);
+        // this.validateForm.get('Implementation').setValue(res.implementation);
+        // this.validateForm.get('Credentials').setValue(res.credentials);
+        // this.validateForm.get('Faq').setValue(res.faq);
 
-        if (res.userId !== res.posterId) {
+        if (res.posterAsContact || res.contactId !== res.posterId) {
+          this.validateForm.get('selectedContact').setValue(res.contactId);
+          this.validateForm.get('selectedContactPhone').setValue(res.contactHandphone);
+        } else {
           this.validateForm.get('isSupplierAsContact').setValue(false);
-          this.validateForm.get('selectedContact').setValue(res.userId);
+          this.validateForm.get('selectedContactPhoneManual').setValue(res.contactHandphone);
+          this.validateForm.get('selectedContactNameManual').setValue(res.contactName);
         }
 
-        res.foto.map((foto) => {
+        res.foto.map((item: FotoResponse) => {
           const fileList = {
-            uid: foto.id,
-            name: foto.fotoName,
-            path: foto.fotoPath,
-            url: foto.fotoPath,
+            uid: item.id,
+            name: item.fotoName,
+            path: item.fotoPath,
+            url: item.fotoPath,
             status: 'done'
           };
-          this.fileListImage.push(fileList);
+          this.fileListImage = [ ...this.fileListImage, fileList ];
         });
 
-        res.attachment.map((attachment) => {
+        res.productCertificate.map((item: FotoResponse) => {
+          const fileList = {
+            uid: item.id,
+            name: item.fotoName,
+            path: item.fotoPath,
+            url: item.fotoPath,
+            status: 'done'
+          };
+          this.fileListProductCertificate = [ ...this.fileListProductCertificate, fileList ];
+        });
+
+        res.productClient.map((item: FotoResponse) => {
+          const fileList = {
+            uid: item.id,
+            name: item.fotoName,
+            path: item.fotoPath,
+            url: item.fotoPath,
+            status: 'done'
+          };
+          this.fileListExistingClient = [ ...this.fileListExistingClient, fileList ];
+        });
+
+        res.productImplementation.map((item: FotoResponse) => {
+          const fileList = {
+            uid: item.id,
+            name: item.fotoName,
+            path: item.fotoPath,
+            url: item.fotoPath,
+            useCase: item.useCase,
+            status: 'done'
+          };
+          this.validateForm.addControl('productImplementation_' + fileList.uid, new FormControl(item.title));
+          this.fileListProductImplementation = [ ...this.fileListProductImplementation, fileList ];
+        });
+
+        res.attachment.map((attachment: AttachmentFileResponse) => {
           const fileList = {
             uid: attachment.id,
             name: attachment.fileName,
             path: attachment.filePath,
             url: attachment.filePath,
+            type: attachment.fileType,
             status: 'done'
           };
           this.fileListMarketingKit.push(fileList);
@@ -195,38 +260,53 @@ export class ProductPostComponent implements OnInit {
     }
   }
 
+  /** Handle Preview */
   handlePreviewImage = (file: UploadFile) => {
     this.previewImage = file.url || file.thumbUrl;
     this.previewVisible = true;
   };
+  /** END Handle Preview */
 
+  /** Handle Delete */
   handleDeleteImage = (file: UploadFile) => {
-    if (!String(file.path).includes('blob:', 0)) {
-      this.deletedImages = [ ...this.deletedImages, file ];
-    }
-    this.fileListImage = this.fileListImage.filter((x) => x.uid !== file.uid);
+    const fileList = this.removeItemFromFileList(file, this.deletedImages, this.fileListImage);
+    this.fileListImage = fileList;
   };
 
   handleDeleteMarketingKit = (file: UploadFile) => {
+    const fileList = this.removeItemFromFileList(file, this.deletedMarketingKits, this.fileListMarketingKit);
+    this.fileListMarketingKit = fileList;
+  };
+
+  handleDeleteProductCertificate = (file: UploadFile) => {
+    const fileList = this.removeItemFromFileList(file, this.deletedProductCertificate, this.fileListProductCertificate);
+    this.fileListProductCertificate = fileList;
+  };
+
+  handleDeleteProductImplementation(file: UploadFile) {
+    const fileList = this.removeItemFromFileList(
+      file,
+      this.deletedProductImplementation,
+      this.fileListProductImplementation
+    );
+    this.fileListProductImplementation = fileList;
+    this.validateForm.removeControl('productImplementation_' + file.uid);
+  }
+
+  handleDeleteExistingClient(file: UploadFile) {
+    const fileList = this.removeItemFromFileList(file, this.deteledExistingClient, this.fileListExistingClient);
+    this.fileListExistingClient = fileList;
+  }
+  /** End Handle Delete */
+
+  removeItemFromFileList(file: UploadFile, fileList: Array<any>, deleteFileList: Array<any>) {
     if (!String(file.path).includes('blob:', 0)) {
-      this.deletedMarketingKits = [ ...this.deletedMarketingKits, file ];
+      deleteFileList = [ ...deleteFileList, file ];
     }
-    this.fileListMarketingKit = this.fileListMarketingKit.filter((x) => x.uid !== file.uid);
-  };
+    return fileList.filter((x) => x.uid !== file.uid);
+  }
 
-  beforeUploadImage = (file: UploadFile): boolean => {
-    const blob = window.URL.createObjectURL(file);
-    const sanitize = this.sanitizer.bypassSecurityTrustUrl(blob);
-    const fileList = {
-      uid: this.fileListImage.length ? this.fileListImage[this.fileListImage.length - 1].uid + 1 : 0,
-      name: file.name,
-      path: blob,
-      url: sanitize
-    };
-    this.fileListImage = [ ...this.fileListImage, fileList ];
-    return false;
-  };
-
+  /** Handle Before Upload */
   beforeUploadVideo = (file: UploadFile): boolean => {
     this.fileListVideo = [];
     const blob = window.URL.createObjectURL(file);
@@ -243,20 +323,62 @@ export class ProductPostComponent implements OnInit {
     return false;
   };
 
+  beforeUploadImage = (file: UploadFile): boolean => {
+    const fileList = this.getFileList(file, this.fileListImage);
+    this.fileListImage = [ ...this.fileListImage, fileList ];
+    return false;
+  };
+
   beforeUploadMarketingKit = (file: UploadFile): boolean => {
-    const blob = window.URL.createObjectURL(file);
-    const sanitize = this.sanitizer.bypassSecurityTrustUrl(blob);
-    const fileList = {
-      uid: this.fileListMarketingKit.length
-        ? this.fileListMarketingKit[this.fileListMarketingKit.length - 1].uid + 1
-        : 0,
-      name: file.name,
-      path: blob,
-      url: sanitize
-    };
+    const fileList = this.getFileList(file, this.fileListMarketingKit);
+    if (file.type.toString().includes('presentation') || file.type.toString().includes('powerpoint')) {
+      fileList.type = 'ppt';
+    } else if (file.type.toString().includes('jpeg') || file.type.toString().includes('png')) {
+      fileList.type = 'jpg';
+    } else if (file.type.toString().includes('pdf')) {
+      fileList.type = 'pdf';
+    } else if (file.type.toString().includes('word')) {
+      fileList.type = 'doc';
+    } else {
+      fileList.type = 'unknown';
+    }
     this.fileListMarketingKit.push(fileList);
     return false;
   };
+
+  beforeUploadProductCertificate = (file: UploadFile): boolean => {
+    const fileList = this.getFileList(file, this.fileListProductCertificate);
+    this.fileListProductCertificate.push(fileList);
+    return false;
+  };
+
+  beforeUploadProductImplementation = (file: UploadFile): boolean => {
+    const fileList = this.getFileList(file, this.fileListProductImplementation);
+    fileList.useCase = file.type.toString().includes('image') ? 'implementationImage' : 'implementationVideo';
+    this.fileListProductImplementation = [ ...this.fileListProductImplementation, fileList ];
+    this.validateForm.addControl('productImplementation_' + fileList.uid, new FormControl(''));
+    return false;
+  };
+
+  beforeUploadExistingClient = (file: UploadFile): boolean => {
+    const fileList = this.getFileList(file, this.fileListExistingClient);
+    this.fileListExistingClient.push(fileList);
+    return false;
+  };
+  /** End Handle Before Upload */
+
+  getFileList(file, fileList: Array<any>) {
+    const blob = window.URL.createObjectURL(file);
+    const sanitize = this.sanitizer.bypassSecurityTrustUrl(blob);
+    return {
+      uid: fileList.length ? fileList[fileList.length - 1].uid + 1 : 0,
+      name: file.name,
+      path: blob,
+      url: sanitize,
+      useCase: '',
+      type: ''
+    };
+  }
 
   changeSegment(segment) {
     this.segmentName = segment;
@@ -274,109 +396,239 @@ export class ProductPostComponent implements OnInit {
       let data: NewProduct = new NewProduct(this.authService.getPrincipal());
 
       /** Image upload */
-      data = await this.uploadPhoto(data);
+      try {
+        data = await this.uploadPhoto(data);
 
-      /** Marketing kit Upload */
-      data = await this.uploadMarketingKit(data);
+        /** Marketing kit Upload */
+        data = await this.uploadMarketingKit(data);
 
-      /** Video upload */
-      data = await this.uploadVideo(data);
+        /** Marketing kit Upload */
+        data = await this.uploadProductCertificate(data);
 
-      /** Quill image upload */
-      await this.uploadQuillImage();
+        /** Marketing kit Upload */
+        data = await this.uploadProductImplementation(data);
 
-      /** Publish product */
-      await this.publishProduct(data);
-      this.isLoading = false;
-      this.message.remove(id);
+        /** Marketing kit Upload */
+        data = await this.uploadExistingClient(data);
+
+        /** Video upload */
+        data = await this.uploadVideo(data);
+
+        /** Quill image upload */
+        await this.uploadQuillImage();
+
+        /** Publish product */
+        await this.publishProduct(data);
+        this.isLoading = false;
+        this.message.remove(id);
+      } catch (error) {
+        console.error('417', error);
+      }
     }
   }
 
-  async uploadPhoto(data) {
-    if (this.fileListImage.length) {
-      const promise = this.fileListImage.map(async (element, index) => {
-        if ((element.hasOwnProperty('status') && element.status !== 'done') || !element.hasOwnProperty('status')) {
-          try {
-            const result = await this.fileUploadService.uploadUrlData('foto', element.path, 'foto', element.name);
-            data.Foto.push({
-              FotoName: result.name,
-              FotoPath: result.path,
-              Id: 0,
-              UseCase: result.useCase
-            });
-            this.fileListImage[index].url = result.path;
-            this.fileListImage[index].path = result.path;
-            this.fileListImage[index]['status'] = 'done';
-          } catch (error) {
-            this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
-          }
-        } else {
-          data.Foto.push({
-            FotoName: element.name,
-            FotoPath: element.path,
-            Id: element.uid,
-            UseCase: 'foto'
-          });
-        }
-      });
-      await Promise.all(promise);
-    }
-    this.deletedImages.map((element) => {
-      data.Foto.push({
-        FotoName: null,
-        FotoPath: null,
-        Id: element.uid,
-        UseCase: 'foto'
-      });
-    });
+  async uploadPhoto(data: NewProduct) {
+    const dataPromise = await this.uploadFileData(data.Foto, this.fileListImage, this.deletedImages, 'foto');
+    data.Foto = dataPromise.data;
+    this.fileListImage = dataPromise.fileList;
+    this.deletedImages = dataPromise.deletedList;
     return data;
   }
 
   async uploadMarketingKit(data: NewProduct) {
-    if (this.fileListMarketingKit.length) {
-      const promise = this.fileListMarketingKit.map(async (element, index) => {
+    const dataPromise = await this.uploadFileData(
+      data.Attachment,
+      this.fileListMarketingKit,
+      this.deletedMarketingKits,
+      'attachment'
+    );
+    data.Attachment = dataPromise.data;
+    this.fileListMarketingKit = dataPromise.fileList;
+    this.deletedMarketingKits = dataPromise.deletedList;
+    return data;
+  }
+
+  async uploadProductCertificate(data: NewProduct) {
+    const dataPromise = await this.uploadFileData(
+      data.ProductCertificate,
+      this.fileListProductCertificate,
+      this.deletedProductCertificate,
+      'certificate'
+    );
+    data.ProductCertificate = dataPromise.data;
+    this.fileListProductCertificate = dataPromise.fileList;
+    this.deletedProductCertificate = dataPromise.deletedList;
+    return data;
+  }
+
+  async uploadProductImplementation(data: NewProduct) {
+    const dataPromise = await this.uploadFileData(
+      data.ProductImplementation,
+      this.fileListProductImplementation,
+      this.deletedProductImplementation,
+      'implementation'
+    );
+    data.ProductImplementation = dataPromise.data;
+    this.fileListProductImplementation = dataPromise.fileList;
+    this.deletedProductImplementation = dataPromise.deletedList;
+    return data;
+  }
+
+  async uploadExistingClient(data: NewProduct) {
+    const dataPromise = await this.uploadFileData(
+      data.ProductClient,
+      this.fileListExistingClient,
+      this.deteledExistingClient,
+      'client'
+    );
+    data.ProductClient = dataPromise.data;
+    this.fileListExistingClient = dataPromise.fileList;
+    this.deteledExistingClient = dataPromise.deletedList;
+    return data;
+  }
+
+  async uploadFileData(
+    data: Array<any>,
+    fileList: Array<any>,
+    deletedList: Array<any>,
+    useCase: string
+  ): Promise<{ data: Array<any>; fileList: Array<any>; deletedList: Array<any> }> {
+    if (fileList.length) {
+      const promise = fileList.map(async (element, index) => {
         if ((element.hasOwnProperty('status') && element.status !== 'done') || !element.hasOwnProperty('status')) {
+          const productName = this.validateForm.get('productName').value;
           try {
-            const result = await this.fileUploadService.uploadUrlData('kit', element.path, 'attachment', element.name);
-            data.Attachment.push({
-              FileName: element.name,
-              FilePath: result.path,
-              Id: 0
-            });
-            this.fileListMarketingKit[index].url = result.path;
-            this.fileListMarketingKit[index].path = result.path;
-            this.fileListMarketingKit[index]['status'] = 'done';
+            let fileData = null,
+              result = null;
+            if (useCase === 'attachment') {
+              result = await this.fileUploadService.uploadUrlData(
+                productName,
+                'kit',
+                element.path,
+                useCase,
+                element.name
+              );
+              fileData = {
+                FileName: element.name,
+                FilePath: result.path,
+                FileType: element.type,
+                Id: 0
+              };
+            } else if (useCase === 'implementation') {
+              result = await this.fileUploadService.uploadUrlData(
+                productName,
+                'foto',
+                element.path,
+                element.useCase,
+                element.name
+              );
+              fileData = {
+                FotoName: result.name,
+                FotoPath: result.path,
+                Id: 0,
+                Title: this.validateForm.get('productImplementation_' + element.uid).value,
+                UseCase: element.useCase
+              };
+            } else {
+              result = await this.fileUploadService.uploadUrlData(
+                productName,
+                'foto',
+                element.path,
+                useCase,
+                element.name
+              );
+
+              fileData = {
+                FotoName: result.name,
+                FotoPath: result.path,
+                Id: 0,
+                UseCase: useCase
+              };
+            }
+            data = [ ...data, fileData ];
+            fileList[index].url = result.path;
+            fileList[index].path = result.path;
+            fileList[index]['status'] = 'done';
           } catch (error) {
             this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
           }
         } else {
-          data.Attachment.push({
-            FileName: element.name,
-            FilePath: element.path,
-            Id: element.uid
-          });
+          let fileData = null;
+          if (useCase === 'attachment') {
+            fileData = {
+              FileName: element.name,
+              FilePath: element.path,
+              FileType: element.type,
+              Id: element.uid
+            };
+          } else if (useCase === 'implementation') {
+            fileData = {
+              FotoName: element.name,
+              FotoPath: element.path,
+              Id: element.uid,
+              Title: this.validateForm.get('productImplementation_' + element.uid).value,
+              UseCase: element.useCase
+            };
+          } else {
+            fileData = {
+              FotoName: element.name,
+              FotoPath: element.path,
+              Id: element.uid,
+              UseCase: useCase
+            };
+          }
+
+          data = [ ...data, fileData ];
         }
       });
       await Promise.all(promise);
     }
-    this.deletedMarketingKits.map((element) => {
-      data.Attachment.push({
-        FileName: null,
-        FilePath: null,
-        Id: element.uid
+    if (deletedList.length) {
+      deletedList.map((element) => {
+        let fileData = null;
+        if (useCase === 'attachment') {
+          fileData = {
+            FileName: null,
+            FilePath: null,
+            Id: element.uid,
+            FileType: element.type
+          };
+        } else if (useCase === 'implementation') {
+          fileData = {
+            FotoName: null,
+            FotoPath: null,
+            Id: element.uid,
+            Title: this.validateForm.get('productImplementation_' + element.uid).value,
+            UseCase: element.useCase
+          };
+        } else {
+          fileData = {
+            FotoName: null,
+            FotoPath: null,
+            Id: element.uid,
+            UseCase: useCase
+          };
+        }
+        data = [ ...data, fileData ];
       });
-    });
-    return data;
+    }
+    return {
+      data: data,
+      fileList: fileList,
+      deletedList: deletedList
+    };
   }
 
-  async uploadVideo(data) {
+  async uploadVideo(data: NewProduct) {
     if (
       this.fileListVideo.length &&
       ((this.fileListVideo[0].hasOwnProperty('status') && this.fileListVideo[0].status !== 'done') ||
         !this.fileListVideo[0].hasOwnProperty('status'))
     ) {
       try {
+        const productName = this.validateForm.get('productName').value;
         const result = await this.fileUploadService.uploadUrlData(
+          productName,
           'video',
           this.fileListVideo[0].path,
           'video',
@@ -395,6 +647,7 @@ export class ProductPostComponent implements OnInit {
   }
 
   async uploadQuillImage() {
+    const productName = this.validateForm.get('productName').value;
     for (const key in this.quill) {
       if (this.quill.hasOwnProperty(key)) {
         const element = this.quill[key];
@@ -404,7 +657,12 @@ export class ProductPostComponent implements OnInit {
             try {
               if (item.hasOwnProperty('insert') && item.insert.hasOwnProperty('image')) {
                 if (item.insert.image.indexOf('http://') === -1 && item.insert.image.indexOf('https://') === -1) {
-                  const result = await this.fileUploadService.uploadDataUri('foto', item.insert.image, key);
+                  const result = await this.fileUploadService.uploadDataUri(
+                    productName,
+                    'foto',
+                    item.insert.image,
+                    key
+                  );
                   item.insert = { image: result.path };
                 }
               }
@@ -419,12 +677,14 @@ export class ProductPostComponent implements OnInit {
   }
 
   async publishProduct(data: NewProduct) {
-    data.BusinessTarget = this.validateForm.get('BusinessTarget').value;
+    // data.BusinessTarget = this.validateForm.get('BusinessTarget').value;
+    data.Certificate = this.validateForm.get('productCertificate').value;
     data.CategoryId = this.validateForm.get('solution').value;
     data.Currency = this.currency;
     data.Price = this.validateForm.get('price').value
       ? +this.validateForm.get('price').value.split(' ')[1].replace(/,/g, '')
       : null;
+    data.Implementation = this.validateForm.get('productImplementation').value;
     data.IsIncludePrice = data.Price ? true : false;
     data.ProductName = this.validateForm.get('productName').value;
     if (this.isEdit) {
@@ -434,9 +694,17 @@ export class ProductPostComponent implements OnInit {
     }
 
     if (this.validateForm.get('isSupplierAsContact').value) {
-      data.UserId = data.PosterId;
+      data.ContactId = this.validateForm.get('selectedContact').value;
+      const userIndex = this.listUser.findIndex((x) => x.id === data.ContactId);
+      data.ContactName = this.listUser[userIndex].name;
+      data.ContactHandphone = this.listUser[userIndex].handphone;
+      if (data.ContactId === data.PosterId) {
+        data.PosterAsContact = true;
+      }
     } else {
-      data.UserId = this.validateForm.get('selectedContact').value;
+      data.ContactId = data.PosterId;
+      data.ContactHandphone = this.validateForm.get('selectedContactPhoneManual').value;
+      data.ContactName = this.validateForm.get('selectedContactNameManual').value;
     }
 
     for (const segment in this.quill) {
@@ -454,6 +722,8 @@ export class ProductPostComponent implements OnInit {
       } else {
         await this.productService.postProduct(data);
       }
+      this.isLoading = false;
+      this.message.success('Product published', { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
       this.route.navigate([ '' ]);
     } catch (error) {
       this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
@@ -462,20 +732,16 @@ export class ProductPostComponent implements OnInit {
 
   validatingForm() {
     for (const i in this.validateForm.controls) {
-      if (i !== 'selectedContact') {
-        this.validateForm.controls[i].markAsDirty();
-        this.validateForm.controls[i].updateValueAndValidity();
-      } else {
-        if (this.validateForm.get('isSupplierAsContact').value === false) {
-          if (this.validateForm.controls[i].value === '0') {
-            this.validateForm.controls[i].setValue(null);
-          }
-          this.validateForm.controls[i].markAsDirty();
-          this.validateForm.controls[i].updateValueAndValidity();
-        } else {
+      if (i === 'selectedContactNameManual' || i === 'selectedContactPhoneManual') {
+        if (this.validateForm.get('isSupplierAsContact').value) {
+          // if (this.validateForm.controls[i].value === '0') {
+          //   this.validateForm.controls[i].setValue(null);
+          // }
           this.validateForm.controls[i].setValue('0');
         }
       }
+      this.validateForm.controls[i].markAsDirty();
+      this.validateForm.controls[i].updateValueAndValidity();
     }
   }
 

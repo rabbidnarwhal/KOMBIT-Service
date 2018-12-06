@@ -9,6 +9,7 @@ export class FileUploadService {
   constructor(private apiService: ApiService, private authService: AuthService) {}
 
   uploadUrlData(
+    productName: string,
     type: string,
     path: string,
     useCase: string,
@@ -17,7 +18,7 @@ export class FileUploadService {
     return new Promise((resolve, reject) => {
       this.apiService
         .getBlob(path)
-        .then((blob) => this.uploadFile(blob, type, useCase, fileName))
+        .then((blob) => this.uploadFile(blob, productName, type, useCase, fileName))
         .then((res) => {
           const response = {
             useCase: useCase,
@@ -33,13 +34,14 @@ export class FileUploadService {
   }
 
   uploadDataUri(
+    productName: string,
     type: string,
     dataUri: string,
     useCase: string
   ): Promise<{ path: string; name: string; useCase: string }> {
     return new Promise((resolve, reject) => {
       const blobs = this.convertDataURItoBlob(dataUri);
-      this.uploadFile(blobs.blob, type, useCase, 'name.' + blobs.mimeType.split('/')[1])
+      this.uploadFile(blobs.blob, productName, type, useCase, 'name.' + blobs.mimeType.split('/')[1])
         .then((res) => {
           const response = {
             useCase: useCase,
@@ -54,7 +56,13 @@ export class FileUploadService {
     });
   }
 
-  uploadFile(blob: Blob, type: string, useCase: string, fileName = null): Promise<{ name: string; path: string }> {
+  uploadFile(
+    blob: Blob,
+    productName: string,
+    type: string,
+    useCase: string,
+    fileName = null
+  ): Promise<{ name: string; path: string }> {
     const formData: FormData = new FormData();
     if (fileName) {
       formData.append('File', blob, fileName);
@@ -64,6 +72,7 @@ export class FileUploadService {
     formData.append('UserId', this.authService.getUserId() + '');
     formData.append('UseCase', useCase);
     formData.append('Type', type);
+    formData.append('ProductName', productName.toLowerCase().replace(' ', '-'));
     const headers = {
       'Content-Type': 'multipart/form-data'
     };
