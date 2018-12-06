@@ -64,7 +64,7 @@ export class AuthService {
             if (res.role === 'Administrator') {
               this.route.navigate([ '/dashboard' ]);
             } else {
-              this.route.navigate([ '/home' ]);
+              this.route.navigate([ '' ]);
             }
             resolve();
           } else {
@@ -93,11 +93,11 @@ export class AuthService {
 
     const expiresAt = new Date().setSeconds(86400).toString();
     localStorage.setItem('expires_at', JSON.stringify(expiresAt.valueOf()));
-    sessionStorage.setItem(environment.AUTHENTICATION.TOKENNAME, token);
+    localStorage.setItem(environment.AUTHENTICATION.TOKENNAME, token);
   }
 
   getToken() {
-    const token = sessionStorage.getItem(environment.AUTHENTICATION.TOKENNAME);
+    const token = localStorage.getItem(environment.AUTHENTICATION.TOKENNAME);
     try {
       const splittedToken = atob(token).split('|');
       if (token) {
@@ -136,7 +136,7 @@ export class AuthService {
   }
 
   clearSession() {
-    sessionStorage.removeItem(environment.AUTHENTICATION.TOKENNAME);
+    localStorage.removeItem(environment.AUTHENTICATION.TOKENNAME);
     localStorage.removeItem('expires_at');
     this.loggedIn = false;
     this.user = null;

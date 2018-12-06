@@ -23,7 +23,7 @@ export class ProductPosterGuard implements CanActivate {
     if (this.authService.getUserId() === this.productService.getProductPosterId()) {
       return true;
     } else {
-      this.route.navigate([ '/home' ]);
+      this.route.navigate([ '' ]);
       this.message.error('Unable to edit others product post.', {
         nzDuration: 5000,
         nzPauseOnHover: true,

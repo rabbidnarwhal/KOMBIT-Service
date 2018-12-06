@@ -17,10 +17,10 @@
       <li nz-submenu>
         <span title><i class="anticon anticon-user"></i>{{userName}}</span>
         <ul class="submenu-overlay">
-          <li nz-menu-group *ngIf="!isSupplier" (click)="toMemberArea()">
+          <li nz-menu-group *ngIf="!isSupplier" class="clickable-menu" (click)="toMemberArea()">
             <span title>Dashboard</span>
           </li>
-          <li nz-menu-group (click)="logout()">
+          <li nz-menu-group class="clickable-menu" (click)="logout()">
             <span title>Logout</span>
           </li>
         </ul>
