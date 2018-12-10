@@ -66,10 +66,13 @@ namespace KombitServer.Controllers {
             try {
                 var updatedCompany = _context.MCompany
                     .FirstOrDefault (x => x.Id == id);
+                // if (updatedCompany.Image != null) {
+                //     deleteImage
+                // }
                 if (updatedCompany == null) return NotFound (new Exception ("Company not found"));
                 var file = Request.Form.Files[0];
-                var path = Path.Combine ("upload", "companies");
-                var physicalPath = Path.Combine ("assets", path, id.ToString());
+                var path = Path.Combine ("upload", "companies", id.ToString());
+                var physicalPath = Path.Combine ("assets", path);
                 if (!Directory.Exists (physicalPath))
                     Directory.CreateDirectory (physicalPath);
                 if (file.Length > 0) {
@@ -80,7 +83,6 @@ namespace KombitServer.Controllers {
                     using (var stream = new FileStream (fullPath, FileMode.Create)) {
                         await file.CopyToAsync (stream);
                     }
-
                     var request = HttpContext.Request;
                     var uriBuilder = new UriBuilder {
                         Host = request.Host.Host,
@@ -95,7 +97,6 @@ namespace KombitServer.Controllers {
                     _context.Commit ();
                     return Ok (new { name = fileName, path = urlPath });
                 }
-
                 return BadRequest (new Exception ("Invalid File"));
             } catch (Exception ex) {
                 return StatusCode (StatusCodes.Status500InternalServerError, ex);
@@ -112,8 +113,8 @@ namespace KombitServer.Controllers {
                     .FirstOrDefault (x => x.Id == id);
                 if (updatedCategpry == null) return NotFound (new Exception ("Company not found"));
                 var file = Request.Form.Files[0];
-                var path = Path.Combine ("upload", "categories");
-                var physicalPath = Path.Combine ("assets", path, id.ToString());
+                var path = Path.Combine ("upload", "categories", id.ToString());
+                var physicalPath = Path.Combine ("assets", path);
                 if (!Directory.Exists (physicalPath))
                     Directory.CreateDirectory (physicalPath);
                 if (file.Length > 0) {
@@ -155,8 +156,8 @@ namespace KombitServer.Controllers {
                     .FirstOrDefault (x => x.Id == id);
                 if (updatedUser == null) return NotFound (new Exception ("User not found"));
                 var file = Request.Form.Files[0];
-                var path = Path.Combine ("upload", "users");
-                var physicalPath = Path.Combine ("assets", path, id.ToString());
+                var path = Path.Combine ("upload", "users", id.ToString());
+                var physicalPath = Path.Combine ("assets", path);
                 if (!Directory.Exists (physicalPath))
                     Directory.CreateDirectory (physicalPath);
                 if (file.Length > 0) {
