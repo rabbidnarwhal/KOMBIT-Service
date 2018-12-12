@@ -37,6 +37,9 @@ export class ProductPostComponent implements OnInit {
   isLoading = false;
   isSkeleton = false;
   isEdit = false;
+  isError = false;
+
+  errorMessage = '';
 
   previewVisible = false;
   previewImage = '';
@@ -64,7 +67,6 @@ export class ProductPostComponent implements OnInit {
     private route: Router,
     private activedRoute: ActivatedRoute
   ) {
-    console.log('pass init');
     this.quill = {};
     this.quillContent = {};
     this.modules = {
@@ -83,7 +85,6 @@ export class ProductPostComponent implements OnInit {
   }
 
   async ngOnInit() {
-    console.log('pass 0');
     this.isSkeleton = true;
     this.loadParameterData();
     this.validateForm = this.fb.group({
@@ -107,17 +108,13 @@ export class ProductPostComponent implements OnInit {
       // Faq: []
     });
 
-    console.log('pass 1');
     this.isSkeleton = false;
     this.checkRouteParameter();
-    console.log('pass 2');
   }
 
   checkRouteParameter() {
-    console.log('pass 3');
     this.activedRoute.params.subscribe((params) => {
       const id = +params['productId'];
-      console.log('id', id);
       if (id) {
         this.isLoading = true;
         this.isSkeleton = true;
@@ -130,7 +127,6 @@ export class ProductPostComponent implements OnInit {
     this.productService
       .fetchEditableProductData(id)
       .then((res: EditProductResponse) => {
-        console.log('data', res);
         this.isEdit = true;
         this.oldProductData = {
           companyId: res.companyId,
@@ -237,17 +233,17 @@ export class ProductPostComponent implements OnInit {
         this.isLoading = false;
       })
       .catch((error) => {
-        this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+        this.isError = true;
+        this.errorMessage = error.toString();
+        // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
       });
   }
 
   async loadParameterData() {
     try {
-      const solutions = await this.productService.getListSolution();
-      this.listSolution = solutions;
-
-      const users = await this.productService.getListUser();
-      this.listUser = users;
+      const promise = await Promise.all([ this.productService.getListUser(), this.productService.getListSolution() ]);
+      this.listUser = promise[0];
+      this.listSolution = promise[1];
 
       if (!this.currencyFetchedFromDetail) {
         const currency = await this.productService.getCurrency();
@@ -256,8 +252,15 @@ export class ProductPostComponent implements OnInit {
         }
       }
     } catch (error) {
-      this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+      this.isError = true;
+      this.errorMessage = error.toString();
+      // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
     }
+  }
+
+  errorClosed() {
+    this.isError = false;
+    this.errorMessage = '';
   }
 
   /** Handle Preview */
@@ -391,7 +394,12 @@ export class ProductPostComponent implements OnInit {
         alert('Photo is required');
         return;
       }
-      const id = this.message.loading('Action in progress..', { nzDuration: 0 }).messageId;
+      if (this.listUser.length < 1 && this.validateForm.get('isSupplierAsContact').value) {
+        alert('User list is empty, please wait a moment, then try again!');
+        this.listUser = await this.productService.getListUser();
+        return;
+      }
+      const actionMessage = this.message.loading('Action in progress..', { nzDuration: 0 }).messageId;
       this.isLoading = true;
       let data: NewProduct = new NewProduct(this.authService.getPrincipal());
 
@@ -420,9 +428,12 @@ export class ProductPostComponent implements OnInit {
         /** Publish product */
         await this.publishProduct(data);
         this.isLoading = false;
-        this.message.remove(id);
+        this.message.remove(actionMessage);
       } catch (error) {
-        console.error('417', error);
+        this.isLoading = false;
+        this.isError = true;
+        this.errorMessage = error.toString();
+        // this.message.error(error);
       }
     }
   }
@@ -550,7 +561,9 @@ export class ProductPostComponent implements OnInit {
             fileList[index].path = result.path;
             fileList[index]['status'] = 'done';
           } catch (error) {
-            this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+            this.isError = true;
+            this.errorMessage = error.toString();
+            // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
           }
         } else {
           let fileData = null;
@@ -638,7 +651,9 @@ export class ProductPostComponent implements OnInit {
         this.fileListVideo[0].url = result.path;
         this.fileListVideo[0]['status'] = 'done';
       } catch (error) {
-        this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+        this.isError = true;
+        this.errorMessage = error.toString();
+        // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
       }
     } else if (this.fileListVideo.length) {
       data.VideoPath = this.fileListVideo[0].path;
@@ -667,7 +682,9 @@ export class ProductPostComponent implements OnInit {
                 }
               }
             } catch (error) {
-              this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+              this.isError = true;
+              this.errorMessage = error.toString();
+              // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
             }
           });
           await Promise.all(promiseContent);
@@ -726,22 +743,26 @@ export class ProductPostComponent implements OnInit {
       this.message.success('Product published', { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
       this.route.navigate([ '' ]);
     } catch (error) {
-      this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+      this.isError = true;
+      this.errorMessage = error.toString();
+      // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
     }
   }
 
   validatingForm() {
-    for (const i in this.validateForm.controls) {
-      if (i === 'selectedContactNameManual' || i === 'selectedContactPhoneManual') {
-        if (this.validateForm.get('isSupplierAsContact').value) {
-          // if (this.validateForm.controls[i].value === '0') {
-          //   this.validateForm.controls[i].setValue(null);
-          // }
-          this.validateForm.controls[i].setValue('0');
+    for (const objectKey in this.validateForm.controls) {
+      if (this.validateForm.controls.hasOwnProperty(objectKey)) {
+        if (objectKey === 'selectedContactNameManual' || objectKey === 'selectedContactPhoneManual') {
+          if (this.validateForm.get('isSupplierAsContact').value) {
+            // if (this.validateForm.controls[i].value === '0') {
+            //   this.validateForm.controls[i].setValue(null);
+            // }
+            this.validateForm.controls[objectKey].setValue('0');
+          }
         }
+        this.validateForm.controls[objectKey].markAsDirty();
+        this.validateForm.controls[objectKey].updateValueAndValidity();
       }
-      this.validateForm.controls[i].markAsDirty();
-      this.validateForm.controls[i].updateValueAndValidity();
     }
   }
 

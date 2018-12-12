@@ -15,7 +15,23 @@
         <p>Category: <b>{{product.categoryName}}</b></p>
         <p *ngIf="product.isIncludePrice">{{product.currency}}. {{product.price | number}}</p>
       </div>
+      <div nz-col [nzSpan]="24" class="extra-action text-center">
+        <span class="extra-label" (click)="openGooglePlay()">Feature</span>
+        <span class="extra-label" (click)="openGooglePlay()">Benefit</span>
+      </div>
       <div nz-col [nzPush]="2" [nzSpan]="18" class="product-description" [innerHtml]="product.description">
+      </div>
+      <div nz-col [nzSpan]="24" class="extra-action">
+        <span class="extra-label icon-container left" (click)="openGooglePlay()">
+          <img class="icon-image thumb-up" src="../../../assets/images/thumb-up.png" />
+          <label>{{product.like}}</label>
+        </span>
+        <span class="extra-label icon-container right" (click)="openGooglePlay()">
+          <img class="icon-image" src="../../../assets/images/comment.png" />
+          <label>Post Comment</label>
+        </span>
+        <!-- <span class="extra-label" (click)="openGooglePlay()">Feature</span>
+        <span class="extra-label" (click)="openGooglePlay()">Benefit</span> -->
       </div>
     </nz-card>
   </nz-skeleton>

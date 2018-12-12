@@ -36,6 +36,9 @@
     position: relative;
     background-size: cover;
     background-position: center center;
+    .videoPlayer {
+      width: 100%;
+    }
     img {
       object-fit: contain;
       width: 20%;
@@ -63,5 +66,12 @@
   margin-left: 24px;
   + .content-wrapper {
     margin: 24px;
+  }
+}
+
+:host ::ng-deep .error-wrapper {
+  margin: 16px 0px;
+  i {
+    font-size: 16px;
   }
 }

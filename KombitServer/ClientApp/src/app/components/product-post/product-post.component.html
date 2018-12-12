@@ -1,6 +1,17 @@
 <div nz-col [nzPush]="2" [nzSpan]="18" class="back-button">
   <button nz-button routerLink="/">Back</button>
 </div>
+
+<div *ngIf="isError" nz-col [nzPush]="2" [nzSpan]="18" class="error-wrapper">
+  <nz-alert
+    nzType="error"
+    nzCloseable
+    nzMessage="Error Message"
+    [nzDescription]="errorMessage"
+    (nzOnClose)="errorClosed()">
+  </nz-alert>
+</div>
+
 <div nz-col [nzPush]="2" [nzSpan]="18" class="content-wrapper">
   <ng-container *ngIf="isSkeleton">
     <nz-skeleton [nzActive]="true" [nzAvatar]="{size:'large', shape:'square'}"></nz-skeleton>
@@ -90,7 +101,7 @@
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-control [nzPush]="7" [nzSpan]="16">
+            <nz-form-control [nzPush]="5" [nzSpan]="16">
               <div class="video-wrapper">
                 <div class="placeholder">
                   <video *ngIf="fileListVideo.length" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>

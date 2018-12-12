@@ -26,12 +26,12 @@ export class ProductDetailComponent implements OnInit {
     this.activedRoute.params.subscribe((params) => {
       const id = +params['productId'];
       if (id) {
-        this.fetchDetailProduct(id);
+        this.getDetailProduct(id);
       }
     });
   }
 
-  fetchDetailProduct(id) {
+  getDetailProduct(id) {
     this.productService
       .getDetailProduct(id)
       .then((res) => {

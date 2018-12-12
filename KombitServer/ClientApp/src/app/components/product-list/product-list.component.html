@@ -18,13 +18,13 @@
           <p *ngIf="product.isIncludePrice">{{product.currency}}. {{product.price | number}}</p>
         </div>
         <div nz-col [nzSpan]="24" class="extra-action">
-          <span class="extra-label icon-container" (click)="openGooglePlay()">
+          <!-- <span class="extra-label icon-container" (click)="openGooglePlay()">
             <img class="icon-image" src="../../../assets/images/comment.png" />
             <label>Post Comment</label>
-          </span>
+          </span> -->
           <span class="extra-label" routerLink="{{'/product/' + product.id}}">Read More</span>
-          <span class="extra-label" (click)="openGooglePlay()">Feature</span>
-          <span class="extra-label" (click)="openGooglePlay()">Benefit</span>
+          <!-- <span class="extra-label" (click)="openGooglePlay()">Feature</span>
+          <span class="extra-label" (click)="openGooglePlay()">Benefit</span> -->
         </div>
       </nz-card>
     </nz-skeleton>

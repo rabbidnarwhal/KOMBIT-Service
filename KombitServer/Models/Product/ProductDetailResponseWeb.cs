@@ -17,8 +17,9 @@ namespace KombitServer.Models {
     public string FotoPath { get; set; }
     public string Currency { get; set; }
     public double? Price { get; set; }
+    public int Like {get; set;}
 
-    public ProductDetailResponseWeb (Product product) {
+    public ProductDetailResponseWeb (Product product, int count) {
       Id = product.Id;
       CompanyName = product.Company.CompanyName;
       HoldingName = product.Holding.HoldingName;
@@ -29,6 +30,7 @@ namespace KombitServer.Models {
       FotoPath = product.FotoUpload.First().FotoPath;
       Currency = product.Currency;
       Price = product.Price;
+      Like = count;
     }
   }
 }

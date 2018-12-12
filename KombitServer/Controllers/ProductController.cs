@@ -105,15 +105,17 @@ namespace KombitServer.Controllers {
         [ProducesResponseType (typeof (ProductDetailResponseWeb), 200)]
 
         [ResponseCache (Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult GetDetailProduct (int id) {
+        public IActionResult GetDetailWebProduct (int id) {
             var product = _context.Product
                 .Include (x => x.Holding)
                 .Include (x => x.Company)
                 .Include (x => x.FotoUpload)
                 .Include (x => x.Category)
+                .Include (x => x.Interaction)
                 .FirstOrDefault (x => x.Id == id);
+            var interaction = _context.Interaction.Where (x => x.ProductId == id && x.IsLike == true).ToList ();
             if (product == null) return NotFound (new Exception ("Product not found"));
-            return Ok (new ProductDetailResponseWeb (product));
+            return Ok (new ProductDetailResponseWeb (product, interaction.Count()));
         }
 
         /// <summary>Get editable product request</summary>
