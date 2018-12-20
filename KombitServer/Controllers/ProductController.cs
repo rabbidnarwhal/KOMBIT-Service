@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -483,13 +484,34 @@ namespace KombitServer.Controllers {
         public async Task<IActionResult> DeleteProduct (int? id) {
             if (id == null) return BadRequest ();
             var product = await _context.Product.FirstOrDefaultAsync (x => x.Id == id);
-            var foto = await _context.FotoUpload.FirstOrDefaultAsync (x => x.ProductId == id);
+            var appointment = _context.Appointment.Where(x => x.ProductId == id);
+            var attachment = _context.AttachmentFile.Where(x => x.ProductId == id);
+            var foto = _context.FotoUpload.Where (x => x.ProductId == id);
             var interaction = _context.Interaction.Where (x => x.ProductId == id);
-            _context.Remove (foto);
+            var notification = _context.Notification.Where(x => x.ModuleName.Equals("product") && x.ModuleId == id);
             _context.Remove (product);
-            _context.Remove (interaction);
-            await _context.SaveChangesAsync ();
-            return Ok ();
+            if (appointment != null) {
+                _context.RemoveRange (appointment);
+            }
+            if (attachment != null) {
+                _context.RemoveRange (attachment);
+            }
+            if (foto != null) {
+                _context.RemoveRange (foto);
+            }
+            if (interaction != null) {
+                _context.RemoveRange (interaction);
+            }
+            if (notification != null) {
+                _context.RemoveRange (notification);
+            }
+
+            var physicalPath = Path.Combine ("assets", "upload", "products", "poster_" + product.PosterId, product.ProductName.ToLower());
+            if (Directory.Exists(physicalPath)) 
+                Directory.Delete(physicalPath, true);
+                
+            _context.Commit();
+            return Ok (new {msg = "Product Deleted", success = "True"});
         }
     }
 }
