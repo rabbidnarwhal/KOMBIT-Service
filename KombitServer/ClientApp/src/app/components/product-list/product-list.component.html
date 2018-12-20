@@ -1,12 +1,23 @@
+<div nz-col [nzPush]="4" [nzSpan]="16" class="empty" *ngIf="!products.length">
+  <p>There are no post!!</p>
+</div>
+
 <ng-container *ngFor="let product of products">
-  <div nz-col [nzPush]="2" [nzSpan]="16">
-    <nz-skeleton [nzLoading]="!product.id" [nzActive]="true" [nzAvatar]="true">
+  <div [class.skeleton-container]="isLoading" nz-col [nzPush]="4" [nzSpan]="16">
+    <nz-skeleton [nzLoading]="isLoading" [nzActive]="true" [nzAvatar]="true">
       <nz-card *ngIf="product.id" class="card-container">
-        <div nz-col [nzSpan]="20">
+        <div nz-col [nzSpan]="16">
           <h1>{{product.productName}}</h1>
         </div>
-        <div nz-col [nzSpan]="4">
-          <span *ngIf="uid && product.posterId === uid" class="extra-label" (click)="editProduct(product.id, product.posterId)">Edit</span>
+        <div nz-col [nzSpan]="8">
+          <span *ngIf="uid && product.posterId === uid" class="extra-label" (click)="editProduct(product.id, product.posterId)">
+            <i class="anticon anticon-edit"></i>
+          </span>
+          <span *ngIf="uid && product.posterId === uid" class="extra-label">
+            <a nz-popconfirm nzTitle="Are you sure delete this post?" (nzOnConfirm)="deleteProduct(product.id)">
+              <i class="anticon anticon-delete"></i>
+            </a>
+          </span>
         </div>
         <div nz-col [nzSpan]="8" class="image-container">
           <img src="{{product.fotoPath}}" />

@@ -49,3 +49,25 @@
 .clickable-menu {
   cursor: pointer;
 }
+
+.fixed-header {
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+}
+
+.fixed-sider {
+  background: #f3f3f3;
+  position: fixed;
+  margin-top: 64px;
+  &.sider-hide {
+    display: none;
+  }
+}
+
+.content-with-fixed-header {
+  margin-top: 24px;
+  &.public {
+    margin-top: 64px;
+  }
+}

@@ -24,7 +24,8 @@ export class ProductService {
   }
 
   getListProduct() {
-    return this.apiService.get('/product');
+    const header = { 'Cache-Control': 'no-cache' };
+    return this.apiService.get('/product', { headers: header });
   }
 
   getDetailProduct(id) {
@@ -163,5 +164,9 @@ export class ProductService {
     this.intervalProduct.type = type;
     this.intervalProduct.value = interval;
     return this.apiService.post('/config/product_interval', request);
+  }
+
+  deleteProduct(id: number) {
+    return this.apiService.delete('/product/' + id);
   }
 }

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ProductService } from 'src/app/services/product.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
@@ -9,28 +9,47 @@ import { NzMessageService } from 'ng-zorro-antd';
   templateUrl: './product-list.component.html',
   styleUrls: [ './product-list.component.scss' ]
 })
-export class ProductListComponent implements OnInit {
-  products: any = [ 0, 0, 0, 0, 0 ];
+export class ProductListComponent implements OnInit, OnDestroy {
+  originProduct = [];
+  products = [];
+  skeletons: any = [ 0, 0, 0, 0, 0 ];
   uid = 0;
+  productSubscription: any;
+  isFiltered = false;
+  isLoading = true;
   constructor(
     private productService: ProductService,
     private authService: AuthService,
     private route: Router,
+    private activatedRoute: ActivatedRoute,
     private message: NzMessageService
-  ) {}
+  ) {
+    this.products = this.skeletons;
+    this.productSubscription = this.activatedRoute.queryParams.subscribe((res) => {
+      if (res.hasOwnProperty('myPost') && res.myPost) {
+        this.isFiltered = true;
+        this.products = this.originProduct.filter((x) => x.posterId === this.uid);
+      } else {
+        this.isFiltered = false;
+        this.products = this.originProduct;
+      }
+    });
+  }
 
-  ngOnInit() {
-    this.productService.setProductPosterId();
-    this.productService
-      .getListProduct()
-      .then((res) => {
-        this.products = res;
-      })
-      .catch((err) => {
-        this.message.error(err, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
-      });
+  async ngOnInit() {
+    try {
+      this.checkLogin();
+      this.productService.setProductPosterId();
+      this.originProduct = await this.productService.getListProduct();
+      this.products = this.originProduct;
+      this.isLoading = false;
+    } catch (error) {
+      this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+    }
+  }
 
-    this.checkLogin();
+  ngOnDestroy() {
+    this.productSubscription.unsubscribe();
   }
 
   checkLogin() {
@@ -51,5 +70,19 @@ export class ProductListComponent implements OnInit {
   editProduct(id, posterId) {
     this.productService.setProductPosterId(posterId);
     this.route.navigate([ '/product/edit/', id ]);
+  }
+
+  async deleteProduct(id) {
+    try {
+      const deleteSuccess = await this.productService.deleteProduct(id);
+      this.message.success(deleteSuccess.msg, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+      this.isLoading = true;
+      this.products = this.skeletons;
+      this.originProduct = await this.productService.getListProduct();
+      this.products = this.isFiltered ? this.originProduct.filter((x) => x.posterId === this.uid) : this.originProduct;
+      this.isLoading = false;
+    } catch (error) {
+      this.message.error(error.toString(), { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+    }
   }
 }

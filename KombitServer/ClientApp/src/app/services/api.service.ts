@@ -25,6 +25,14 @@ export class ApiService {
       .toPromise();
   }
 
+  delete(endpoint: string, httpOptions?: any): Promise<any> {
+    const options = this.createRequestHeader(httpOptions ? httpOptions : {});
+    return this.http
+      .delete(this.getUrl() + endpoint, options)
+      .pipe(map(this.extractData), catchError(this.handleError))
+      .toPromise();
+  }
+
   getBlob(url: string): Promise<any> {
     return this.http.get(url, { responseType: 'blob' }).pipe(catchError(this.handleError)).toPromise();
   }

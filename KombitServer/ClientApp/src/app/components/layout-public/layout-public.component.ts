@@ -1,17 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-layout-public',
   templateUrl: './layout-public.component.html',
   styleUrls: [ './layout-public.component.scss' ]
 })
-export class LayoutPublicComponent implements OnInit {
+export class LayoutPublicComponent implements OnInit, OnDestroy {
   isLogin = false;
   isSupplier = true;
+  isSider = true;
   userName = 'User';
-  constructor(private authService: AuthService, private route: Router) {}
+  subscription: any;
+  constructor(private authService: AuthService, private route: Router, private zone: NgZone) {
+    this.subscription = this.route.events.subscribe((subs) => {
+      if (subs instanceof NavigationEnd) {
+        console.log('subs', subs);
+        if (
+          subs.urlAfterRedirects.includes('new') ||
+          subs.urlAfterRedirects.includes('edit') ||
+          subs.urlAfterRedirects.includes('product')
+        ) {
+          this.isSider = false;
+        } else {
+          this.isSider = true;
+        }
+      }
+    });
+  }
 
   ngOnInit() {
     this.authService.isAuthenticated().then((res) => {
@@ -19,6 +36,10 @@ export class LayoutPublicComponent implements OnInit {
       this.isSupplier = this.authService.getRole() === 'Supplier' ? true : false;
       this.userName = this.authService.getUserName();
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   toMemberArea() {

@@ -1,5 +1,5 @@
 <nz-layout class="layout">
-  <nz-header>
+  <nz-header class="fixed-header">
     <div class="logo">
       <button class="logo-button" nz-button nzType="default" routerLink="/">
         Combits
@@ -27,10 +27,39 @@
       </li>
     </ul>
   </nz-header>
-  <nz-content style="padding:0 50px;">
-    <div class="router-container">
-      <router-outlet></router-outlet>
-    </div>
-  </nz-content>
+
+  <ng-container *ngIf="isLogin">
+    <nz-content style="padding:0 50px;">
+      <nz-layout style="padding:24px 0; background: #f3f3f3">
+        <nz-sider *ngIf="isLogin && isSider" [nzWidth]="200" class="fixed-sider">
+          <ul nz-menu [nzMode]="'inline'" style="height:100%">
+            <li nz-menu-item routerLink="" skipLocationChange routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{exact:false}">
+              <span>
+                <span class="nav-text">All Post</span>
+              </span>
+            </li>
+            <li nz-menu-item routerLink="" skipLocationChange routerLinkActive="ant-menu-item-selected" [queryParams]="{myPost: true}" [routerLinkActiveOptions]="{exact:false}">
+              <span>
+                <span class="nav-text">My Post</span>
+              </span>
+            </li>
+          </ul>
+        </nz-sider>
+        <nz-content class="content-with-fixed-header" style="padding:0 50px;">
+          <div class="router-container">
+            <router-outlet></router-outlet>
+          </div>
+        </nz-content>
+      </nz-layout>
+    </nz-content>
+  </ng-container>
+
+  <ng-container *ngIf="!isLogin">
+    <nz-content class="content-with-fixed-header public" style="padding:0 50px;">
+      <div class="router-container">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </ng-container>
   <!-- <nz-footer style="text-align: center;">Combits ©2018</nz-footer> -->
 </nz-layout>

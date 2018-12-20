@@ -31,7 +31,7 @@
               [nzBeforeUpload]="beforeUploadImage"
               [nzPreview]="handlePreviewImage"
               [nzRemove]="handleDeleteImage">
-              <i nz-icon type="plus"></i>
+              <i class="anticon anticon-plus"></i>
               <div class="ant-upload-text">Upload</div>
             </nz-upload>
             <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
@@ -94,7 +94,7 @@
                 [(nzFileList)]="fileListVideo"
                 [nzBeforeUpload]="beforeUploadVideo">
                 <button nz-button>
-                  <i nz-icon type="upload"></i><span>{{fileListVideo.length ? 'Change Video' : 'Select Video'}}</span>
+                  <i class="anticon anticon-upload"></i><span>{{fileListVideo.length ? 'Change Video' : 'Select Video'}}</span>
                 </button>
               </nz-upload>
             </nz-form-control>
@@ -117,8 +117,8 @@
             <nz-form-label [nzSpan]="5" nzFor="isSupplierAsContact">User as Contact</nz-form-label>
             <nz-form-control [nzSpan]="16">
               <nz-switch formControlName="isSupplierAsContact" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
-              <ng-template #checkedTemplate><i nz-icon type="check"></i></ng-template>
-              <ng-template #unCheckedTemplate><i nz-icon type="close"></i></ng-template>
+              <ng-template #checkedTemplate><i class="anticon anticon-check"></i></ng-template>
+              <ng-template #unCheckedTemplate><i class="anticon anticon-close"></i></ng-template>
             </nz-form-control>
           </nz-form-item>
 
@@ -185,7 +185,7 @@
                 [nzBeforeUpload]="beforeUploadMarketingKit"
                 [nzRemove]="handleDeleteMarketingKit">
                 <button nz-button>
-                  <i nz-icon type="upload"></i><span>Upload</span>
+                  <i class="anticon anticon-upload"></i><span>Upload</span>
                 </button>
               </nz-upload>
             </nz-form-control>
@@ -238,7 +238,7 @@
                 [nzBeforeUpload]="beforeUploadProductCertificate"
                 [nzPreview]="handlePreviewImage"
                 [nzRemove]="handleDeleteProductCertificate">
-                <i nz-icon type="plus"></i>
+                <i class="anticon anticon-plus"></i>
                 <div class="ant-upload-text">Upload</div>
               </nz-upload>
               <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
@@ -265,7 +265,7 @@
                 [nzRemove]="handleDeleteProductImplementation"
                 [nzShowUploadList]="false">
                 <button nz-button>
-                  <i nz-icon type="upload"></i><span>Upload</span>
+                  <i class="anticon anticon-upload"></i><span>Upload</span>
                 </button>
               </nz-upload>
             </nz-form-control>
@@ -304,7 +304,7 @@
                 [nzBeforeUpload]="beforeUploadExistingClient"
                 [nzPreview]="handlePreviewImage"
                 [nzRemove]="handleDeleteExistingClient">
-                <i nz-icon type="plus"></i>
+                <i class="anticon anticon-plus"></i>
                 <div class="ant-upload-text">Upload</div>
               </nz-upload>
               <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">

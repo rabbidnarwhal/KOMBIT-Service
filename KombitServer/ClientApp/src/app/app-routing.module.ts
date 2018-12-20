@@ -55,7 +55,8 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: ProductListComponent
+        redirectTo: '/',
+        pathMatch: 'full'
       },
       {
         path: 'new',
