@@ -6,6 +6,7 @@ namespace KombitServer.Models {
   public partial class KombitDBContext : DbContext {
     public virtual DbSet<Appointment> Appointment { get; set; }
     public virtual DbSet<AttachmentFile> AttachmentFile { get; set; }
+    public virtual DbSet<ChatMessages> ChatMessages { get; set; }
     public virtual DbSet<FotoUpload> FotoUpload { get; set; }
     public virtual DbSet<Interaction> Interaction { get; set; }
     public virtual DbSet<MCategory> MCategory { get; set; }
@@ -96,6 +97,41 @@ namespace KombitServer.Models {
 
         entity.Property (e => e.ProductId)
           .HasColumnName ("product_id")
+          .HasColumnType ("int(11)");
+      });
+
+      modelBuilder.Entity<ChatMessages> (entity => {
+        entity.ToTable ("chat_messages");
+
+        entity.Property (e => e.Id)
+          .HasColumnName ("id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.Date)
+          .HasColumnName ("date")
+          .HasColumnType ("datetime")
+          .HasDefaultValueSql ("'CURRENT_TIMESTAMP'");
+
+        entity.Property (e => e.IsRead)
+          .HasColumnName ("is_read")
+          .HasColumnType ("tinyint(4)")
+          .HasDefaultValueSql ("'0'");
+
+        entity.Property (e => e.Message)
+          .HasColumnName ("message")
+          .HasColumnType ("text");
+
+        entity.Property (e => e.ReceiverId)
+          .HasColumnName ("receiver_id")
+          .HasColumnType ("int(11)");
+
+        entity.Property (e => e.RoomId)
+          .IsRequired ()
+          .HasColumnName ("room_id")
+          .HasMaxLength (50);
+
+        entity.Property (e => e.SenderId)
+          .HasColumnName ("sender_id")
           .HasColumnType ("int(11)");
       });
 
@@ -393,6 +429,10 @@ namespace KombitServer.Models {
 
         entity.Property (e => e.PushId)
           .HasColumnName ("push_id")
+          .HasMaxLength (255);
+
+        entity.Property (e => e.SocketId)
+          .HasColumnName ("socket_id")
           .HasMaxLength (255);
 
         entity.Property (e => e.Username)

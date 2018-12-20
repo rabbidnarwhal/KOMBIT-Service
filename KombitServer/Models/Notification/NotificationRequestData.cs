@@ -9,6 +9,7 @@ namespace KombitServer.Models {
     public string style { get; set; }
     public string summaryText { get; set; }
     public int notId { get; set; }
+    public string newChat {get; set;}
   }
 
 }

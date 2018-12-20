@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using KombitServer.Hubs;
 using KombitServer.Models;
 using KombitServer.Models.Email;
 using KombitServer.ScheduleTask;
@@ -57,6 +58,7 @@ namespace KombitServer {
       });
       services.AddSingleton<IEmailService, EmailService>();
       services.AddSingleton<IEmailConfiguration>(Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
+      services.AddSignalR();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,10 +70,11 @@ namespace KombitServer {
         option.AllowAnyOrigin ();
         option.AllowAnyMethod ();
         option.AllowAnyHeader ();
+        option.AllowCredentials();
       });
       app.Use(async (context, next) => {
         await next();
-        if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value) && !context.Request.Path.Value.StartsWith("/api")) {
+        if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value) && !context.Request.Path.Value.StartsWith("/api") && !context.Request.Path.Value.StartsWith("/hub")) {
           context.Request.Path = "/index.html";
           context.Response.StatusCode = 200;
           await next();
@@ -87,6 +90,9 @@ namespace KombitServer {
         RequestPath = ""
       });
       app.UseMvc ();
+      app.UseSignalR(route => {
+        route.MapHub<ChatHub> ("/hub/chat");
+      });
       app.UseSwagger (c => {
         c.RouteTemplate = "docs/{documentName}/swagger.json";
       });
