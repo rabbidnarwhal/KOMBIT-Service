@@ -1,3 +1,5 @@
+@import 'variables.scss';
+
 .image-container {
   img {
     width: 100%;
@@ -13,37 +15,35 @@
 }
 
 .content-wrapper {
-  margin: 24px;
+  height: 100%;
 }
 
-.extra-action {
-  margin: 16px 0px;
-  font-size: 16px;
-  font-weight: 500;
-  &.text-center {
-    text-align: center;
-  }
-}
-
-.extra-label {
-  margin: 0 16px;
-  padding: 4px 16px;
-  cursor: pointer;
-  border: 1px solid #aaa;
-  border-radius: 20px;
-  &.right {
+.description-label {
+  font-size: 18px;
+  width: 160px;
+  background-color: $combitBlue;
+  margin: 10px 0px;
+  text-align: center;
+  color: $combitWhite;
+  border-radius: 8px;
+  display: inline-block;
+  + .editable-button {
     float: right;
-  }
-  &.left {
-    float: left;
+    margin: 12px 0px;
+    i {
+      font-size: 16px;
+      margin-right: 8px;
+      cursor: pointer;
+      color: $combitOrange;
+    }
   }
 }
 
-.icon-image {
-  width: 32px;
-  padding-right: 8px;
-  &.thumb-up {
-    position: relative;
-    bottom: 4px;
-  }
+.more-button {
+  font-size: 12px;
+  border-radius: 6px;
+  border: none;
+  color: $combitWhite;
+  width: 110px;
+  background-color: $combitGreen;
 }

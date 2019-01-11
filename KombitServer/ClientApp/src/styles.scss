@@ -2,6 +2,26 @@
 @import '~quill/dist/quill.core.css';
 @import '~quill/dist/quill.bubble.css';
 @import '~quill/dist/quill.snow.css';
+@import "../node_modules/angular-calendar/css/angular-calendar.css";
+
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 100;
+  src: url('assets/fonts/ubuntu-light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 500;
+  src: url('assets/fonts/ubuntu-medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: url('assets/fonts/ubuntu-regular.ttf') format('truetype');
+}
 
 .small-tooltip {
   font-size: 10px;
@@ -13,4 +33,9 @@
 .ant-menu-submenu > .ant-menu {
   position: absolute;
   right: 0px;
+}
+
+.modal-open {
+  position: fixed;
+  overflow-y: scroll;
 }

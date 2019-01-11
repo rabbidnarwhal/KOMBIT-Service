@@ -1,38 +1,23 @@
-
-<div nz-col [nzPush]="6" [nzSpan]="12" class="back-button">
-  <button nz-button routerLink="/">Back</button>
-</div>
-<div nz-col [nzPush]="6" [nzSpan]="12" class="content-wrapper">
+<div class="content-wrapper">
   <nz-skeleton [nzLoading]="isLoading" [nzActive]="true" [nzAvatar]="true">
-    <nz-card *ngIf="!isLoading && product.id" class="card-container">
-      <div nz-col [nzSpan]="24" class="image-container">
+    <div *ngIf="!isLoading && product.id" class="card-container">
+      <div class="image-container">
         <img src="{{product.fotoPath}}" />
       </div>
-      <div nz-col [nzPush]="2" [nzSpan]="18" class="product-detail">
-        <p>Product Name: <b>{{product.productName}}</b></p>
-        <p>Company Name: <b>{{product.companyName}}</b></p>
-        <p>Holding Name: <b>{{product.holdingName}}</b></p>
-        <p>Category: <b>{{product.categoryName}}</b></p>
-        <p *ngIf="product.isIncludePrice">{{product.currency}}. {{product.price | number}}</p>
+      <div class="description-container">
+        <div class="description-label">Description</div>
+        <div *ngIf="editable" class="editable-button">
+          <a nz-popconfirm nzTitle="Are you sure delete this post?" (nzOnConfirm)="deleteProduct(product.id)">
+            <i class="anticon anticon-delete"></i>
+          </a>
+          <!-- <i class="anticon anticon-delete" (click)="deleteProduct(product.id)"></i> -->
+          <i class="anticon anticon-edit" (click)="editProduct(product.id)"></i>
+        </div>
+        <div class="product-description" [innerHtml]="product.description"></div>
       </div>
-      <div nz-col [nzSpan]="24" class="extra-action text-center">
-        <span class="extra-label" (click)="openGooglePlay()">Feature</span>
-        <span class="extra-label" (click)="openGooglePlay()">Benefit</span>
+      <div class="more-container">
+        <button class="more-button" (click)="discoveryMore()">Discovery More</button>
       </div>
-      <div nz-col [nzPush]="2" [nzSpan]="18" class="product-description" [innerHtml]="product.description">
-      </div>
-      <div nz-col [nzSpan]="24" class="extra-action">
-        <span class="extra-label icon-container left" (click)="openGooglePlay()">
-          <img class="icon-image thumb-up" src="../../../assets/images/thumb-up.png" />
-          <label>{{product.like}}</label>
-        </span>
-        <span class="extra-label icon-container right" (click)="openGooglePlay()">
-          <img class="icon-image" src="../../../assets/images/comment.png" />
-          <label>Post Comment</label>
-        </span>
-        <!-- <span class="extra-label" (click)="openGooglePlay()">Feature</span>
-        <span class="extra-label" (click)="openGooglePlay()">Benefit</span> -->
-      </div>
-    </nz-card>
+    </div>
   </nz-skeleton>
 </div>

@@ -1,0 +1,8 @@
+<div nz-row class="submenu-wrapper">
+  <div nz-col [nzSpan]="span" class="submenu-button-container" *ngFor="let item of submenu">
+    <button class="submenu-button" (click)="openModal(item)" [class.selected]="selectedSubMenu === item.type">
+      <img src="{{item.icon}}" />
+      {{item.title}}
+    </button>
+  </div>
+</div>

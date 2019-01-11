@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NzMessageService, UploadFile } from 'ng-zorro-antd';
 import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -9,8 +9,8 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { NewProduct } from 'src/app/models/new-product';
 import { AuthService } from 'src/app/services/auth.service';
 import { ProductService } from 'src/app/services/product.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { AttachmentFileResponse, FotoResponse, EditProductResponse } from 'src/app/models/edit-product-response';
+import { EventsService } from 'src/app/services/events.service';
 
 @Component({
   selector: 'app-product-post',
@@ -18,6 +18,9 @@ import { AttachmentFileResponse, FotoResponse, EditProductResponse } from 'src/a
   styleUrls: [ './product-post.component.scss' ]
 })
 export class ProductPostComponent implements OnInit {
+  @Input() header: any;
+  @Input() pid = 0;
+
   currency: string;
   currencyFetchedFromDetail = false;
 
@@ -37,7 +40,7 @@ export class ProductPostComponent implements OnInit {
   isLoading = false;
   isSkeleton = false;
   isEdit = false;
-  isError = false;
+  isContactOpened = false;
 
   errorMessage = '';
 
@@ -64,8 +67,7 @@ export class ProductPostComponent implements OnInit {
     private fileUploadService: FileUploadService,
     private authService: AuthService,
     private productService: ProductService,
-    private route: Router,
-    private activedRoute: ActivatedRoute
+    private eventsService: EventsService
   ) {
     this.quill = {};
     this.quillContent = {};
@@ -109,18 +111,11 @@ export class ProductPostComponent implements OnInit {
     });
 
     this.isSkeleton = false;
-    this.checkRouteParameter();
-  }
-
-  checkRouteParameter() {
-    this.activedRoute.params.subscribe((params) => {
-      const id = +params['productId'];
-      if (id) {
-        this.isLoading = true;
-        this.isSkeleton = true;
-        this.loadEditableProductData(id);
-      }
-    });
+    if (this.pid > 0) {
+      this.isLoading = true;
+      this.isSkeleton = true;
+      this.loadEditableProductData(this.pid);
+    }
   }
 
   async loadEditableProductData(id) {
@@ -233,9 +228,7 @@ export class ProductPostComponent implements OnInit {
         this.isLoading = false;
       })
       .catch((error) => {
-        this.isError = true;
-        this.errorMessage = error.toString();
-        // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+        this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
       });
   }
 
@@ -252,15 +245,8 @@ export class ProductPostComponent implements OnInit {
         }
       }
     } catch (error) {
-      this.isError = true;
-      this.errorMessage = error.toString();
-      // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+      this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
     }
-  }
-
-  errorClosed() {
-    this.isError = false;
-    this.errorMessage = '';
   }
 
   /** Handle Preview */
@@ -391,11 +377,15 @@ export class ProductPostComponent implements OnInit {
     this.validatingForm();
     if (this.validateForm.valid) {
       if (this.fileListImage.length < 1) {
-        alert('Photo is required');
+        this.message.error('Photo is required');
+        return;
+      }
+      if (!this.isContactOpened) {
+        this.message.error('Contact should be added');
         return;
       }
       if (this.listUser.length < 1 && this.validateForm.get('isSupplierAsContact').value) {
-        alert('User list is empty, please wait a moment, then try again!');
+        this.message.warning('User list is empty, please wait a moment, then try again!');
         this.listUser = await this.productService.getListUser();
         return;
       }
@@ -431,9 +421,7 @@ export class ProductPostComponent implements OnInit {
         this.message.remove(actionMessage);
       } catch (error) {
         this.isLoading = false;
-        this.isError = true;
-        this.errorMessage = error.toString();
-        // this.message.error(error);
+        this.message.error(error);
       }
     }
   }
@@ -561,9 +549,7 @@ export class ProductPostComponent implements OnInit {
             fileList[index].path = result.path;
             fileList[index]['status'] = 'done';
           } catch (error) {
-            this.isError = true;
-            this.errorMessage = error.toString();
-            // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+            this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
           }
         } else {
           let fileData = null;
@@ -651,9 +637,7 @@ export class ProductPostComponent implements OnInit {
         this.fileListVideo[0].url = result.path;
         this.fileListVideo[0]['status'] = 'done';
       } catch (error) {
-        this.isError = true;
-        this.errorMessage = error.toString();
-        // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+        this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
       }
     } else if (this.fileListVideo.length) {
       data.VideoPath = this.fileListVideo[0].path;
@@ -682,9 +666,7 @@ export class ProductPostComponent implements OnInit {
                 }
               }
             } catch (error) {
-              this.isError = true;
-              this.errorMessage = error.toString();
-              // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+              this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
             }
           });
           await Promise.all(promiseContent);
@@ -741,15 +723,19 @@ export class ProductPostComponent implements OnInit {
       }
       this.isLoading = false;
       this.message.success('Product published', { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
-      this.route.navigate([ '' ]);
+
+      const content = {
+        state: false,
+        type: ''
+      };
+      this.eventsService.setModalState(content);
     } catch (error) {
-      this.isError = true;
-      this.errorMessage = error.toString();
-      // this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+      this.message.error(error, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
     }
   }
 
   validatingForm() {
+    let errorToogle = false;
     for (const objectKey in this.validateForm.controls) {
       if (this.validateForm.controls.hasOwnProperty(objectKey)) {
         if (objectKey === 'selectedContactNameManual' || objectKey === 'selectedContactPhoneManual') {
@@ -762,7 +748,31 @@ export class ProductPostComponent implements OnInit {
         }
         this.validateForm.controls[objectKey].markAsDirty();
         this.validateForm.controls[objectKey].updateValueAndValidity();
+
+        if (!errorToogle && this.validateForm.get(objectKey).errors) {
+          errorToogle = true;
+          const regularCase = objectKey.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => {
+            return str.toUpperCase();
+          });
+          this.message.error(regularCase + ' is required');
+        }
       }
+    }
+  }
+
+  openContact() {
+    if (this.isContactOpened) {
+      this.validateForm.get('isSupplierAsContact').setValue(!this.validateForm.get('isSupplierAsContact').value);
+    } else {
+      this.isContactOpened = true;
+    }
+  }
+
+  showContactSubText() {
+    if (this.isContactOpened) {
+      return this.validateForm.get('isSupplierAsContact').value ? 'to manual input' : 'to contact selection';
+    } else {
+      return;
     }
   }
 

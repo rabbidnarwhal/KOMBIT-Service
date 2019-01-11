@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChartjsModule } from '@ctrl/ngx-chartjs';
 import { DashboardService } from 'src/app/services/dashboard.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { ActiveCustomer } from 'src/app/models/dashboard-response';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +13,9 @@ export class DashboardComponent implements OnInit {
   dataCustomer: any;
   dataSupplier: any;
   dataProduct: any;
+
+  start = 0;
+  max = 10;
   constructor(private dashboardService: DashboardService, private message: NzMessageService) {}
 
   ngOnInit() {
@@ -24,26 +28,29 @@ export class DashboardComponent implements OnInit {
     this.dashboardService
       .getActiveCustomer()
       .then((res) => {
+        console.log('cust', res.name);
+        const data = this.slicingData(res);
         const backgroundColorLike = [];
         const backgroundColorComment = [];
         const backgroundColorChat = [];
         const borderColorLike = [];
         const borderColorComment = [];
         const borderColorChat = [];
-        res.name.map((x) => {
+        const labels = data.name.map((x) => {
           backgroundColorLike.push('rgba(255, 99, 132, 0.2)');
           backgroundColorComment.push('rgba(54, 162, 235, 0.2)');
           backgroundColorChat.push('rgba(255, 206, 86, 0.2)');
           borderColorLike.push('rgba(255,99,132,1)');
           borderColorComment.push('rgba(54, 162, 235, 1)');
           borderColorChat.push('rgba(255, 206, 86, 1)');
+          return x.split(' ');
         });
         this.dataCustomer = {
-          labels: res.name,
+          labels: labels,
           datasets: [
             {
               label: 'Like',
-              data: res.totalLike,
+              data: data.totalLike,
               fill: false,
               backgroundColor: backgroundColorLike,
               borderColor: borderColorLike,
@@ -51,7 +58,7 @@ export class DashboardComponent implements OnInit {
             },
             {
               label: 'Comments',
-              data: res.totalComment,
+              data: data.totalComment,
               fill: false,
               backgroundColor: backgroundColorComment,
               borderColor: borderColorComment,
@@ -59,7 +66,7 @@ export class DashboardComponent implements OnInit {
             },
             {
               label: 'Call',
-              data: res.totalChat,
+              data: data.totalChat,
               fill: false,
               backgroundColor: backgroundColorChat,
               borderColor: borderColorChat,
@@ -76,18 +83,21 @@ export class DashboardComponent implements OnInit {
     this.dashboardService
       .getActiveSupplier()
       .then((res) => {
+        console.log('supli', res.name);
+        const data = this.slicingData(res);
         const backgroundColorProduct = [];
         const borderColorProduct = [];
-        res.name.map((x) => {
+        const labels = data.name.map((x: string) => {
           backgroundColorProduct.push('rgba(255, 99, 132, 0.2)');
           borderColorProduct.push('rgba(255, 99, 132, 1)');
+          return x.split(' ');
         });
         this.dataSupplier = {
-          labels: res.name,
+          labels: labels,
           datasets: [
             {
               label: 'Product Uploaded',
-              data: res.totalProduct,
+              data: data.totalProduct,
               fill: false,
               backgroundColor: backgroundColorProduct,
               borderColor: borderColorProduct,
@@ -104,22 +114,24 @@ export class DashboardComponent implements OnInit {
     this.dashboardService
       .getMostPopularProduct()
       .then((res) => {
+        const data = this.slicingData(res);
         const backgroundColorLike = [];
         const backgroundColorComment = [];
         const borderColorLike = [];
         const borderColorComment = [];
-        res.productName.map((x) => {
+        const labels = data.productName.map((x) => {
           backgroundColorLike.push('rgba(255, 99, 132, 0.2)');
           backgroundColorComment.push('rgba(54, 162, 235, 0.2)');
           borderColorLike.push('rgba(255,99,132,1)');
           borderColorComment.push('rgba(54, 162, 235, 1)');
+          return x.split(' ');
         });
         this.dataProduct = {
-          labels: res.productName,
+          labels: labels,
           datasets: [
             {
               label: 'Like',
-              data: res.totalLike,
+              data: data.totalLike,
               fill: false,
               backgroundColor: backgroundColorLike,
               borderColor: borderColorLike,
@@ -127,7 +139,7 @@ export class DashboardComponent implements OnInit {
             },
             {
               label: 'Comments',
-              data: res.totalComment,
+              data: data.totalComment,
               fill: false,
               backgroundColor: backgroundColorComment,
               borderColor: borderColorComment,
@@ -139,5 +151,20 @@ export class DashboardComponent implements OnInit {
       .catch((err) => {
         this.message.error(err, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
       });
+  }
+
+  slicingData(data: any): any {
+    const slicedData = {};
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const element = data[key];
+        slicedData[key] = element.slice(this.start, this.max);
+      }
+    }
+    return slicedData;
+  }
+
+  moreContent(type: string) {
+    alert('not yet implemented');
   }
 }

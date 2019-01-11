@@ -47,7 +47,6 @@ export class ProductListTableComponent implements OnInit {
     this.loading = true;
     try {
       this.product = await this.getListProduct();
-      console.log(this.product);
       this.productInterval = await this.getProductInterval();
       this.searchString = '';
       this.updateFilter();

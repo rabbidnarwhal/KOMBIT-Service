@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ProductService } from 'src/app/services/product.service';
 import { NzMessageService } from 'ng-zorro-antd';
-import { ActivatedRoute } from '@angular/router';
+import { EventsService } from 'src/app/services/events.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -9,26 +9,21 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: [ './product-detail.component.scss' ]
 })
 export class ProductDetailComponent implements OnInit {
+  @Input() postId: number;
+  @Input() editable: boolean;
+
   product: any = {};
   isLoading = true;
   uid = 0;
+
   constructor(
     private productService: ProductService,
     private message: NzMessageService,
-    private activedRoute: ActivatedRoute
+    private eventsService: EventsService
   ) {}
 
   ngOnInit() {
-    this.checkRouteParameter();
-  }
-
-  checkRouteParameter() {
-    this.activedRoute.params.subscribe((params) => {
-      const id = +params['productId'];
-      if (id) {
-        this.getDetailProduct(id);
-      }
-    });
+    this.getDetailProduct(this.postId);
   }
 
   getDetailProduct(id) {
@@ -42,5 +37,42 @@ export class ProductDetailComponent implements OnInit {
         this.message.error(err, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
         this.isLoading = false;
       });
+  }
+
+  discoveryMore() {
+    alert('More details on our apps!');
+  }
+
+  editProduct(id: number) {
+    // this.productService.setProductPosterId(posterId);
+    const content = {
+      state: true,
+      type: 'updateProduct',
+      updatedId: id,
+      header: {
+        icon: 'assets/images/new-post.png',
+        text: 'Update Post'
+      }
+    };
+    this.eventsService.setModalState(content);
+  }
+
+  async deleteProduct(id) {
+    try {
+      const deleteSuccess = await this.productService.deleteProduct(id);
+      this.message.success(deleteSuccess.msg, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+      const content = {
+        state: false,
+        type: 'deleteProduct'
+      };
+      this.eventsService.setModalState(content);
+      // this.isLoading = true;
+      // this.products = this.skeletons;
+      // this.originProduct = await this.productService.getListProduct();
+      // this.products = this.isFiltered ? this.originProduct.filter((x) => x.posterId === this.uid) : this.originProduct;
+      // this.isLoading = false;
+    } catch (error) {
+      this.message.error(error.toString(), { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
+    }
   }
 }

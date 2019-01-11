@@ -1,0 +1,45 @@
+
+<app-header-modal *ngIf="modal" [header]="header"></app-header-modal>
+
+<ng-container *ngFor="let product of products">
+  <div [class.skeleton-container]="isLoading" nz-col [nzSpan]="8">
+    <nz-skeleton [nzLoading]="isLoading" [nzActive]="true" [nzAvatar]="true"></nz-skeleton>
+    <div *ngIf="!isLoading && product.id" class="card-container">
+      <div nz-col [nzSpan]="24" class="image-container" [class.inside-modal]="modal">
+        <img src="{{product.fotoPath}}" />
+      </div>
+
+      <div nz-col [nzSpan]="24" class="product-description">
+        <p class="product-title">
+          {{product.productName}}
+        </p>
+        <ng-container *ngFor="let item of productItem">
+          <p>
+            <span class="label-name">{{item.name}}</span>
+            <span class="label-divider">:</span>
+            <span class="label-value">{{product[item.value]}}</span>
+          </p>
+        </ng-container>
+        <p *ngIf="product.isIncludePrice">{{product.currency}}. {{product.price | number}}</p>
+        <div class="stat-info">
+          <div class="stat-view">
+            <i class="anticon anticon-eye-o"></i>
+            <span>{{product.totalView}} View</span>
+          </div>
+          <div class="stat-phone">
+            <i class="anticon anticon-phone"></i>
+            <span>{{product.totalChat}} Call</span>
+          </div>
+          <div class="stat-message">
+            <i class="anticon anticon-message"></i>
+            <span>{{product.totalComment}} Comment</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-button">
+        <button (click)="openDescription(product)">Discovery More</button>
+      </div>
+    </div>
+  </div>
+</ng-container>

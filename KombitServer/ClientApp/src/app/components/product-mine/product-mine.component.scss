@@ -1,0 +1,17 @@
+@import 'variables.scss';
+
+.product-container {
+  margin: 12px 8px 4px 8px;
+  div {
+    margin-top: 8px;
+    button {
+      line-height: 36px;
+      border: none;
+      width: 100%;
+      background-color: white;
+      font-size: 20px;
+      border-radius: 8px;
+      box-shadow: 4px 4px 6px 0px rgba(0, 0, 0, 0.2);
+    }
+  }
+}

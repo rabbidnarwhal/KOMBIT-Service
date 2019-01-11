@@ -28,6 +28,11 @@ export class ProductService {
     return this.apiService.get('/product', { headers: header });
   }
 
+  getListLikedProduct(uid: number) {
+    const header = { 'Cache-Control': 'no-cache' };
+    return this.apiService.get('/product/like/user/' + uid, { headers: header });
+  }
+
   getDetailProduct(id) {
     return this.apiService.get('/product/' + id);
   }
@@ -93,7 +98,7 @@ export class ProductService {
 
   getListUser(): Promise<Array<any>> {
     return new Promise((resolve, reject) => {
-      if (!this.listSolution.length) {
+      if (!this.listUser.length) {
         this.fetchListUser()
           .then((res) => {
             this.listUser = res;
@@ -130,9 +135,7 @@ export class ProductService {
       if (!this.intervalProduct.value) {
         this.fetchIntervalProduct()
           .then((res) => {
-            console.log('paramValue', res);
             const interval = res.paramValue / (60 * 60 * 24);
-            console.log('interval', interval);
             this.intervalProduct.value = interval % 30 === 0 ? interval / 30 : interval;
             this.intervalProduct.type = interval % 30 === 0 ? 'month' : 'day';
             resolve(this.intervalProduct);

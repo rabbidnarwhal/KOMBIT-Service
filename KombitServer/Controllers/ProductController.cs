@@ -25,13 +25,11 @@ namespace KombitServer.Controllers {
         /// <summary>Get All active product</summary>
         [HttpGet]
         [ProducesResponseType (typeof (List<ProductResponse>), 200)]
-
         public IEnumerable<ProductResponse> GetAllActive () {
           return GetAllWithLikedIndicator(null);
         }
 
         /// <summary>Get All product</summary>
-
         [HttpGet ("all")]
         public IEnumerable<ProductResponse> GetAllProducts () {
             var product = _context.Product
@@ -138,7 +136,7 @@ namespace KombitServer.Controllers {
             return Ok (new ProductRequest (product));
         }
 
-        /// <summary>Get top 10 of popular product based on interaction</summary>
+        /// <summary>Get popular product based on interaction</summary>
 
         [HttpGet ("popular")]
         [ProducesResponseType (typeof (ProductMostPopularResponse), 200)]
@@ -150,7 +148,7 @@ namespace KombitServer.Controllers {
             {
                 popularProducts.Add(new ProductMostPopular(product));
             }
-            ProductMostPopularResponse response = new ProductMostPopularResponse(popularProducts.OrderByDescending(x => x.TotalInteraction).Take(10).ToList());
+            ProductMostPopularResponse response = new ProductMostPopularResponse(popularProducts.OrderByDescending(x => x.TotalInteraction).ThenByDescending(x => x.TotalView).ToList());
             return Ok(response);
         }
 

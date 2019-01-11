@@ -1,14 +1,57 @@
+@import "variables.scss";
+
 .image-container {
-  padding: 16px;
+  padding: 0;
+  height: 11.2vw;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 4px;
   img {
+    // vertical-align: top;
     width: 100%;
-    height: 150px;
     object-fit: contain;
   }
 }
 
-.product-desctiption {
-  padding: 16px;
+.product-description {
+  padding: 8px;
+  font-size: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  p {
+    line-height: 12px;
+    &.product-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .label-name {
+      width: 46px;
+      display: inline-block;
+    }
+    .label-divider {
+      margin: 0px 2px;
+    }
+    .label-value {
+      width: calc(100% - 46px - 8px);
+      display: inline-block;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      top: 3px;
+      font-weight: 600;
+    }
+    margin: 0;
+  }
+}
+
+.product-button {
+  button {
+    width: 100%;
+    background-color: $combitOrange;
+    border: none;
+    color: $combitWhite;
+  }
 }
 
 .icon-image {
@@ -16,28 +59,13 @@
   padding-right: 8px;
 }
 
-.extra-action {
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.extra-label {
-  float: right;
-  margin: 16px;
-  padding: 4px 8px;
-  cursor: pointer;
-  border: 1px solid #aaa;
-  border-radius: 20px;
-  a {
-    color: rgba(0, 0, 0, .65);
-  }
-}
-
 .icon-container {
   float: left;
 }
 .card-container {
-  margin: 16px 48px;
+  margin: 8px 4px;
+  height: 100%;
+  display: inherit;
 }
 
 .skeleton-container {
@@ -48,4 +76,54 @@
   margin-top: 24px;
   font-size: 20px;
   font-weight: 500;
+}
+
+.modal-container {
+  position: absolute;
+  background: white;
+  z-index: 100;
+  height: 80vh;
+  width: 90%;
+  margin: 5% 5% 24px 5%;
+  border-radius: 20px;
+  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  padding: 16px 0 16px 16px;
+  height: 100%;
+  .scroll-content {
+    overflow-y: auto;
+    height: 100%;
+    padding-right: 16px;
+  }
+}
+
+.modal-mask {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  /* z-index: 10; */
+  filter: blur(1);
+}
+
+.close-button {
+  position: absolute;
+  right: 24px;
+  top: 20px;
+  font-size: 24px;
+  color: #fdfdfd;
+  width: 36px;
+  text-align: center;
+  height: 36px;
+  background-color: red;
+  border-radius: 50px;
+  i {
+    margin-top: 5px;
+    font-weight: 900;
+  }
+}
+
+.blurred {
+  filter: blur(2px);
 }

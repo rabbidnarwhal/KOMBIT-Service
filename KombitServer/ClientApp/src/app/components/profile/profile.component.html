@@ -1,0 +1,71 @@
+<app-header-modal [header]="header"></app-header-modal>
+
+<div>
+  <nz-spin [nzSpinning]="isLoading" [nzSize]="'large'">
+    <div class="profile-image">
+      <img [src]="picture" />
+    </div>
+
+    <p class="box-title">Profile</p>
+    <div class="detail-box detail-status">
+      <p>
+        <span class="label-name">Name</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.name}}</span>
+      </p>
+      <p>
+        <span class="label-name">Hanphone</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.handphone}}</span>
+      </p>
+      <p>
+        <span class="label-name">Occupation</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.occupation}}</span>
+      </p>
+      <p>
+        <span class="label-name">Job Title</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.jobTitle}}</span>
+      </p>
+      <p>
+        <span class="label-name">Address</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.address}}</span>
+      </p>
+      <div *ngIf="mapImage" class="static-map-container">
+        <a [href]="mapUrl" target="_blank"><img [src]="mapImage" /></a>
+      </div>
+    </div>
+
+    <p class="box-title">Company Profile</p>
+    <div class="detail-box detail-info">
+      <p>
+        <span class="label-name">Holding</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.productName}}</span>
+      </p>
+      <p>
+        <span class="label-name">Company</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.productCompany}}</span>
+      </p>
+      <p>
+        <span class="label-name">Fixed call</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.productSolution}}</span>
+      </p>
+      <p>
+        <span class="label-name">Address</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{profile.companyAddress}}</span>
+      </p>
+      <a [href]="profile.companyCoordinate" target="_blank">Show Address Map</a>
+    </div>
+  </nz-spin>
+</div>
+
+
+<div class="logout-button">
+  <button (click)="logout()">Logout</button>
+</div>

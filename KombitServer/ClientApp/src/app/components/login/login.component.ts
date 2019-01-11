@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoginRequest } from 'src/app/models/login-request';
 import { AuthService } from 'src/app/services/auth.service';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,12 @@ export class LoginComponent implements OnInit {
   isError = false;
   errorType = 'error';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private route: Router) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private route: Router,
+    private messageService: NzMessageService
+  ) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -37,7 +43,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  submitForm(): void {
+  async submitForm() {
     this.isError = false;
 
     // tslint:disable-next-line:forin
@@ -57,23 +63,13 @@ export class LoginComponent implements OnInit {
         Password: this.validateForm.get('password').value
       };
       this.isLoading = true;
-      this.authService
-        .login(this.loginRequest)
-        .then(() => {
-          this.isLoading = false;
-        })
-        .catch((err) => {
-          this.errorDescription = err;
-          this.errorMessage = 'Error Message';
-          this.isLoading = false;
-          this.isError = true;
-        });
+      try {
+        await this.authService.login(this.loginRequest);
+        this.isLoading = false;
+      } catch (error) {
+        this.messageService.error(error);
+        this.isLoading = false;
+      }
     }
-  }
-
-  afterErrorClose() {
-    this.isError = false;
-    this.errorMessage = null;
-    this.errorDescription = null;
   }
 }

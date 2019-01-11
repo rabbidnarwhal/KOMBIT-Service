@@ -1,0 +1,147 @@
+@import "variables.scss";
+
+.image-container {
+  padding: 0;
+  height: 11.2vw;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 4px;
+  &.inside-modal {
+    height: 9vw;
+  }
+  img {
+    // vertical-align: top;
+    width: 100%;
+    object-fit: contain;
+  }
+}
+
+.product-description {
+  padding: 8px;
+  padding-bottom: 0px;
+  font-size: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  p {
+    line-height: 12px;
+    &.product-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .label-name {
+      width: 46px;
+      display: inline-block;
+    }
+    .label-divider {
+      margin: 0px 2px;
+    }
+    .label-value {
+      width: calc(100% - 46px - 8px);
+      display: inline-block;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      top: 3px;
+      font-weight: 600;
+    }
+    margin: 0;
+  }
+}
+
+.product-button {
+  button {
+    width: 100%;
+    background-color: $combitOrange;
+    border: none;
+    color: $combitWhite;
+  }
+}
+
+.icon-image {
+  width: 32px;
+  padding-right: 8px;
+}
+
+.icon-container {
+  float: left;
+}
+.card-container {
+  margin: 8px 4px;
+  height: 100%;
+  display: inherit;
+}
+
+.skeleton-container {
+  margin-top: 24px;
+}
+
+.empty {
+  margin-top: 24px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.header {
+  .header-container {
+    border-bottom: 2px solid $combitBlue;
+    height: 56px;
+    display: inline-block;
+    padding-right: 24px;
+    .image {
+      width: 48px;
+      margin-right: 8px;
+      display: inline-block;
+      &.solution {
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 2px 2px rgba(0, 0, 0, 0.2);
+      }
+      img {
+        width: 100%;
+      }
+    }
+    .text {
+      display: inline-block;
+      font-size: 24px;
+      position: relative;
+      top: 6px;
+    }
+  }
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  div {
+    margin: 0 4px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    display: inline-block;
+    &:first-child {
+      margin-left: 0px;
+    }
+    &:last-child {
+      margin-right: 0px;
+    }
+    i {
+      color: $combitOrange;
+      font-size: 14px;
+      &.anticon-phone {
+        transform: rotate(180deg);
+        position: relative;
+        bottom: 1px;
+      }
+    }
+    span {
+      font-size: 10px;
+      position: relative;
+      bottom: 2px;
+      margin-left: 2px;
+    }
+  }
+}

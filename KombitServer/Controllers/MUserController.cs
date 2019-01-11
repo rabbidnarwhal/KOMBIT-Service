@@ -76,7 +76,7 @@ namespace KombitServer.Controllers {
       return Ok (LoginResponse.FromData (user));
     }
 
-    /// <summary>Get top 10 of active customer based on interaction</summary>
+    /// <summary>Get active customer based on interaction</summary>
     [HttpGet ("active/customer")]
 
     [ProducesResponseType (typeof (ActiveCustomerResponse), 200)]
@@ -89,11 +89,11 @@ namespace KombitServer.Controllers {
       {
         listActiveCustomer.Add(new ActiveCustomer(customer, interaction));
       }
-      ActiveCustomerResponse response = new ActiveCustomerResponse(listActiveCustomer.OrderByDescending(x => x.TotalInteraction).Take(10).ToList());
+      ActiveCustomerResponse response = new ActiveCustomerResponse(listActiveCustomer.OrderByDescending(x => x.TotalInteraction).ThenByDescending(x => x.TotalView).ToList());
       return Ok(response);
     }
 
-    /// <summary>Get top 10 of active supplier based on product posted</summary>
+    /// <summary>Get active supplier based on product posted</summary>
 
     [HttpGet ("active/supplier")]
     [ProducesResponseType (typeof (ActiveSupplierResponse), 200)]
@@ -106,7 +106,7 @@ namespace KombitServer.Controllers {
       {
         listActiveSupplier.Add(new ActiveSupplier(customer, products));
       }
-      ActiveSupplierResponse response = new ActiveSupplierResponse(listActiveSupplier.OrderByDescending(x => x.TotalProduct).Take(10).ToList());
+      ActiveSupplierResponse response = new ActiveSupplierResponse(listActiveSupplier.OrderByDescending(x => x.TotalProduct).ToList());
       return Ok(response);
     }
 

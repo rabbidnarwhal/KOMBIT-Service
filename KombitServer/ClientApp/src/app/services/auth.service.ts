@@ -46,8 +46,7 @@ export class AuthService {
             resolve();
           })
           .catch((err) => {
-            console.log(err);
-            reject();
+            reject(err);
           });
       }
     });
@@ -120,7 +119,7 @@ export class AuthService {
   }
 
   getRole() {
-    return this.user.role;
+    return this.user.role || null;
   }
 
   getPrincipal() {

@@ -12,6 +12,7 @@ namespace KombitServer.Models {
     public int HoldingId { get; set; }
     public string HoldingName { get; set; }
     public string ProductName { get; set; }
+    public int CategoryId { get; set; }
     public string CategoryName { get; set; }
     public string FotoPath { get; set; }
     public int TotalLike { get; set; }
@@ -35,6 +36,7 @@ namespace KombitServer.Models {
       HoldingName = product.Holding.HoldingName;
       HoldingId = product.Holding.Id;
       ProductName = product.ProductName;
+      CategoryId = product.Category.Id;
       CategoryName = product.Category.Category;
       IsIncludePrice = product.IsIncludePrice;
       IsPromoted = product.IsPromoted;

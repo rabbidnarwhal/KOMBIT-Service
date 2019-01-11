@@ -1,43 +1,26 @@
-<div nz-col [nzPush]="4" [nzSpan]="16" class="empty" *ngIf="!products.length">
-  <p>There are no post!!</p>
+<div #productList [class.blurred]="isModal">
+  <nz-spin [nzSpinning]="isLoading && !products.length" [nzSize]="'large'"></nz-spin>
+  <div nz-col [nzSpan]="24" class="empty" *ngIf="!products.length && !isLoading">
+    <p>Product not found post!!</p>
+  </div>
+  <app-product-filter *ngIf="products.length" [products]="products"></app-product-filter>
 </div>
 
-<ng-container *ngFor="let product of products">
-  <div [class.skeleton-container]="isLoading" nz-col [nzPush]="4" [nzSpan]="16">
-    <nz-skeleton [nzLoading]="isLoading" [nzActive]="true" [nzAvatar]="true">
-      <nz-card *ngIf="product.id" class="card-container">
-        <div nz-col [nzSpan]="16">
-          <h1>{{product.productName}}</h1>
-        </div>
-        <div nz-col [nzSpan]="8">
-          <span *ngIf="uid && product.posterId === uid" class="extra-label" (click)="editProduct(product.id, product.posterId)">
-            <i class="anticon anticon-edit"></i>
-          </span>
-          <span *ngIf="uid && product.posterId === uid" class="extra-label">
-            <a nz-popconfirm nzTitle="Are you sure delete this post?" (nzOnConfirm)="deleteProduct(product.id)">
-              <i class="anticon anticon-delete"></i>
-            </a>
-          </span>
-        </div>
-        <div nz-col [nzSpan]="8" class="image-container">
-          <img src="{{product.fotoPath}}" />
-        </div>
-        <div nz-col [nzSpan]="16" class="product-desctiption">
-          <p>Company Name: {{product.companyName}}</p>
-          <p>Holding Name: {{product.holdingName}}</p>
-          <p>Category: {{product.categoryName}}</p>
-          <p *ngIf="product.isIncludePrice">{{product.currency}}. {{product.price | number}}</p>
-        </div>
-        <div nz-col [nzSpan]="24" class="extra-action">
-          <!-- <span class="extra-label icon-container" (click)="openGooglePlay()">
-            <img class="icon-image" src="../../../assets/images/comment.png" />
-            <label>Post Comment</label>
-          </span> -->
-          <span class="extra-label" routerLink="{{'/product/' + product.id}}">Read More</span>
-          <!-- <span class="extra-label" (click)="openGooglePlay()">Feature</span>
-          <span class="extra-label" (click)="openGooglePlay()">Benefit</span> -->
-        </div>
-      </nz-card>
-    </nz-skeleton>
+
+<div *ngIf="isModal" [@simpleFadeAnimation]="'in'">
+  <div class="modal-mask"></div>
+  <div class="modal-container">
+    <div class="modal-content">
+      <div [ngSwitch]="modalType" class="scroll-content">
+        <app-product-detail *ngSwitchCase="'description'" [postId]="selectedPost" [editable]="editable"></app-product-detail>
+        <app-product-filter *ngSwitchCase="'filter'" [products]="filterProducts" [modal]="isModal" [header]="modalHeader"></app-product-filter>
+        <app-product-mine *ngSwitchCase="'myPost'" [products]="filterProducts" [header]="modalHeader"></app-product-mine>
+        <app-product-post *ngSwitchCase="'updateProduct'" [header]="modalHeader" [pid]="updatedId"></app-product-post>
+        <app-profile *ngSwitchCase="'user'" [header]="modalHeader"></app-profile>
+        <app-schedule *ngSwitchCase="'meeting'" [header]="modalHeader"></app-schedule>
+        <app-schedule-detail *ngSwitchCase="'meetingDetail'" [header]="modalHeader" [sid]="scheduleId"></app-schedule-detail>
+        <div class="close-button" (click)="closeModal()"><i class="anticon anticon-close"></i></div>
+      </div>
+    </div>
   </div>
-</ng-container>
+</div>

@@ -1,0 +1,7 @@
+<app-header-modal [header]="header"></app-header-modal>
+
+<div class="product-container">
+  <div *ngFor="let product of products">
+    <button (click)="openDescription(product.id)">{{product.productName}}</button>
+  </div>
+</div>

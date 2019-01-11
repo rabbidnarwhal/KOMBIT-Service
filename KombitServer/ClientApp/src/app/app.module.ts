@@ -22,6 +22,17 @@ import { QuillModule } from 'ngx-quill';
 import { ProductListTableComponent } from './components/product-list-table/product-list-table.component';
 import { ProductIntervalComponent } from './components/product-interval/product-interval.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { MainMenuComponent } from './components/main-menu/main-menu.component';
+import { MainSubmenuComponent } from './components/main-submenu/main-submenu.component';
+import { ProductFilterComponent } from './components/product-filter/product-filter.component';
+import { ProductMineComponent } from './components/product-mine/product-mine.component';
+import { ScheduleComponent } from './components/schedule/schedule.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { HeaderModalComponent } from './components/header-modal/header-modal.component';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { DashboardTableViewComponent } from './components/dashboard-table-view/dashboard-table-view.component';
+import { ScheduleDetailComponent } from './components/schedule-detail/schedule-detail.component';
 
 registerLocaleData(en);
 
@@ -37,7 +48,16 @@ registerLocaleData(en);
     NumbersOnly,
     ProductListTableComponent,
     ProductIntervalComponent,
-    ProductDetailComponent
+    ProductDetailComponent,
+    MainMenuComponent,
+    MainSubmenuComponent,
+    ProductFilterComponent,
+    ProductMineComponent,
+    ScheduleComponent,
+    ProfileComponent,
+    HeaderModalComponent,
+    DashboardTableViewComponent,
+    ScheduleDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +69,11 @@ registerLocaleData(en);
     ReactiveFormsModule,
     ChartjsModule,
     QuillModule,
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    })
   ],
   entryComponents: [ ProductIntervalComponent ],
   providers: [ { provide: NZ_I18N, useValue: en_US } ],

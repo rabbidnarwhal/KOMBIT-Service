@@ -11,6 +11,7 @@ import { RoleGuard } from './guards/role.guard';
 import { ProductPosterGuard } from './guards/product-poster.guard';
 import { ProductListTableComponent } from './components/product-list-table/product-list-table.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { DashboardTableViewComponent } from './components/dashboard-table-view/dashboard-table-view.component';
 
 const routes: Routes = [
   {
@@ -39,11 +40,19 @@ const routes: Routes = [
           breadcrumb: 'Dashboard'
         }
       },
+
       {
         path: 'product',
         component: ProductListTableComponent,
         data: {
           breadcrumb: 'Product'
+        }
+      },
+      {
+        path: ':dashboardView',
+        component: DashboardTableViewComponent,
+        data: {
+          breadcrumb: 'Dashboard'
         }
       }
     ]

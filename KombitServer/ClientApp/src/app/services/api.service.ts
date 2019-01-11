@@ -63,10 +63,8 @@ export class ApiService {
   }
 
   private handleError(error: HttpErrorResponse): any {
-    console.log('Error base', error);
     if (error.hasOwnProperty('error')) {
       if (error.error instanceof ErrorEvent) {
-        console.error('An error occurred:', error.error.message);
       } else if (error.error && error.error.hasOwnProperty('Message')) {
         return throwError(error.error.Message);
       } else if (error.error && error.error.hasOwnProperty('ExceptionMessage')) {
@@ -78,7 +76,6 @@ export class ApiService {
           return throwError(error.error.errorMessage);
         }
       } else {
-        console.error(`error message`, error.message);
       }
       // return throwError(`Something bad happened; please try again later.`);
       return throwError(error.error.message);

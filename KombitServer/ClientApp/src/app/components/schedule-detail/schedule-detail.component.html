@@ -1,0 +1,58 @@
+<app-header-modal [header]="header"></app-header-modal>
+<div>
+  <nz-spin [nzSpinning]="isLoading" [nzSize]="'large'">
+    <div class="detail-box detail-status">
+      <p>
+        <span class="label-name">Appoiment with</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{schedule.userName}}</span>
+      </p>
+      <p>
+        <span class="label-name">Date</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{schedule.date}}</span>
+      </p>
+      <p>
+        <span class="label-name">Status</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{schedule.status}}</span>
+      </p>
+    </div>
+    <div class="detail-box detail-info">
+      <p>
+        <span class="label-name">Product Name</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{schedule.productName}}</span>
+      </p>
+      <p>
+        <span class="label-name">Company</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{schedule.productCompany}}</span>
+      </p>
+      <p>
+        <span class="label-name">Solution</span>
+        <span class="label-divider">:</span>
+        <span class="label-value">{{schedule.productSolution}}</span>
+      </p>
+    </div>
+    <div class="detail-box detail-address">
+      <p>
+        {{schedule.locationName}}
+      </p>
+    </div>
+    <div class="detail-box detail-note">
+      <p class="detail-title">Note</p>
+      <p>
+        {{schedule.note}}
+      </p>
+    </div>
+    <div class="detail-box detail-message" *ngIf="schedule.status === 'REJECTED'">
+      <p class="detail-title">
+        {{schedule.userName}}
+      </p>
+      <p>
+        {{schedule.rejectMessage}}
+      </p>
+    </div>
+  </nz-spin>
+</div>

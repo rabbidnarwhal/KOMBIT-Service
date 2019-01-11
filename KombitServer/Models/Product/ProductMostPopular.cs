@@ -19,7 +19,7 @@ namespace KombitServer.Models {
       TotalChat = product.Interaction.Count (x => x.IsChat == true);
       TotalComment = product.Interaction.Count (x => x.IsComment == true);
       TotalView = product.Interaction.Count (x => x.IsViewed == true);
-      TotalInteraction = TotalLike + TotalComment;
+      TotalInteraction = TotalLike + TotalComment + TotalChat;
     }
   }
 }

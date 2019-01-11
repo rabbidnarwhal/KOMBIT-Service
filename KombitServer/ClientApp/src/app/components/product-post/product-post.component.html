@@ -1,8 +1,6 @@
-<div nz-col [nzPush]="2" [nzSpan]="18" class="back-button">
-  <button nz-button routerLink="/">Back</button>
-</div>
+<app-header-modal [header]="header"></app-header-modal>
 
-<div *ngIf="isError" nz-col [nzPush]="2" [nzSpan]="18" class="error-wrapper">
+<!-- <div *ngIf="isError" nz-col [nzPush]="2" [nzSpan]="18" class="error-wrapper">
   <nz-alert
     nzType="error"
     nzCloseable
@@ -10,201 +8,278 @@
     [nzDescription]="errorMessage"
     (nzOnClose)="errorClosed()">
   </nz-alert>
-</div>
+</div> -->
 
-<div nz-col [nzPush]="2" [nzSpan]="18" class="content-wrapper">
+<div nz-col [nzSpan]="24" class="content-wrapper">
   <ng-container *ngIf="isSkeleton">
     <nz-skeleton [nzActive]="true" [nzAvatar]="{size:'large', shape:'square'}"></nz-skeleton>
     <nz-skeleton [nzActive]="true" [nzAvatar]="{size:'large', shape:'square'}"></nz-skeleton>
     <nz-skeleton [nzActive]="true" [nzAvatar]="{size:'large', shape:'square'}"></nz-skeleton>
     <nz-skeleton [nzParagraph]="{rows: 10}" [nzActive]="true" [nzAvatar]="{size:'large', shape:'square'}"></nz-skeleton>
   </ng-container>
-  <nz-card>
-    <nz-spin [nzSpinning]="isLoading" [nzSize]="'large'">
-      <form nz-form *ngIf="!isSkeleton" [formGroup]="validateForm">
-        <nz-form-item>
-          <nz-form-label [nzSpan]="5" nzRequired nzFor="productName">Upload Photo</nz-form-label>
-          <nz-form-control [nzSpan]="16">
-            <nz-upload
-              nzListType="picture-card"
-              [nzFileList]="fileListImage"
-              [nzBeforeUpload]="beforeUploadImage"
-              [nzPreview]="handlePreviewImage"
-              [nzRemove]="handleDeleteImage">
-              <i class="anticon anticon-plus"></i>
-              <div class="ant-upload-text">Upload</div>
-            </nz-upload>
-            <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
-              <ng-template #modalContent>
-                <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
-              </ng-template>
-            </nz-modal>
-          </nz-form-control>
-        </nz-form-item>
+  <nz-spin [nzSpinning]="isLoading" [nzSize]="'large'">
 
-        <nz-form-item>
-          <nz-form-label [nzSpan]="5" nzRequired nzFor="productName">Product Name</nz-form-label>
-          <nz-form-control [nzSpan]="16">
-            <input id="productName" type="text" nz-input formControlName="productName">
-            <nz-form-explain *ngIf="validateForm.get('productName').dirty && validateForm.get('productName').errors">Product name is required!</nz-form-explain>
-          </nz-form-control>
-        </nz-form-item>
+    <form nz-form *ngIf="!isSkeleton" [formGroup]="validateForm">
 
-        <nz-form-item>
-          <nz-form-label [nzSpan]="5" nzRequired nzFor="solution">Solution</nz-form-label>
-          <nz-form-control [nzSpan]="16">
-            <nz-select nzShowSearch nzAllowClear formControlName="solution">
+      <nz-form-item class="content-upload product-image">
+        <nz-form-control [nzSpan]="24">
+          <nz-upload
+            nzListType="picture-card"
+            [nzFileList]="fileListImage"
+            [nzBeforeUpload]="beforeUploadImage"
+            [nzPreview]="handlePreviewImage"
+            [nzRemove]="handleDeleteImage">
+            <div class="image">
+              <img class="picture-image-icon" src="assets/images/product-add-image.png" />
+              <p class="no-margin">Add Product Image</p>
+              <p class="no-margin font-size-10">(640px x 1136px)</p>
+            </div>
+          </nz-upload>
+          <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
+            <ng-template #modalContent>
+              <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
+            </ng-template>
+          </nz-modal>
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="segment-button">
+        <button [class.selected]="segmentName === 'description'" (click)="changeSegment('description')">Description</button>
+        <button [class.selected]="segmentName === 'benefit'" (click)="changeSegment('benefit')">Benefit</button>
+        <button [class.selected]="segmentName === 'feature'" (click)="changeSegment('feature')">Feature</button>
+        <button [class.selected]="segmentName === 'testimony'" (click)="changeSegment('testimony')">Testimony</button>
+      </div>
+
+      <nz-form-item>
+        <nz-form-control [nzSpan]="24">
+          <nz-input-group [nzPrefix]="productNameTemplate">
+            <input nz-input type="text" class="text-box input-box" placeholder="Product Name (e.g.omnichannell)" id="productName" formControlName="productName">
+          </nz-input-group>
+          <ng-template #productNameTemplate><img class="input-icon" src="assets/images/product-name.png" /></ng-template>
+
+          <!-- <nz-form-label [nzSpan]="5" nzRequired nzFor="productName"></nz-form-label> -->
+          <!-- <input  type="text" nz-input formControlName="productName">
+          <nz-form-explain *ngIf="validateForm.get('productName').dirty && validateForm.get('productName').errors">Product name is required!</nz-form-explain> -->
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzSpan]="24">
+          <nz-input-group [nzPrefix]="solutionTemplate">
+            <nz-select class="select-box input-box" nzShowSearch nzAllowClear nzPlaceHolder="Product Solution (e.g.IT Solution)" formControlName="solution">
               <ng-container *ngFor="let solution of listSolution">
                 <nz-option *ngIf="!isLoading" [nzValue]="solution.id" [nzLabel]="solution.category"></nz-option>
               </ng-container>
             </nz-select>
-            <nz-form-explain *ngIf="validateForm.get('solution').dirty && validateForm.get('solution').errors">Solution is required!</nz-form-explain>
+            <!-- <input nz-input type="text" class="input-box" placeholder="Product Name (e.g.omnichannell)" id="productName" formControlName="productName"> -->
+          </nz-input-group>
+          <ng-template #solutionTemplate><img class="input-icon" src="assets/images/product-solution.png" /></ng-template>
+
+          <!-- <nz-form-label [nzSpan]="5" nzRequired nzFor="solution">Solution</nz-form-label> -->
+          <!-- <nz-select nzShowSearch nzAllowClear formControlName="solution">
+            <ng-container *ngFor="let solution of listSolution">
+              <nz-option *ngIf="!isLoading" [nzValue]="solution.id" [nzLabel]="solution.category"></nz-option>
+            </ng-container>
+          </nz-select>
+          <nz-form-explain *ngIf="validateForm.get('solution').dirty && validateForm.get('solution').errors">Solution is required!</nz-form-explain> -->
+        </nz-form-control>
+      </nz-form-item>
+
+
+
+      <div *ngIf="segmentName === 'description'">
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="5" nzRequired nzFor="Description">Description</nz-form-label> -->
+          <nz-form-control class="quill-editor-container" [nzSpan]="24">
+            <div class="quill-icon">
+              <img src="assets/images/product-description.png" />
+            </div>
+            <quill-editor class="quill-editor" (onEditorCreated)="quillCreated($event, 'Description')" placeholder="Product Description" formControlName="Description" [modules]="modules"></quill-editor>
+            <!-- <nz-form-explain *ngIf="validateForm.get('Description').dirty && validateForm.get('Description').errors">Description is required!</nz-form-explain> -->
           </nz-form-control>
         </nz-form-item>
 
-        <div nz-col class="segment-button">
-          <button nz-button [nzType]="segmentName === 'description' ? 'primary' : 'default'" (click)="changeSegment('description')">Description</button>
-          <button nz-button [nzType]="segmentName === 'benefit' ? 'primary' : 'default'" (click)="changeSegment('benefit')">Benefit</button>
-          <button nz-button [nzType]="segmentName === 'feature' ? 'primary' : 'default'" (click)="changeSegment('feature')">Feature</button>
-          <button nz-button [nzType]="segmentName === 'testimony' ? 'primary' : 'default'" (click)="changeSegment('testimony')">Testimony</button>
-          <!-- <button nz-button [nzType]="segmentName === 'implementation' ? 'primary' : 'default'" (click)="changeSegment('implementation')">Implementation</button>
-      <button nz-button [nzType]="segmentName === 'faq' ? 'primary' : 'default'" (click)="changeSegment('faq')">Faq</button> -->
-        </div>
-
-        <div *ngIf="segmentName === 'description'">
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzRequired nzFor="Description">Description</nz-form-label>
-            <nz-form-control class="quill-editor" [nzSpan]="16">
-              <quill-editor (onEditorCreated)="quillCreated($event, 'Description')" placeholder="" formControlName="Description" [modules]="modules"></quill-editor>
-              <nz-form-explain *ngIf="validateForm.get('Description').dirty && validateForm.get('Description').errors">Description is required!</nz-form-explain>
-            </nz-form-control>
-          </nz-form-item>
-
-          <!-- <nz-form-item>
+        <!-- <nz-form-item>
         <nz-form-label [nzSpan]="5" nzFor="BusinessTarget">Business Target</nz-form-label>
         <nz-form-control [nzSpan]="16">
           <textarea nz-input formControlName="BusinessTarget"></textarea>
         </nz-form-control>
       </nz-form-item> -->
 
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5">Upload Video</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <nz-upload
-                [(nzFileList)]="fileListVideo"
-                [nzBeforeUpload]="beforeUploadVideo">
-                <button nz-button>
-                  <i class="anticon anticon-upload"></i><span>{{fileListVideo.length ? 'Change Video' : 'Select Video'}}</span>
-                </button>
-              </nz-upload>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-control [nzPush]="5" [nzSpan]="16">
-              <div class="video-wrapper">
-                <div class="placeholder">
-                  <video *ngIf="fileListVideo.length" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
-                    <source [src]="fileListVideo[0].url" type="video/mp4" /> Not Supported
-                  </video>
-                  <img *ngIf="!fileListVideo.length" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
-                </div>
+        <nz-form-item class="content-upload">
+          <!-- <nz-form-label [nzSpan]="5">Upload Video</nz-form-label> -->
+          <nz-form-control [nzSpan]="24">
+            <nz-upload
+              [(nzFileList)]="fileListVideo"
+              [nzBeforeUpload]="beforeUploadVideo">
+              <!-- <button nz-button> -->
+              <div class="image" *ngIf="!fileListVideo.length">
+                <img class="picture-image-icon" src="assets/images/product-add-video.png" />
+                <p class="no-margin">Upload Video</p>
               </div>
-            </nz-form-control>
-          </nz-form-item>
+              <!-- <i class="anticon anticon-upload"></i><span>{{fileListVideo.length ? 'Change Video' : 'Select Video'}}</span> -->
+              <!-- </button> -->
+            </nz-upload>
+          </nz-form-control>
+        </nz-form-item>
 
+        <nz-form-item *ngIf="fileListVideo.length">
+          <nz-form-control [nzSpan]="24">
+            <div class="video-wrapper">
+              <div class="placeholder">
+                <video *ngIf="fileListVideo.length" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
+                  <source [src]="fileListVideo[0].url" type="video/mp4" /> Not Supported
+                </video>
+                <img *ngIf="!fileListVideo.length" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
+              </div>
+            </div>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- <nz-form-item> -->
+        <!-- <nz-form-label [nzSpan]="5" nzFor="isSupplierAsContact">User as Contact</nz-form-label> -->
+        <!-- <nz-form-control [nzSpan]="24">
+            <div class="icon-text" (click)="openModalContact()">
+              <img src="assets/images/product-contact.png" />
+              <span>Add Contact</span>
+            </div>
+          </nz-form-control>
+        </nz-form-item> -->
+        <nz-form-item>
+          <div class="icon-text" (click)="openContact()">
+            <img src="assets/images/product-contact.png" />
+            <span>{{isContactOpened ? 'Change' : 'Add'}} Contact {{showContactSubText()}}</span>
+          </div>
+          <!-- <nz-form-label [nzSpan]="5" nzFor="isSupplierAsContact">User as Contact</nz-form-label> -->
+          <!-- <div class="icon-switcher">
+            <nz-switch formControlName="isSupplierAsContact" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
+            <ng-template #checkedTemplate></ng-template>
+            <ng-template #unCheckedTemplate></ng-template>
+          </div> -->
+        </nz-form-item>
+
+        <ng-container *ngIf="isContactOpened && validateForm.get('isSupplierAsContact').value">
           <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="isSupplierAsContact">User as Contact</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <nz-switch formControlName="isSupplierAsContact" [nzCheckedChildren]="checkedTemplate" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
-              <ng-template #checkedTemplate><i class="anticon anticon-check"></i></ng-template>
-              <ng-template #unCheckedTemplate><i class="anticon anticon-close"></i></ng-template>
-            </nz-form-control>
-          </nz-form-item>
+            <!-- <nz-form-label [nzSpan]="5" nzRequired nzFor="selectedContact">Contact Name</nz-form-label> -->
 
-          <ng-container *ngIf="validateForm.get('isSupplierAsContact').value">
-            <nz-form-item>
-              <nz-form-label [nzSpan]="5" nzRequired nzFor="selectedContact">Contact Name</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <nz-select nzShowSearch nzAllowClear formControlName="selectedContact">
+            <nz-form-control [nzSpan]="24">
+
+              <nz-input-group [nzPrefix]="productNameContactTemplate">
+                <nz-select class="select-box input-box" nzShowSearch nzAllowClear nzPlaceHolder="Contact Name" formControlName="selectedContact">
                   <ng-container *ngFor="let user of listUser">
                     <nz-option *ngIf="!isLoading" [nzValue]="user.id" [nzLabel]="user.name"></nz-option>
                   </ng-container>
                 </nz-select>
-                <nz-form-explain *ngIf="validateForm.get('selectedContact').dirty && validateForm.get('selectedContact').errors">Contact name is required!</nz-form-explain>
-              </nz-form-control>
-            </nz-form-item>
+                <!-- <input nz-input type="text" class="input-box" placeholder="Product Name (e.g.omnichannell)" id="productName" formControlName="productName"> -->
+              </nz-input-group>
+              <ng-template #productNameContactTemplate><img class="input-icon" src="assets/images/user.png" /></ng-template>
 
-            <nz-form-item>
-              <nz-form-label [nzSpan]="5" nzRequired nzFor="selectedContactPhone">Contact Handphone</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <input id="selectedContactPhone" type="text" nz-input formControlName="selectedContactPhone" readonly>
-              </nz-form-control>
-            </nz-form-item>
-          </ng-container>
-
-          <ng-container *ngIf="!validateForm.get('isSupplierAsContact').value">
-            <nz-form-item>
-              <nz-form-label [nzSpan]="5" nzRequired nzFor="selectedContactNameManual">Contact Name</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <input id="selectedContactNameManual" type="text" nz-input formControlName="selectedContactNameManual">
-                <nz-form-explain *ngIf="validateForm.get('selectedContactNameManual').dirty && validateForm.get('selectedContactNameManual').errors">Contact name is required!</nz-form-explain>
-              </nz-form-control>
-            </nz-form-item>
-
-            <nz-form-item>
-              <nz-form-label [nzSpan]="5" nzRequired nzFor="selectedContactPhoneManual">Contact Handphone</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <input id="selectedContactPhoneManual" type="text" nz-input formControlName="selectedContactPhoneManual">
-                <nz-form-explain *ngIf="validateForm.get('selectedContactPhoneManual').dirty && validateForm.get('selectedContactPhoneManual').errors">Contact handphone is required!</nz-form-explain>
-              </nz-form-control>
-            </nz-form-item>
-          </ng-container>
-        </div>
-
-        <div *ngIf="segmentName === 'benefit'">
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="Benefit">Benefit</nz-form-label>
-            <nz-form-control class="quill-editor" [nzSpan]="16">
-              <quill-editor (onEditorCreated)="quillCreated($event, 'Benefit')" placeholder="" formControlName="Benefit" [modules]="modules"></quill-editor>
+              <!-- <nz-form-explain *ngIf="validateForm.get('selectedContact').dirty && validateForm.get('selectedContact').errors">Contact name is required!</nz-form-explain> -->
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="price">Price</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <input NumbersOnly [allowCurrency]="true" [currencyText]="currency" id="price" type="text" nz-input formControlName="price">
+
+            <nz-form-control [nzSpan]="24">
+              <nz-input-group [nzPrefix]="productPhoneContactTemplate">
+                <input nz-input type="text" class="text-box input-box" placeholder="Contact Phone" id="selectedContactPhone" formControlName="selectedContactPhone" readonly>
+              </nz-input-group>
+              <ng-template #productPhoneContactTemplate><img class="input-icon" src="assets/images/product-contact-book.png" /></ng-template>
+
+              <!-- <nz-form-label [nzSpan]="5" nzRequired nzFor="selectedContactPhone">Contact Handphone</nz-form-label> -->
+              <!-- <input id="selectedContactPhone" type="text" nz-input formControlName="" readonly> -->
+            </nz-form-control>
+
+          </nz-form-item>
+        </ng-container>
+
+        <ng-container *ngIf="isContactOpened && !validateForm.get('isSupplierAsContact').value">
+          <nz-form-item>
+            <nz-form-control [nzSpan]="24">
+            </nz-form-control>
+
+            <nz-form-control [nzSpan]="24">
+              <nz-input-group [nzPrefix]="productNameContactTemplate">
+                <input nz-input type="text" class="text-box input-box" placeholder="Contact Name" id="selectedContactNameManual" formControlName="selectedContactNameManual">
+              </nz-input-group>
+              <ng-template #productNameContactTemplate><img class="input-icon" src="assets/images/user.png" /></ng-template>
+
+              <!-- <nz-form-label [nzSpan]="5" nzRequired nzFor="selectedContactNameManual">Contact Name</nz-form-label> -->
+              <!-- <input id="selectedContactNameManual" type="text" nz-input formControlName="selectedContactNameManual"> -->
+              <!-- <nz-form-explain *ngIf="validateForm.get('selectedContactNameManual').dirty && validateForm.get('selectedContactNameManual').errors">Contact name is required!</nz-form-explain> -->
+
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="marketingKit">Marketing Kit</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <nz-upload
-                [nzFileList]="fileListMarketingKit"
-                [nzBeforeUpload]="beforeUploadMarketingKit"
-                [nzRemove]="handleDeleteMarketingKit">
-                <button nz-button>
-                  <i class="anticon anticon-upload"></i><span>Upload</span>
-                </button>
-              </nz-upload>
+            <nz-form-control [nzSpan]="24">
+              <nz-input-group [nzPrefix]="productPhoneContactTemplate">
+                <input nz-input type="text" class="text-box input-box" placeholder="Contact Phone" id="selectedContactPhoneManual" formControlName="selectedContactPhoneManual">
+              </nz-input-group>
+              <ng-template #productPhoneContactTemplate><img class="input-icon" src="assets/images/product-contact-book.png" /></ng-template>
+
+              <!-- <nz-form-label [nzSpan]="5" nzRequired nzFor="selectedContactPhoneManual">Contact Handphone</nz-form-label> -->
+              <!-- <input id="selectedContactPhoneManual" type="text" nz-input formControlName="selectedContactPhoneManual"> -->
+              <!-- <nz-form-explain *ngIf="validateForm.get('selectedContactPhoneManual').dirty && validateForm.get('selectedContactPhoneManual').errors">Contact handphone is required!</nz-form-explain> -->
             </nz-form-control>
+
           </nz-form-item>
-        </div>
+        </ng-container>
+      </div>
+
+      <div *ngIf="segmentName === 'benefit'">
+        <nz-form-item>
+          <!-- <nz-form-label nzSpan]="5" nzFor="Benefit">Benefit</nz-form-label> -->
+          <div class="quill-icon feature">
+            <img src="assets/images/product-feature.png" />
+          </div>
+          <nz-form-control class="quill-editor-container" [nzSpan]="24">
+            <quill-editor class="quill-editor" (onEditorCreated)="quillCreated($event, 'Benefit')" placeholder="Product Benefit" formControlName="Benefit" [modules]="modules"></quill-editor>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="5" nzFor="price">Price</nz-form-label> -->
+          <nz-form-control [nzSpan]="24">
+            <nz-input-group [nzPrefix]="productPriceTemplate">
+              <input NumbersOnly [allowCurrency]="true" [currencyText]="currency" id="price" class="text-box input-box" placeholder="Price Product (e.g.Rp.1000.000-Apps)" type="text" nz-input formControlName="price">
+            </nz-input-group>
+            <ng-template #productPriceTemplate><img class="input-icon" src="assets/images/product-price.png" /></ng-template>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="content-upload">
+          <!-- <nz-form-label [nzSpan]="5" nzFor="marketingKit">Marketing Kit</nz-form-label> -->
+          <nz-form-control [nzSpan]="24">
+            <nz-upload
+              [nzFileList]="fileListMarketingKit"
+              [nzBeforeUpload]="beforeUploadMarketingKit"
+              [nzRemove]="handleDeleteMarketingKit">
+              <div class="icon-text">
+                <img src="assets/images/product-marketing-kit.png" />
+                <span>Add Marketing Kit</span>
+              </div>
+            </nz-upload>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
 
 
-        <div *ngIf="segmentName === 'feature'">
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="Feature">Feature</nz-form-label>
-            <nz-form-control class="quill-editor" [nzSpan]="16">
-              <quill-editor (onEditorCreated)="quillCreated($event, 'Feature')" placeholder="" formControlName="Feature" [modules]="modules"></quill-editor>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
+      <div *ngIf="segmentName === 'feature'">
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="5" nzFor="Feature">Feature</nz-form-label> -->
+          <div class="quill-icon feature">
+            <img src="assets/images/product-feature.png" />
+          </div>
+          <nz-form-control class="quill-editor-container" [nzSpan]="24">
+            <quill-editor class="quill-editor" (onEditorCreated)="quillCreated($event, 'Feature')" placeholder="Product Feature" formControlName="Feature" [modules]="modules"></quill-editor>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
 
 
 
-        <!-- <div *ngIf="segmentName === 'implementation'">
+      <!-- <div *ngIf="segmentName === 'implementation'">
       <nz-form-item>
         <nz-form-label [nzSpan]="5" nzFor="Implementation">Implementation</nz-form-label>
         <nz-form-control class="quill-editor" [nzSpan]="16">
@@ -219,7 +294,7 @@
         </nz-form-control>
       </nz-form-item>
     </div> -->
-        <!-- <div *ngIf="segmentName === 'faq'">
+      <!-- <div *ngIf="segmentName === 'faq'">
       <nz-form-item>
         <nz-form-label [nzSpan]="5" nzFor="Faq">Faq</nz-form-label>
         <nz-form-control class="quill-editor" [nzSpan]="16">
@@ -228,98 +303,107 @@
       </nz-form-item>
     </div> -->
 
-        <div *ngIf="segmentName === 'testimony'">
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="productCertificate">Add Product Certificate</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <nz-upload
-                nzListType="picture-card"
-                [nzFileList]="fileListProductCertificate"
-                [nzBeforeUpload]="beforeUploadProductCertificate"
-                [nzPreview]="handlePreviewImage"
-                [nzRemove]="handleDeleteProductCertificate">
-                <i class="anticon anticon-plus"></i>
-                <div class="ant-upload-text">Upload</div>
-              </nz-upload>
-              <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
-                <ng-template #modalContent>
-                  <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
-                </ng-template>
-              </nz-modal>
-            </nz-form-control>
-          </nz-form-item>
+      <div *ngIf="segmentName === 'testimony'">
+        <nz-form-item class="content-upload product-image">
+          <!-- <nz-form-label [nzSpan]="5" nzFor="productCertificate">Add Product Certificate</nz-form-label> -->
+          <nz-form-control [nzSpan]="24">
+            <nz-upload
+              nzListType="picture-card"
+              [nzFileList]="fileListProductCertificate"
+              [nzBeforeUpload]="beforeUploadProductCertificate"
+              [nzPreview]="handlePreviewImage"
+              [nzRemove]="handleDeleteProductCertificate">
+              <div class="image">
+                <img class="picture-image-icon" src="assets/images/product-add-image.png" />
+              </div>
+            </nz-upload>
+            <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
+              <ng-template #modalContent>
+                <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
+              </ng-template>
+            </nz-modal>
+          </nz-form-control>
+        </nz-form-item>
 
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="productCertificate">Product Certificate</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <input id="productCertificate" type="text" nz-input formControlName="productCertificate">
-            </nz-form-control>
-          </nz-form-item>
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="5" nzFor="productCertificate">Product Certificate</nz-form-label> -->
+          <nz-form-control [nzSpan]="24">
+            <nz-input-group [nzPrefix]="productCertificateTemplate">
+              <input id="productCertificate" type="text" class="text-box input-box" placeholder="Product Certificate" nz-input formControlName="productCertificate">
+            </nz-input-group>
+            <ng-template #productCertificateTemplate><img class="input-icon" src="assets/images/product-certificate.png" /></ng-template>
+          </nz-form-control>
+        </nz-form-item>
 
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="productImplementationFoto">Add Product Implementation</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <nz-upload
-                [nzFileList]="fileListProductImplementation"
-                [nzBeforeUpload]="beforeUploadProductImplementation"
-                [nzRemove]="handleDeleteProductImplementation"
-                [nzShowUploadList]="false">
-                <button nz-button>
-                  <i class="anticon anticon-upload"></i><span>Upload</span>
-                </button>
-              </nz-upload>
-            </nz-form-control>
-          </nz-form-item>
+        <nz-form-item class="content-upload">
+          <!-- <nz-form-label [nzSpan]="5" nzFor="productImplementationFoto">Add Product Implementation</nz-form-label> -->
+          <nz-form-control [nzSpan]="24">
+            <nz-upload
+              [nzFileList]="fileListProductImplementation"
+              [nzBeforeUpload]="beforeUploadProductImplementation"
+              [nzRemove]="handleDeleteProductImplementation"
+              [nzShowUploadList]="false">
+              <div class="image">
+                <img class="picture-image-icon" src="assets/images/product-add-image.png" />
+              </div>
+            </nz-upload>
+          </nz-form-control>
+        </nz-form-item>
 
-          <nz-form-item *ngFor="let item of fileListProductImplementation">
-            <div nz-col [nzPush]="5" [nzSpan]="16">
-              <nz-card class="implementation-card-wrapper">
-                <div class="implementation-media-wrapper" nz-col [nzSpan]="6">
-                  <img [src]="item.url" *ngIf="item.useCase === 'implementationImage'" />
+        <nz-form-item *ngFor="let item of fileListProductImplementation">
+          <div nz-col [nzSpan]="24">
+            <div class="implementation-card-wrapper">
+              <div class="implementation-media-wrapper" nz-col [nzSpan]="6">
+                <img [src]="item.url" *ngIf="item.useCase === 'implementationImage'" />
 
-                  <video *ngIf="item.useCase === 'implementationVideo'" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
-                    <source [src]="item.url" type="video/mp4" /> Not Supported
-                  </video>
-                </div>
-                <nz-form-control class="implementation-title" [nzSpan]="16">
-                  <input id="{{'productImplementation_' + item.uid}}" type="text" nz-input formControlName="{{'productImplementation_' + item.uid}}" placeholder="Title">
-                </nz-form-control>
-              </nz-card>
+                <video *ngIf="item.useCase === 'implementationVideo'" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
+                  <source [src]="item.url" type="video/mp4" /> Not Supported
+                </video>
+              </div>
+              <nz-form-control class="implementation-title" [nzSpan]="18">
+                <input id="{{'productImplementation_' + item.uid}}" class="input-box" type="text" nz-input formControlName="{{'productImplementation_' + item.uid}}" placeholder="Title">
+              </nz-form-control>
             </div>
-          </nz-form-item>
+          </div>
+        </nz-form-item>
 
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="productImplementation">Product Implementation</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <input id="productImplementation" type="text" nz-input formControlName="productImplementation">
-            </nz-form-control>
-          </nz-form-item>
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="5" nzFor="productImplementation">Product Implementation</nz-form-label> -->
+          <nz-form-control [nzSpan]="24">
+            <nz-input-group [nzPrefix]="productImplementationTemplate">
+              <input id="productImplementation" type="text" class="text-box input-box" placeholder="Product Implementation" nz-input formControlName="productImplementation">
+            </nz-input-group>
+            <ng-template #productImplementationTemplate><img class="input-icon" src="assets/images/product-implementation.png" /></ng-template>
+          </nz-form-control>
+        </nz-form-item>
 
-          <nz-form-item>
-            <nz-form-label [nzSpan]="5" nzFor="existingClient">Add Existing Client</nz-form-label>
-            <nz-form-control [nzSpan]="16">
-              <nz-upload
-                nzListType="picture-card"
-                [nzFileList]="fileListExistingClient"
-                [nzBeforeUpload]="beforeUploadExistingClient"
-                [nzPreview]="handlePreviewImage"
-                [nzRemove]="handleDeleteExistingClient">
-                <i class="anticon anticon-plus"></i>
-                <div class="ant-upload-text">Upload</div>
-              </nz-upload>
-              <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
-                <ng-template #modalContent>
-                  <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
-                </ng-template>
-              </nz-modal>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
+        <nz-form-item class="content-upload product-image">
+          <!-- <nz-form-label [nzSpan]="5" nzFor="existingClient">Add Existing Client</nz-form-label> -->
+          <nz-form-control [nzSpan]="24">
+            <nz-upload
+              nzListType="picture-card"
+              [nzFileList]="fileListExistingClient"
+              [nzBeforeUpload]="beforeUploadExistingClient"
+              [nzPreview]="handlePreviewImage"
+              [nzRemove]="handleDeleteExistingClient">
+              <div class="image">
+                <img class="picture-image-icon" src="assets/images/product-add-image.png" />
+                <p class="no-margin">Add Existing Client</p>
+                <p class="no-margin font-size-10">(640px x 640px)</p>
+              </div>
+            </nz-upload>
+            <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible=false">
+              <ng-template #modalContent>
+                <img [src]="previewImage" [ngStyle]="{ 'width': '100%' }" />
+              </ng-template>
+            </nz-modal>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
 
-        <div nz-col [nzPush]="5" [nzSpan]="16">
-          <button class="button-right" nz-button (click)="submitForm()">Publish</button>
-        </div>
-      </form>
-    </nz-spin>
-  </nz-card>
+      <div nz-col [nzSpan]="24" class="publish-button">
+        <button (click)="submitForm()">Publish</button>
+      </div>
+    </form>
+  </nz-spin>
 </div>

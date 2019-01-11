@@ -1,3 +1,5 @@
+@import 'variables.scss';
+
 :host ::ng-deep i {
   font-size: 32px;
   color: #999;
@@ -11,16 +13,40 @@
   height: 250px;
 }
 
-.button-right {
-  float: right;
+.publish-button {
+  text-align: center;
+  margin-bottom: 24px;
+  button {
+    text-transform: uppercase;
+    width: 110px;
+    background-color: $combitOrange;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 0;
+    color: $combitWhite;
+  }
 }
 
 .segment-button {
+  border-top: 1px solid $combitOrange;
+  padding-top: 4px;
   display: flex;
   justify-content: center;
   margin-bottom: 16px;
+  font-weight: 600;
+  font-stretch: ultra-condensed;
   button {
-    margin: 0 16px;
+    padding: 0;
+    color: $combitBlack;
+    background-color: rgba(117, 117, 117, 0.4);
+    border-color: transparent;
+    width: 100%;
+    margin: 0;
+    &.selected {
+      color: $combitWhite;
+      background-color: $combitOrange;
+      font-weight: 400;
+    }
   }
 }
 
@@ -58,6 +84,7 @@
     }
   }
   .implementation-title {
+    padding-left: 16px;
     margin-top: 5px;
   }
 }
@@ -73,5 +100,144 @@
   margin: 16px 0px;
   i {
     font-size: 16px;
+  }
+}
+
+:host ::ng-deep .content-upload {
+  &.product-image {
+    margin-top: 8px;
+    display: grid;
+    justify-content: center;
+    .ant-upload-list {
+      text-align: center;
+    }
+  }
+  .ant-upload.ant-upload-select {
+    width: 100%;
+    border: none;
+
+    button {
+      height: 100%;
+      border: none;
+    }
+  }
+
+  .ant-upload-list {
+    display: block;
+    width: 100%;
+  }
+  .ant-upload-list-item .ant-upload-list-item-info {
+    padding-left: 38px;
+    a.ant-upload-list-item-name {
+      padding-left: 34px;
+    }
+  }
+  .ant-upload-list-picture-card .ant-upload-list-item-info {
+    padding-left: 0;
+    text-align: left;
+  }
+  .ant-upload-list-picture-card .ant-upload-list-item {
+    float: none;
+    display: inline-block;
+  }
+  .image {
+    text-align: center;
+    cursor: pointer;
+    .picture-image-icon {
+      width: 124px;
+    }
+  }
+}
+
+.icon-text {
+  padding-left: 36px;
+  display: inline-block;
+  cursor: pointer;
+  img {
+    margin-right: 12px;
+    width: 24px;
+  }
+}
+
+.icon-switcher {
+  margin-left: 24px;
+  display: inline-block;
+}
+
+.input-icon {
+  width: 20px;
+  margin-left: 24px;
+}
+
+:host ::ng-deep .text-box {
+  padding: 0 0 0 72px !important;
+}
+
+:host ::ng-deep .input-box {
+  border: none;
+  border-radius: 4px;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+  .ant-select-selection {
+    border: none;
+    box-shadow: none;
+  }
+}
+
+:host ::ng-deep .select-box {
+  padding: 0 0 0 64px !important;
+}
+
+:host ::ng-deep .quill-editor-container {
+  .quill-editor {
+    text-align: center;
+    .ql-toolbar.ql-snow {
+      font-family: 'Ubuntu';
+      padding: 0;
+      border: none;
+      .ql-formats {
+        margin: 0;
+        button {
+          padding: 0;
+          height: 18px;
+        }
+        .ql-picker {
+          line-height: 0;
+        }
+        .ql-size.ql-picker {
+          text-align: left;
+          width: 80px;
+          .ql-picker-options {
+            line-height: 16px;
+          }
+        }
+      }
+    }
+    .ql-container.ql-snow {
+      font-family: 'Ubuntu';
+      padding-left: 58px;
+      border: none;
+      border-radius: 4px;
+      box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2);
+      .ql-editor.ql-blank::before {
+        color: rgba(0, 0, 0, 0.4);
+        font-style: normal;
+        left: 72px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.quill-icon {
+  width: 24px;
+  position: absolute;
+  top: 38px;
+  left: 38px;
+  &.feature {
+    top: 48px;
+  }
+  img {
+    width: 100%;
   }
 }

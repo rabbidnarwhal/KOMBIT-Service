@@ -1,15 +1,66 @@
+@import 'variables.scss';
+
 .login-form {
+  input {
+    height: 36px;
     width: 300px;
+    border-radius: 12px;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 12px;
+  }
+  p {
+    text-align: center;
+    color: $combitWhite;
+  }
 }
 
 .login-form-forgot {
-    float: right;
+  text-align: center;
+  color: $combitWhite;
 }
 
 .login-form-button {
-    width: 100%;
+  background-color: $combitOrange;
+  border-color: $combitOrange;
+  margin-top: 24px;
+  width: 100px;
+  font-size: 18px;
+  height: 36px;
+  border-radius: 12px;
+  font-weight: 500;
 }
 
-.container {
+.main-container {
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
+  background-color: $combitBlue;
+}
+
+.top-container {
+  height: 45%;
+  border-radius: 100%/0px 0px 100px 100px;
+  background-color: $combitWhite;
+  width: 120%;
+  margin-left: -10%;
+  margin-right: 10%;
+  overflow: hidden;
+  position: relative;
+  div {
     height: 100%;
+    text-align: center;
+    img {
+      margin-top: -4%;
+      width: 80%;
+      height: 150%;
+      object-fit: contain;
+    }
+  }
+}
+
+.bottom-container {
+  height: 100%;
+  text-align: center;
+  margin-top: 4%;
 }

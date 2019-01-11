@@ -1,0 +1,28 @@
+p {
+  line-height: 12px;
+  margin: 2px;
+  .label-name {
+    width: 110px;
+    display: inline-block;
+  }
+  .label-divider {
+    margin: 0px 2px;
+  }
+  .label-value {
+    width: calc(100% - 110px - 8px);
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    top: 3px;
+    font-weight: 600;
+  }
+}
+
+.detail-box {
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.2);
+}

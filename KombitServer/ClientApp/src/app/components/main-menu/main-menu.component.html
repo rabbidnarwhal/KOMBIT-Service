@@ -1,0 +1,41 @@
+<nz-card class="menu-container">
+  <div class="top-container">
+    <div class="menu-logo">
+      <img src="../../../assets/images/logo.png" />
+    </div>
+    <div class="menu-button">
+      <button *ngIf="!isLogin" routerLink="/login">Login</button>
+      <button *ngIf="isLogin && role === 'Supplier'" (click)="openNewPostModal()">
+        <img src="assets/images/new-post.png" />
+        New Post
+      </button>
+      <button *ngIf="isLogin && role === 'Administrator'" routerLink="/dashboard">Dashboard</button>
+    </div>
+  </div>
+
+  <div class="bottom-container">
+    <div nz-row>
+      <div nz-col nzSpan="24" class="solution-search-wrapper">
+        <p class="solution-label">Find a solution here</p>
+        <nz-input-group [nzPrefix]="prefixTemplate">
+          <input type="text" nz-input class="solution-searchbox" [(ngModel)]="searchSolution" (keyup)="filterSolution(searchSolution)">
+        </nz-input-group>
+        <ng-template #prefixTemplate><i class="anticon-search anticon searchbox-icon"></i></ng-template>
+      </div>
+    </div>
+    <div nz-row class="solution-item-wrapper">
+      <nz-spin [nzSpinning]="isLoading && !filterSolutions.length" [nzSize]="'large'">
+        <div nz-col nzSpan="4" class="solution-item-container" *ngFor="let solution of filterSolutions">
+          <div class="item-container">
+            <div class="solution-item" (click)="openModal(solution)">
+              <img src="{{solution.image}}" />
+            </div>
+          </div>
+          <br/>
+            <p>{{solution.category}}</p>
+          </div>
+        </nz-spin>
+        <div *ngIf="!isLoading && !filterSolutions.length">Solution not found!</div>
+      </div>
+    </div>
+  </nz-card>

@@ -1,0 +1,27 @@
+<div nz-col class="back-button">
+  <button nz-button routerLink="/dashboard">Back</button>
+</div>
+
+<nz-card>
+  <div class="title-page">
+    <h2>{{title}}</h2>
+  </div>
+  <nz-table #ajaxTable [nzShowTotal] [nzFrontPagination]="true" nzSize="small" [nzData]="dataSet" [nzLoading]="loading" [(nzPageIndex)]="pageIndex">
+    <thead (nzSortChange)="sort($event)" nzSingleSort>
+      <tr>
+        <th *ngFor="let header of headers">
+          {{header.label}}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="ajaxTable.data">
+        <tr>
+          <td *ngFor="let header of headers">
+            {{data[header.value]}}
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </nz-table>
+</nz-card>

@@ -1,39 +1,41 @@
-<div class="container" nz-row nzType="flex" nzAlign="middle" nzJustify="center">
-  <nz-card>
-    <nz-spin [nzSpinning]="isLoading">
-      <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
-        <nz-form-item *ngIf="isError">
+<div class="main-container">
+  <div class="top-container">
+    <div>
+      <img src="../../../assets/images/logo.png" />
+    </div>
+  </div>
+  <div class="bottom-container">
+    <div class="container" nz-row nzType="flex" nzAlign="middle" nzJustify="center">
+      <nz-spin [nzSpinning]="isLoading">
+        <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+          <!-- <nz-form-item *ngIf="isError">
+            <nz-form-control>
+              <nz-alert [nzType]="errorType" nzCloseable [nzMessage]="errorMessage" [nzDescription]="errorDescription" (nzOnClose)="afterClose()"></nz-alert>
+            </nz-form-control>
+          </nz-form-item> -->
           <nz-form-control>
-            <nz-alert [nzType]="errorType" nzCloseable [nzMessage]="errorMessage" [nzDescription]="errorDescription" (nzOnClose)="afterClose()"></nz-alert>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-control>
-            <nz-input-group nzPrefixIcon="anticon anticon-user">
-              <input type="text" nz-input formControlName="userName" placeholder="Username">
+            <nz-input-group>
+              <input type="text" nz-input formControlName="userName" placeholder="User">
             </nz-input-group>
-            <nz-form-explain *ngIf="validateForm.get('userName').dirty && validateForm.get('userName').errors">Please input your username!</nz-form-explain>
+            <!-- <nz-form-explain *ngIf="validateForm.get('userName').dirty && validateForm.get('userName').errors">Please input your username!</nz-form-explain> -->
           </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
           <nz-form-control>
-            <nz-input-group nzPrefixIcon="anticon anticon-lock">
+            <nz-input-group>
               <input type="password" nz-input formControlName="password" placeholder="Password">
             </nz-input-group>
-            <nz-form-explain *ngIf="validateForm.get('password').dirty && validateForm.get('password').errors">Please input your Password!</nz-form-explain>
+            <!-- <nz-form-explain *ngIf="validateForm.get('password').dirty && validateForm.get('password').errors">Please input your Password!</nz-form-explain> -->
           </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
+          <!-- <nz-form-control>
+            <a class="login-form-forgot" class="login-form-forgot">Forgot Password?</a>
+          </nz-form-control> -->
           <nz-form-control>
-            <label nz-checkbox formControlName="remember">
-              <span>Remember me</span>
-            </label>
-            <!-- <a class="login-form-forgot" class="login-form-forgot">Forgot password</a> -->
-            <button nz-button class="login-form-button" nzType="primary">Log in</button>
-            <!-- <a href="">register now!</a> -->
+            <button nz-button class="login-form-button" nzType="primary">Login</button>
           </nz-form-control>
-        </nz-form-item>
-      </form>
-    </nz-spin>
-  </nz-card>
+          <!-- <nz-form-control>
+            <p>Don't have an account? <a href="">Sign up</a></p>
+          </nz-form-control> -->
+        </form>
+      </nz-spin>
+    </div>
+  </div>
 </div>

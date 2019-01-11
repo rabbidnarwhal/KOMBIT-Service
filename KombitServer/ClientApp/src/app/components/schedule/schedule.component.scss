@@ -1,0 +1,50 @@
+@import 'variables.scss';
+
+:host ::ng-deep .calendar-container {
+  .cal-days .cal-cell-row {
+    height: 64px;
+    .cal-day-cell {
+      min-height: 1px;
+      &.cal-today {
+        font-size: 12px;
+        // background-color: $combitOrange;
+        // color: $combitWhite;
+      }
+      .cal-cell-top {
+        min-height: 1px;
+        &.event-added {
+          background-color: red;
+          .cal-day-number {
+            color: $combitWhite;
+          }
+        }
+        .cal-day-number {
+          font-size: 12px;
+          position: relative;
+          top: 24px;
+          right: -6px;
+        }
+        .cal-day-badge {
+          font-size: 10px;
+          margin-top: 8px;
+          margin-left: 8px;
+        }
+      }
+      .cal-events {
+        display: none;
+      }
+    }
+  }
+
+  .cal-cell-row.cal-header {
+    font-size: 12px;
+    margin-bottom: 4px;
+    margin-top: 8px;
+    .cal-cell {
+      background-color: $combitOrange;
+      margin: 0 1px;
+      color: $combitWhite;
+      font-weight: 400;
+    }
+  }
+}
