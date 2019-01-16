@@ -44,7 +44,6 @@ export class ProfileComponent implements OnInit {
   async getProfile() {
     try {
       this.profile = await this.profileService.getProfile();
-      console.log(this.profile);
       this.isLoading = false;
       this.picture = this.profile.image ? this.profile.image : 'assets/images/profile.png';
       this.createMap();
@@ -55,7 +54,6 @@ export class ProfileComponent implements OnInit {
 
   createMap() {
     const position = this.profile.addressKoordinat ? this.profile.addressKoordinat.split(', ') : [];
-    console.log(position);
     if (position.length) {
       this.mapImage =
         'https://maps.googleapis.com/maps/api/staticmap?center=' +

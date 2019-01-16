@@ -28,7 +28,6 @@ export class DashboardComponent implements OnInit {
     this.dashboardService
       .getActiveCustomer()
       .then((res) => {
-        console.log('cust', res.name);
         const data = this.slicingData(res);
         const backgroundColorLike = [];
         const backgroundColorComment = [];
@@ -83,7 +82,6 @@ export class DashboardComponent implements OnInit {
     this.dashboardService
       .getActiveSupplier()
       .then((res) => {
-        console.log('supli', res.name);
         const data = this.slicingData(res);
         const backgroundColorProduct = [];
         const borderColorProduct = [];
