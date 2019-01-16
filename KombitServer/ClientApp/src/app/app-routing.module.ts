@@ -104,7 +104,7 @@ const routes: Routes = [
       },
       {
         path: ':productId',
-        component: ProductDetailComponent
+        component: ProductListComponent
       }
     ]
   },
@@ -114,7 +114,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/not-found'
+    redirectTo: '/'
   },
   {
     path: 'not-found',
