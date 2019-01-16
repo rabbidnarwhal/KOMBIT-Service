@@ -31,7 +31,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   userId = 0;
   updatedId = 0;
   scheduleId = 0;
-  productSubscription: Subscription;
+  productQueryParamSubscription: Subscription;
+  productUrlSubscription: Subscription;
   productSearchSubscription: Subscription;
   isLoading = true;
 
@@ -56,7 +57,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   subscribeProductEvent() {
-    this.productSubscription = this.activatedRoute.queryParams.subscribe((res) => {
+    this.productQueryParamSubscription = this.activatedRoute.queryParams.subscribe((res) => {
       if (res.hasOwnProperty('myPost') && res.myPost) {
         alert('myPost');
       } else if (res.hasOwnProperty('new') && res.new) {
@@ -67,11 +68,18 @@ export class ProductListComponent implements OnInit, OnDestroy {
         alert('edit product');
       }
     });
+
+    this.productUrlSubscription = this.activatedRoute.url.subscribe((res) => {
+      if (res.length) {
+        if (res[0].hasOwnProperty('path')) {
+          this.openDescription(+res[0].path);
+        }
+      }
+    });
   }
 
   subscribeSearchProductEvent() {
     this.productSearchSubscription = this.eventsService.getProductSearchText().subscribe((res) => {
-      console.log('product', res, this.originProduct);
       if (res) {
         this.products = this.originProduct.filter((x) => x.productName.toLowerCase().indexOf(res.toLowerCase()) > -1);
       } else {
@@ -125,6 +133,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
           this.elemRef.nativeElement.style.top = 0 + 'px';
           window.scrollTo({ top: this.scrollPosition });
         }, 300);
+        window.history.replaceState({}, '', '/');
         if (this.modalType === 'deleteProduct') {
           this.isLoading = true;
           this.products = this.skeletons;
@@ -141,8 +150,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.subscribeProductEvent();
     this.subscribeModalEvent();
+    this.subscribeProductEvent();
     this.subscribeSearchProductEvent();
     try {
       this.originProduct = await this.productService.getListProduct();
@@ -156,9 +165,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.productSubscription.unsubscribe();
-    this.productSearchSubscription.unsubscribe();
     this.modalSubscription.unsubscribe();
+    this.productQueryParamSubscription.unsubscribe();
+    this.productSearchSubscription.unsubscribe();
+    this.productUrlSubscription.unsubscribe();
   }
 
   openDescription(productId: number) {
