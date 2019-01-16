@@ -1,7 +1,7 @@
-<div #productList [class.blurred]="isModal">
+<div #productList [class.blurred]="isModal" [class.product-list-container]="!products.length">
   <nz-spin [nzSpinning]="isLoading && !products.length" [nzSize]="'large'"></nz-spin>
   <div nz-col [nzSpan]="24" class="empty" *ngIf="!products.length && !isLoading">
-    <p>Product not found post!!</p>
+    <p>Product not found</p>
   </div>
   <app-product-filter *ngIf="products.length" [products]="products"></app-product-filter>
 </div>

@@ -23,7 +23,7 @@
         <ng-template #prefixTemplate><i class="anticon-search anticon searchbox-icon"></i></ng-template>
       </div>
     </div>
-    <div nz-row class="solution-item-wrapper">
+    <div nz-row class="solution-item-wrapper" [class.middle-spin]="!filterSolutions.length">
       <nz-spin [nzSpinning]="isLoading && !filterSolutions.length" [nzSize]="'large'">
         <div nz-col nzSpan="4" class="solution-item-container" *ngFor="let solution of filterSolutions">
           <div class="item-container">
