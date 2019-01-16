@@ -36,6 +36,11 @@ export class ProductDetailComponent implements OnInit {
       .catch((err) => {
         this.message.error(err, { nzDuration: 5000, nzPauseOnHover: true, nzAnimate: true });
         this.isLoading = false;
+        const content = {
+          state: false,
+          type: ''
+        };
+        this.eventsService.setModalState(content);
       });
   }
 
