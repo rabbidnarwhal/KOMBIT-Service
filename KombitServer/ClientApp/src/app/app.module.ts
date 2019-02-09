@@ -33,6 +33,7 @@ import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { DashboardTableViewComponent } from './components/dashboard-table-view/dashboard-table-view.component';
 import { ScheduleDetailComponent } from './components/schedule-detail/schedule-detail.component';
+import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 
 registerLocaleData(en);
 
@@ -57,7 +58,8 @@ registerLocaleData(en);
     ProfileComponent,
     HeaderModalComponent,
     DashboardTableViewComponent,
-    ScheduleDetailComponent
+    ScheduleDetailComponent,
+    PrivacyPolicyComponent
   ],
   imports: [
     BrowserModule,

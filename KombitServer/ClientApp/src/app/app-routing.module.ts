@@ -12,6 +12,7 @@ import { ProductPosterGuard } from './guards/product-poster.guard';
 import { ProductListTableComponent } from './components/product-list-table/product-list-table.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
 import { DashboardTableViewComponent } from './components/dashboard-table-view/dashboard-table-view.component';
+import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 
 const routes: Routes = [
   {
@@ -111,6 +112,10 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent
+  },
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicyComponent
   },
   {
     path: '**',
