@@ -31,7 +31,6 @@ namespace KombitServer.ScheduleTask.Tasks
         public async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             string url = "http://kombit.org//api/product/check_update_status/";
-            // string url = "http://localhost:49205/api/product/check_update_status/";
 
             await _client.GetAsync(url);
         }
